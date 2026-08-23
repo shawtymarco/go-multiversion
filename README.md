@@ -13,6 +13,12 @@ converts older releases at the network boundary.
 | 1.26.45 | 2169 | Native gophertunnel protocol |
 | 1.26.44 | 2168 | `v1_26_44` compatibility adapter |
 
+The 1.26.44 adapter is based on gophertunnel commit
+`8a2b1f7939b051227fbef9d05c0f5b1d96ac2993`. Native 1.26.45 is based on
+`7f058e5ddc393eaa0480dae338c5eee2feb323e6`. The adapter currently changes only
+the protocol identity and the `SetScore` wire layout; it does not rewrite
+resource-pack negotiation packets.
+
 ## Usage
 
 ```go
