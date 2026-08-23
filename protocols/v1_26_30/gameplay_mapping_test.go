@@ -111,3 +111,59 @@ func TestCraftingDataFiltersUnmappedOutputs(t *testing.T) {
 		t.Fatalf("recipe conversion mutated input: got %d, want 2", got)
 	}
 }
+
+func TestCreativeContentPreservesNativeSelectionIDs(t *testing.T) {
+	p := testMappedProtocol(t)
+	stoneTarget, exact := p.runtime.blocks.NativeToTarget(1)
+	if !exact {
+		t.Fatal("stone mapping unexpectedly used fallback")
+	}
+	original := &packet.CreativeContent{
+		Groups: []protocol.CreativeGroup{{
+			Name: "test", Icon: protocol.ItemStack{ItemType: protocol.ItemType{NetworkID: 2}, Count: 1, BlockRuntimeID: 1},
+		}},
+		Items: []protocol.CreativeItem{
+			{CreativeItemNetworkID: 1341, Item: protocol.ItemStack{ItemType: protocol.ItemType{NetworkID: 2}, Count: 1, BlockRuntimeID: 1}},
+			{CreativeItemNetworkID: 1355, Item: protocol.ItemStack{ItemType: protocol.ItemType{NetworkID: 3}, Count: 1}},
+		},
+	}
+	wantOriginal := &packet.CreativeContent{
+		Groups: []protocol.CreativeGroup{{
+			Name: "test", Icon: protocol.ItemStack{ItemType: protocol.ItemType{NetworkID: 2}, Count: 1, BlockRuntimeID: 1},
+		}},
+		Items: []protocol.CreativeItem{
+			{CreativeItemNetworkID: 1341, Item: protocol.ItemStack{ItemType: protocol.ItemType{NetworkID: 2}, Count: 1, BlockRuntimeID: 1}},
+			{CreativeItemNetworkID: 1355, Item: protocol.ItemStack{ItemType: protocol.ItemType{NetworkID: 3}, Count: 1}},
+		},
+	}
+	converted := p.convertGameplayFromLatest(original, nil)
+	if !reflect.DeepEqual(original, wantOriginal) {
+		t.Fatalf("creative conversion mutated input: got %#v, want %#v", original, wantOriginal)
+	}
+	creative := converted[0].(*packet.CreativeContent)
+	if got, want := len(creative.Items), 1; got != want {
+		t.Fatalf("filtered creative item count: got %d, want %d", got, want)
+	}
+	item := creative.Items[0]
+	if got, want := item.CreativeItemNetworkID, uint32(1341); got != want {
+		t.Fatalf("creative selection ID: got %d, want native ID %d", got, want)
+	}
+	if got, want := item.Item.NetworkID, int32(7); got != want {
+		t.Fatalf("creative item network ID: got %d, want target ID %d", got, want)
+	}
+	if got, want := item.Item.BlockRuntimeID, int32(stoneTarget); got != want {
+		t.Fatalf("creative block runtime ID: got %d, want target ID %d", got, want)
+	}
+	if got, want := creative.Groups[0].Icon.NetworkID, int32(7); got != want {
+		t.Fatalf("creative group icon network ID: got %d, want target ID %d", got, want)
+	}
+
+	request := &packet.ItemStackRequest{Requests: []protocol.ItemStackRequest{{Actions: []protocol.StackRequestAction{
+		&protocol.CraftCreativeStackRequestAction{CreativeItemNetworkID: 1341},
+	}}}}
+	upgraded := p.convertGameplayToLatest(request, nil)
+	action := upgraded[0].(*packet.ItemStackRequest).Requests[0].Actions[0].(*protocol.CraftCreativeStackRequestAction)
+	if got, want := action.CreativeItemNetworkID, uint32(1341); got != want {
+		t.Fatalf("serverbound creative selection ID: got %d, want %d", got, want)
+	}
+}

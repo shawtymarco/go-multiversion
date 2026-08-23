@@ -35,7 +35,7 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		if items == nil {
 			return nil
 		}
-		creative, err := p.targetCreativeContent(items)
+		creative, err := p.targetCreativeContent(current, items)
 		if err != nil {
 			return nil
 		}

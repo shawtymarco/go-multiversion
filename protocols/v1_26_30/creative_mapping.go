@@ -2,67 +2,57 @@ package v1_26_30
 
 import (
 	"fmt"
-	"maps"
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	v1001 "github.com/shawtymarco/df-multiversion/data/v1001"
 	"github.com/shawtymarco/df-multiversion/mapping"
 )
 
-func (p Protocol) targetCreativeContent(items *mapping.ItemMapper) (*packet.CreativeContent, error) {
-	groups := make([]protocol.CreativeGroup, len(p.runtime.creative.Groups))
-	for index, group := range p.runtime.creative.Groups {
-		name := group.Name
-		if name == "" {
-			name = fmt.Sprint("anon", index)
+func (p Protocol) targetCreativeContent(current *packet.CreativeContent, items *mapping.ItemMapper) (*packet.CreativeContent, error) {
+	groups := make([]protocol.CreativeGroup, len(current.Groups))
+	for index, group := range current.Groups {
+		groups[index] = group
+		icon, ok := p.targetCreativeStack(group.Icon, items)
+		if !ok {
+			icon = protocol.ItemStack{}
 		}
-		icon, _ := p.targetCreativeStack(group.Icon, items)
-		groups[index] = protocol.CreativeGroup{Category: byte(group.Category), Name: name, Icon: icon}
+		groups[index].Icon = icon
 	}
-	creativeItems := make([]protocol.CreativeItem, 0, len(p.runtime.creative.Items))
-	for _, item := range p.runtime.creative.Items {
-		if item.GroupIndex < 0 || item.GroupIndex >= int32(len(groups)) {
-			return nil, fmt.Errorf("creative item %s has invalid group index %d", item.Name, item.GroupIndex)
+	creativeItems := make([]protocol.CreativeItem, 0, len(current.Items))
+	for _, item := range current.Items {
+		if item.GroupIndex >= uint32(len(groups)) {
+			return nil, fmt.Errorf("creative item %d has invalid group index %d", item.CreativeItemNetworkID, item.GroupIndex)
 		}
-		stack, ok := p.targetCreativeStack(item, items)
+		stack, ok := p.targetCreativeStack(item.Item, items)
 		if !ok {
 			continue
 		}
-		creativeItems = append(creativeItems, protocol.CreativeItem{
-			CreativeItemNetworkID: uint32(len(creativeItems)) + 1,
-			Item:                  stack,
-			GroupIndex:            uint32(item.GroupIndex),
-		})
+		item.Item = stack
+		// CreativeItemNetworkID is deliberately preserved. Dragonfly resolves
+		// client CraftCreative requests against its filtered native creative
+		// slice, so assigning IDs from the raw historical blob selects unrelated
+		// native items whenever either list skipped an entry.
+		creativeItems = append(creativeItems, item)
 	}
 	return &packet.CreativeContent{Groups: groups, Items: creativeItems}, nil
 }
 
-func (p Protocol) targetCreativeStack(entry v1001.CreativeItem, items *mapping.ItemMapper) (protocol.ItemStack, bool) {
-	if entry.Name == "" {
-		return protocol.ItemStack{}, true
+func (p Protocol) targetCreativeStack(stack protocol.ItemStack, items *mapping.ItemMapper) (protocol.ItemStack, bool) {
+	if stack.NetworkID == 0 {
+		return stack, true
 	}
-	networkID, ok := items.TargetRuntimeID(entry.Name)
+	networkID, ok := items.NativeToTarget(stack.NetworkID)
 	if !ok {
 		return protocol.ItemStack{}, false
 	}
-	var blockRuntimeID int32
-	if len(entry.BlockProperties) != 0 {
-		blockID, ok := p.runtime.blocks.TargetRuntimeID(entry.Name, entry.BlockProperties)
-		if !ok {
+	mapped := stack
+	mapped.NetworkID = networkID
+	if stack.BlockRuntimeID > 0 {
+		blockID, valid, exact := p.runtime.blocks.MapNative(uint32(stack.BlockRuntimeID))
+		if !valid || !exact {
 			return protocol.ItemStack{}, false
 		}
-		blockRuntimeID = int32(blockID)
+		mapped.BlockRuntimeID = int32(blockID)
 	}
-	nbtData := maps.Clone(entry.NBT)
-	delete(nbtData, "Damage")
-	return protocol.ItemStack{
-		ItemType: protocol.ItemType{
-			NetworkID:     networkID,
-			MetadataValue: uint32(uint16(entry.Meta)),
-		},
-		Count:          1,
-		BlockRuntimeID: blockRuntimeID,
-		NBTData:        nbtData,
-	}, true
+	return mapped, true
 }
