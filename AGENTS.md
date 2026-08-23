@@ -25,10 +25,13 @@ gophertunnel-based servers.
 - Do not add speculative conversions. Document the source commits and the
   exact compatibility difference being implemented.
 
-The current compatibility pair is:
+The current compatibility family is:
 
 - Minecraft 1.26.45 / protocol 2169: native gophertunnel at `7f058e5`.
-- Minecraft 1.26.44 / protocol 2168: adapter based on `8a2b1f7`.
+- Minecraft 1.26.44 / protocol 2168: double-optional `SetScore` adapter based
+  on `8a2b1f7`.
+- Minecraft 1.26.40-1.26.43 / protocol 2168: shared-layout adapter based on
+  `0695275`, selected using the login `GameVersion`.
 
 ## Verification
 
