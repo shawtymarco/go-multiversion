@@ -96,3 +96,36 @@ func TestItemMapperRoundTripAndFallback(t *testing.T) {
 		t.Fatalf("target entries: got %#v, want %#v", got, wantEntries)
 	}
 }
+
+func TestItemMapperResolvesHistoricalAliases(t *testing.T) {
+	native := []protocol.ItemEntry{{Name: "minecraft:crimson_door", RuntimeID: 2}}
+	target := map[string]TargetItem{"minecraft:item.crimson_door": {RuntimeID: -244, Version: 1}}
+	mapper, err := NewItemMapperWithResolver(native, target, func(name string) string {
+		if name == "minecraft:item.crimson_door" {
+			return "minecraft:crimson_door"
+		}
+		return name
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := mapper.NativeToTarget(2); !ok || got != -244 {
+		t.Fatalf("native alias mapping: got %d/%v", got, ok)
+	}
+	if got, ok := mapper.TargetToNative(-244); !ok || got != 2 {
+		t.Fatalf("target alias mapping: got %d/%v", got, ok)
+	}
+	if got, ok := mapper.TargetIdentifier(-244); !ok || got != "minecraft:crimson_door" {
+		t.Fatalf("resolved target identifier: got %q/%v", got, ok)
+	}
+	if got, ok := mapper.TargetWireIdentifier("minecraft:crimson_door"); !ok || got != "minecraft:item.crimson_door" {
+		t.Fatalf("target wire identifier: got %q/%v", got, ok)
+	}
+	if got, ok := mapper.TargetSemanticIdentifier("minecraft:item.crimson_door"); !ok || got != "minecraft:crimson_door" {
+		t.Fatalf("target semantic identifier: got %q/%v", got, ok)
+	}
+	wantEntries := []protocol.ItemEntry{{Name: "minecraft:item.crimson_door", RuntimeID: -244, Version: 1}}
+	if got := mapper.TargetEntries(); !reflect.DeepEqual(got, wantEntries) {
+		t.Fatalf("target alias entry changed on wire: got %#v, want %#v", got, wantEntries)
+	}
+}

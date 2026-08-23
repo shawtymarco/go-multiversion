@@ -1,4 +1,4 @@
-package v1001
+package v844
 
 import (
 	"bytes"
@@ -30,20 +30,28 @@ func TestSnapshotsDecode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	furnaces, err := Furnaces()
+	if err != nil {
+		t.Fatal(err)
+	}
+	smithing, err := Smithing()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if len(states) == 0 || len(items) == 0 || len(creative.Groups) == 0 || len(creative.Items) == 0 {
 		t.Fatal("decoded registry contains an empty required collection")
 	}
-	if got, want := len(states), 16913; got != want {
+	if got, want := len(states), 15845; got != want {
 		t.Fatalf("block state count: got %d, want %d", got, want)
 	}
-	if got, want := len(items), 1933; got != want {
+	if got, want := len(items), 1888; got != want {
 		t.Fatalf("item count: got %d, want %d", got, want)
 	}
-	if got, want := len(creative.Groups), 123; got != want {
+	if got, want := len(creative.Groups), 120; got != want {
 		t.Fatalf("creative group count: got %d, want %d", got, want)
 	}
-	if got, want := len(creative.Items), 1875; got != want {
+	if got, want := len(creative.Items), 1810; got != want {
 		t.Fatalf("creative item count: got %d, want %d", got, want)
 	}
 	if len(crafting.Shaped)+len(crafting.Shapeless)+len(crafting.UserDataShapeless)+len(crafting.Multi) == 0 {
@@ -52,10 +60,10 @@ func TestSnapshotsDecode(t *testing.T) {
 	if len(potions.Potions)+len(potions.ContainerChanges) == 0 {
 		t.Fatal("decoded potion registry is empty")
 	}
-	if got, want := len(crafting.Shaped), 1118; got != want {
+	if got, want := len(crafting.Shaped), 1084; got != want {
 		t.Fatalf("shaped recipe count: got %d, want %d", got, want)
 	}
-	if got, want := len(crafting.Shapeless), 1431; got != want {
+	if got, want := len(crafting.Shapeless), 1121; got != want {
 		t.Fatalf("shapeless recipe count: got %d, want %d", got, want)
 	}
 	if got, want := len(potions.Potions), 210; got != want {
@@ -63,6 +71,12 @@ func TestSnapshotsDecode(t *testing.T) {
 	}
 	if got, want := len(potions.ContainerChanges), 2; got != want {
 		t.Fatalf("container-change recipe count: got %d, want %d", got, want)
+	}
+	if got, want := len(furnaces), 251; got != want {
+		t.Fatalf("furnace recipe count: got %d, want %d", got, want)
+	}
+	if got, want := len(smithing), 9; got != want {
+		t.Fatalf("smithing recipe count: got %d, want %d", got, want)
 	}
 	if _, ok := items["minecraft:air"]; !ok {
 		t.Fatal("item registry does not contain minecraft:air")
@@ -101,7 +115,7 @@ func TestFallbackReport(t *testing.T) {
 		t.Fatal(err)
 	}
 	data = bytes.ReplaceAll(data, []byte("\r\n"), []byte("\n"))
-	if got, want := fmt.Sprintf("%x", sha256.Sum256(data)), "6f3a366da7654b85403c8516b4743a1977a567301e153f35780d3d73f0764345"; got != want {
+	if got, want := fmt.Sprintf("%x", sha256.Sum256(data)), "893c63520f286239badb720ecd5450f819f9d128a2fb8230b80e13c61c800626"; got != want {
 		t.Fatalf("fallback report SHA256: got %s, want %s", got, want)
 	}
 	var report struct {
@@ -111,21 +125,23 @@ func TestFallbackReport(t *testing.T) {
 	if err := json.Unmarshal(data, &report); err != nil {
 		t.Fatal(err)
 	}
-	if got, want := len(report.BlockFallbacks), 586; got != want {
+	if got, want := len(report.BlockFallbacks), 1654; got != want {
 		t.Fatalf("block fallback count: got %d, want %d", got, want)
 	}
-	if got, want := len(report.ItemFallbacks), 43; got != want {
+	if got, want := len(report.ItemFallbacks), 160; got != want {
 		t.Fatalf("item fallback count: got %d, want %d", got, want)
 	}
 }
 
 func TestSnapshotHashes(t *testing.T) {
 	want := map[string]string{
-		"block_states.nbt":   "5decc3d672adda62b872ab57a4df525d0c75f1ac53ca4e9e5f710283b1cf4de4",
-		"vanilla_items.nbt":  "0ad3c87f3cc76ad97d4742a24d77ceaf1f8652ed35db2b50937c2f95ff924dec",
-		"creative_items.nbt": "87ab27f1ba243ae49c649d4e7c0807035669a4ae05783fd5d5774294ef3b858d",
-		"crafting_data.nbt":  "d2bb26f2fc9e6e88168862973019f01fff4255bde552ff7c74b65c1dc62fb6f8",
-		"potion_data.nbt":    "54cb7f879def3f30f6c969555a7911878b10d5dcdbcb48a67e918459c395e10a",
+		"block_states.nbt":   "6b9ecc2b7ddd3b9cd59b5e745d2a704b35e44496c67bcde570f3ea9bcfaed068",
+		"vanilla_items.nbt":  "338a5ee40257b3665355635c357151e3cc41f3032168c90bb34dd5706e322082",
+		"creative_items.nbt": "0508b029fe2e0f50894a48239f4e034f5ad2c3289a8028308270f3ff6af13bcb",
+		"crafting_data.nbt":  "f1f4477ee9f5e43474c092595a22f023d1a40a040474dbfb74752dc3f05423ed",
+		"furnace_data.nbt":   "0b3e7c1ebb3b656e2039631a4cb3be88a5099f73ce7f74a156885ce786dfb04e",
+		"potion_data.nbt":    "faaac0150e1627f39d778c99d257b6c00ad56d08f15d138c8dd56c634b815ef7",
+		"smithing_data.nbt":  "99c9eb3ea54fca8a43c880fa91e6f1eb0ca350a051aad7e5ba1621659e3e4f7b",
 	}
 	for name, expected := range want {
 		data, ok := RawSnapshot(name)

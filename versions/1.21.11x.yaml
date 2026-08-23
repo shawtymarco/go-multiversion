@@ -39,10 +39,10 @@ wire_sources:
     game_version: "1.26.45"
     protocol_id: 2169
   step_2_audit:
-    status: pending
-    completed_against: ""
-    result: ""
-    oracle: ""
+    status: complete
+    completed_against: "bf05a1ac6b1da4046890196dc49e15a621dcdbd6"
+    result: "One protocol-844 adapter covers the five locked stable releases; no patch-internal wire split was identified."
+    oracle: "Historical gophertunnel decodes and byte-identically re-encodes both packet pools and all populated/high-risk fixtures."
 
 dragonfly_sources:
   repository: "https://github.com/df-mc/dragonfly"
@@ -186,7 +186,7 @@ decisions:
   patch_selection: "One protocol-844 adapter; the locked historical sources show no patch-internal wire split in 1.21.11x. Unknown protocol-844 GameVersion values are rejected from the supported-version policy."
   modding_required: false
   modding_reason: "Exact historical gophertunnel and Dragonfly sources, Mojang protocol documentation, and BDS metadata are available."
-  enable_in_protocol_catalog: false
-  enable_reason: "Enable only after steps 2-5 and registry-aware construction pass."
-  block_fallback_policy: "Pending step 4 mapping audit."
-  item_fallback_policy: "Pending step 4 mapping audit."
+  enable_in_protocol_catalog: true
+  enable_reason: "ProtocolsWithRegistries validates protocol-844 block/item mappings before advertisement; parameterless Protocols remains registry-free."
+  block_fallback_policy: "Map native-only states to protocol-844 minecraft:air; all 1,654 fallbacks are recorded in data/v844/fallbacks.json."
+  item_fallback_policy: "Hide 160 native-only items clientbound and reject unknown target items serverbound; historical aliases are resolved semantically while their wire registry names remain unchanged."
