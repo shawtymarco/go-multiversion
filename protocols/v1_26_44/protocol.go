@@ -43,25 +43,15 @@ func (Protocol) NewWriter(w minecraft.ByteWriter, shieldID int32) protocol.IO {
 }
 
 func (Protocol) ConvertToLatest(pk packet.Packet, _ *minecraft.Conn) []packet.Packet {
-	switch legacy := pk.(type) {
-	case *setScore:
+	if legacy, ok := pk.(*setScore); ok {
 		return []packet.Packet{legacy.latest()}
-	case *packet.ResourcePackStack:
-		latest := *legacy
-		latest.BaseGameVersion = protocol.CurrentVersion
-		return []packet.Packet{&latest}
 	}
 	return []packet.Packet{pk}
 }
 
 func (Protocol) ConvertFromLatest(pk packet.Packet, _ *minecraft.Conn) []packet.Packet {
-	switch latest := pk.(type) {
-	case *packet.SetScore:
+	if latest, ok := pk.(*packet.SetScore); ok {
 		return []packet.Packet{setScoreFromLatest(latest)}
-	case *packet.ResourcePackStack:
-		legacy := *latest
-		legacy.BaseGameVersion = Version
-		return []packet.Packet{&legacy}
 	}
 	return []packet.Packet{pk}
 }

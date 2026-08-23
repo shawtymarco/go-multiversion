@@ -68,22 +68,3 @@ func TestServerPacketPoolUsesLegacySetScore(t *testing.T) {
 		t.Fatalf("unexpected SetScore packet type: %T", constructor())
 	}
 }
-
-func TestResourcePackStackBaseGameVersion(t *testing.T) {
-	latest := &packet.ResourcePackStack{BaseGameVersion: protocol.CurrentVersion}
-	legacy := Protocol{}.ConvertFromLatest(latest, nil)[0].(*packet.ResourcePackStack)
-	if got, want := legacy.BaseGameVersion, Version; got != want {
-		t.Fatalf("legacy base game version: got %q, want %q", got, want)
-	}
-	if got, want := latest.BaseGameVersion, protocol.CurrentVersion; got != want {
-		t.Fatalf("conversion mutated latest packet: got %q, want %q", got, want)
-	}
-
-	converted := Protocol{}.ConvertToLatest(legacy, nil)[0].(*packet.ResourcePackStack)
-	if got, want := converted.BaseGameVersion, protocol.CurrentVersion; got != want {
-		t.Fatalf("latest base game version: got %q, want %q", got, want)
-	}
-	if got, want := legacy.BaseGameVersion, Version; got != want {
-		t.Fatalf("conversion mutated legacy packet: got %q, want %q", got, want)
-	}
-}
