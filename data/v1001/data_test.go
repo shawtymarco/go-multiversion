@@ -2,7 +2,9 @@ package v1001
 
 import (
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -90,6 +92,29 @@ func TestSnapshotsDecode(t *testing.T) {
 		}
 	}
 
+}
+
+func TestFallbackReport(t *testing.T) {
+	data, err := os.ReadFile("fallbacks.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, want := fmt.Sprintf("%x", sha256.Sum256(data)), "6f3a366da7654b85403c8516b4743a1977a567301e153f35780d3d73f0764345"; got != want {
+		t.Fatalf("fallback report SHA256: got %s, want %s", got, want)
+	}
+	var report struct {
+		BlockFallbacks []json.RawMessage `json:"block_fallbacks"`
+		ItemFallbacks  []json.RawMessage `json:"item_fallbacks"`
+	}
+	if err := json.Unmarshal(data, &report); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := len(report.BlockFallbacks), 586; got != want {
+		t.Fatalf("block fallback count: got %d, want %d", got, want)
+	}
+	if got, want := len(report.ItemFallbacks), 43; got != want {
+		t.Fatalf("item fallback count: got %d, want %d", got, want)
+	}
 }
 
 func TestSnapshotHashes(t *testing.T) {

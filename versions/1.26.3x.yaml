@@ -184,4 +184,6 @@ decisions:
   modding_required: false
   modding_reason: "Exact historical gophertunnel and Dragonfly sources plus BDS-derived documentation are available."
   enable_in_protocol_catalog: false
-  enable_reason: "Steps 3 through 5 are not complete."
+  enable_reason: "The parameterless catalog cannot safely construct registry mappings. ProtocolsWithRegistries enables protocol 1001 after steps 1-5 pass."
+  block_fallback_policy: "Map native-only states to protocol-1001 minecraft:air; every fallback is recorded in data/v1001/fallbacks.json."
+  item_fallback_policy: "Hide native-only items clientbound and reject unknown target items serverbound; every native fallback is recorded."

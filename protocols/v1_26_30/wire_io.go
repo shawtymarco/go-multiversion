@@ -7,13 +7,18 @@ import "github.com/sandertv/gophertunnel/minecraft/protocol"
 type wireIO struct {
 	protocol.IO
 	reading bool
+	runtime *runtimeData
 }
 
 type wireReader struct{ *wireIO }
 type wireWriter struct{ *wireIO }
 
-func newWireIO(io protocol.IO, reading bool) *wireIO {
-	return &wireIO{IO: io, reading: reading}
+func newWireIO(io protocol.IO, reading bool, runtime ...*runtimeData) *wireIO {
+	var data *runtimeData
+	if len(runtime) != 0 {
+		data = runtime[0]
+	}
+	return &wireIO{IO: io, reading: reading, runtime: data}
 }
 
 func asWireIO(io protocol.IO) *wireIO {

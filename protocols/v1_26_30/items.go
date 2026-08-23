@@ -150,11 +150,35 @@ func marshalItem(io *wireIO, value *protocol.ItemStack) {
 }
 
 func marshalStackRequestItem(io *wireIO, value *protocol.StackRequestItem) {
+	var networkID int32
+	blockRuntimeID := value.BlockRuntimeID
+	if !io.reading {
+		if io.runtime == nil {
+			io.InvalidValue(value.Identifier, "stack request item identifier", "protocol 1001 item mapping is not configured")
+			return
+		}
+		itemMapper := io.runtime.currentItemMapper()
+		if itemMapper == nil {
+			io.InvalidValue(value.Identifier, "stack request item identifier", "native item registry has not been observed")
+			return
+		}
+		var ok bool
+		networkID, ok = itemMapper.TargetRuntimeID(value.Identifier)
+		if !ok {
+			io.InvalidValue(value.Identifier, "stack request item identifier", "identifier is absent from protocol 1001")
+			return
+		}
+		if blockRuntimeID > 0 {
+			mapped, _, _ := io.runtime.blocks.MapNative(uint32(blockRuntimeID))
+			blockRuntimeID = int32(mapped)
+		}
+	}
 	stack := protocol.ItemStack{
 		ItemType: protocol.ItemType{
+			NetworkID:     networkID,
 			MetadataValue: value.MetadataValue,
 		},
-		BlockRuntimeID: value.BlockRuntimeID,
+		BlockRuntimeID: blockRuntimeID,
 		Count:          value.Count,
 		NBTData:        value.NBTData,
 		CanBePlacedOn:  value.CanBePlacedOn,
@@ -163,8 +187,28 @@ func marshalStackRequestItem(io *wireIO, value *protocol.StackRequestItem) {
 	}
 	marshalItem(io, &stack)
 	if io.reading {
+		itemMapper := io.runtime.currentItemMapper()
+		if itemMapper == nil {
+			io.InvalidValue(stack.NetworkID, "stack request item network ID", "native item registry has not been observed")
+			return
+		}
+		identifier, ok := itemMapper.TargetIdentifier(stack.NetworkID)
+		if !ok {
+			io.InvalidValue(stack.NetworkID, "stack request item network ID", "unknown protocol 1001 item")
+			return
+		}
+		value.Identifier = identifier
 		value.MetadataValue = stack.MetadataValue
-		value.BlockRuntimeID = stack.BlockRuntimeID
+		if stack.BlockRuntimeID > 0 {
+			mapped, ok := io.runtime.blocks.TargetToNative(uint32(stack.BlockRuntimeID))
+			if !ok {
+				io.InvalidValue(stack.BlockRuntimeID, "stack request block runtime ID", "unknown protocol 1001 block")
+				return
+			}
+			value.BlockRuntimeID = int32(mapped)
+		} else {
+			value.BlockRuntimeID = stack.BlockRuntimeID
+		}
 		value.Count = stack.Count
 		value.NBTData = stack.NBTData
 		value.CanBePlacedOn = stack.CanBePlacedOn

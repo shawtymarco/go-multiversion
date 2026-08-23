@@ -33,8 +33,10 @@ The current compatibility family is:
 - Minecraft 1.26.40-1.26.43 / protocol 2168: shared-layout adapter based on
   `0695275`, selected using the login `GameVersion`.
 - Minecraft 1.26.30-1.26.34 and 1.26.36 / protocol 1001: wire adapter based on
-  `0a2ecd5`; deliberately excluded from `Protocols()` until registry and chunk
-  conversion are complete.
+  `0a2ecd5`, historical data from Dragonfly `705b8460`, and direct native data
+  mapping against `ba86ce95`. It is enabled only through the registry-aware
+  constructor; the parameterless `Protocols()` remains safe for unconfigured
+  consumers.
 
 ## Verification
 

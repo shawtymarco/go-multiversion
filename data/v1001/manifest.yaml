@@ -50,3 +50,12 @@ shared_native_blobs:
     git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"
   - source_path: "server/item/recipe/item_tags.json"
     git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
+fallback_report:
+  file: "fallbacks.json"
+  native_dragonfly_commit: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  block_policy: "substitute minecraft:air"
+  block_states: 586
+  item_policy: "hide clientbound and reject serverbound"
+  items: 43
+  sha256: "6f3a366da7654b85403c8516b4743a1977a567301e153f35780d3d73f0764345"
+  generation: "Set DFMV_FALLBACK_REPORT to this file and run CastleOnline's TestMinecraft1263xRegistryIntegration."

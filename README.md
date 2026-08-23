@@ -26,11 +26,13 @@ negotiation packets or maintain separate block, item, recipe, or chunk data.
 
 | Minecraft version | Protocol | Status |
 | --- | ---: | --- |
-| 1.26.30-1.26.34, 1.26.36 | 1001 | Wire adapter complete; registry and chunk conversion pending |
+| 1.26.30-1.26.34, 1.26.36 | 1001 | Wire, registry, gameplay packet, and pre-hash chunk conversion complete; real-client release matrix pending |
 
-`V1_26_30()` exposes the protocol-1001 adapter for focused development and
-testing. It is intentionally absent from `Protocols()`, so consumers cannot
-advertise incomplete 1.26.3x support by updating this module alone. The wire
+`V1_26_30()` exposes the wire-only protocol-1001 adapter for focused tests.
+Production consumers use `ProtocolsWithRegistries` so block and item mappings
+are validated before the listener advertises protocol 1001. The adapter stays
+absent from the parameterless `Protocols()` to prevent an unconfigured server
+from reusing native runtime IDs. The wire
 implementation is based on gophertunnel `0a2ecd5633ea1466ff97f6d4718df66ec14d054f`
 and converts directly to the native model at `7f058e5ddc393eaa0480dae338c5eee2feb323e6`.
 Its exact wire audit is recorded in `versions/1.26.3x-wire.md`.
@@ -46,3 +48,7 @@ legacyProtocols := multiversion.Protocols()
 `Protocols` returns non-native protocols only. Pass them to the consumer's
 accepted-protocol configuration alongside its native/default protocol as
 required by that consumer.
+
+For protocol 1001, pass the finalised native block registry and the exact
+native item entries to `ProtocolsWithRegistries`. Dragonfly consumers should
+do this through its post-finalisation `AcceptedProtocolsProvider` hook.
