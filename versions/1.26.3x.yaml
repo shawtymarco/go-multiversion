@@ -1,0 +1,184 @@
+schema_version: 1
+
+family:
+  id: r26_u3
+  label: "Minecraft 1.26.3x stable"
+  canonical_game_version: "1.26.36"
+  protocol_id: 1001
+  stable_game_versions:
+    - "1.26.30"
+    - "1.26.31"
+    - "1.26.32"
+    - "1.26.33"
+    - "1.26.34"
+    - "1.26.36"
+  excluded_versions:
+    - version: "1.26.3"
+      reason: "Belongs to the r26_u0 patch line, not r26_u3."
+    - version: "1.26.35"
+      reason: "No stable BDS release is present in the locked Endstone version registry."
+    - version: "1.26.30-preview.*"
+      reason: "Preview builds are outside the stable support scope."
+
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction:
+    commit: "6353c49baf32edb06fb6af7a3c9c29baff9e2f6f"
+    game_version: "1.26.30"
+    protocol_id: 1001
+  final_target_snapshot:
+    commit: "0a2ecd5633ea1466ff97f6d4718df66ec14d054f"
+    game_version_constant: "1.26.30"
+    protocol_id: 1001
+    rationale: "Last gophertunnel commit before the 1.26.40 protocol update; includes all corrections made while protocol 1001 was native."
+  native_snapshot:
+    commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6"
+    game_version: "1.26.45"
+    protocol_id: 2169
+  family_latest_evidence:
+    source: "https://github.com/EndstoneMC/protocol-docs/tree/r26_u3"
+    commit: "32edc45c9f20591b6529dbbb82de8bc9effba878"
+    minecraft_version: "1.26.36.1"
+    network_version: 1001
+  pending_step_2_audit:
+    - "Compare the final r26_u3 BDS-derived schema with the final gophertunnel protocol-1001 snapshot."
+    - "Do not assume patch-internal wire identity solely from the shared protocol ID."
+
+dragonfly_sources:
+  repository: "https://github.com/df-mc/dragonfly"
+  family_update_commit: "0f8cf2e664ae36d8fb473997ca3424f6fe252622"
+  final_target_snapshot: "705b8460b472508023e72f399c76f524a875fed7"
+  final_target_pinned_gophertunnel: "1706d533aa809a5a1c87ae416b64ce9f3dbb269c"
+  native_snapshot: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  data_history: "All listed registry blobs are identical between the family update commit and the final target snapshot."
+
+protocol_documentation:
+  mojang:
+    repository: "https://github.com/Mojang/bedrock-protocol-docs"
+    branch: "r/26_u3"
+    commit: "5cd260a8a3573d24cbb93332a3d278e134d43734"
+  endstone:
+    repository: "https://github.com/EndstoneMC/protocol-docs"
+    branch: "r26_u3"
+    commit: "32edc45c9f20591b6529dbbb82de8bc9effba878"
+
+bds_catalog:
+  repository: "https://github.com/EndstoneMC/bedrock-server-data"
+  branch: v2
+  commit: "fb72aa0319d48e1c81c96c35484a27e2a997b297"
+  releases:
+    - game_version: "1.26.30"
+      bds_build: "1.26.30.5"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.26.30.5.zip"
+        sha256: "ba45398e0a611d570732ffbddbc4d195d0902fd4437cbb9e371dfccb4b290e37"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.30.5.zip"
+        sha256: "f8f886e9ee7826b452b037e0b4bfe86a5cfe074063fce76fa663d80c499de8c4"
+    - game_version: "1.26.31"
+      bds_build: "1.26.31.1"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.26.31.1.zip"
+        sha256: "883c6793c10090f497b1e065bfd2664aa4c2a63c01fa809482b646494dbe4944"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.31.1.zip"
+        sha256: "d143276d5fb19737524f1c8feb95fd831462d5e6a3bd0d0be56a1c2d6a8446d6"
+    - game_version: "1.26.32"
+      bds_build: "1.26.32.2"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.26.32.2.zip"
+        sha256: "865654f285231ee5e58fc1511d230a0d1b7c84e0024962af41074211619aeadf"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.32.2.zip"
+        sha256: "7788843e71d2b7af8a93ee30183001e9cd23ba969de8c9eef7aa06d34a4dbcab"
+    - game_version: "1.26.33"
+      bds_build: "1.26.33.1"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.26.33.1.zip"
+        sha256: "fc6c0ad6f82cfb11c65c6756a1a8e49b21ffa8cc203da587df59df365d82a2ad"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.33.1.zip"
+        sha256: "68c52ababde987741029de091c09cd736fe894bc1fe99cf20f9ed5c659f0c180"
+    - game_version: "1.26.34"
+      bds_build: "1.26.34.3"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.26.34.3.zip"
+        sha256: "1843b6c403578b3ef26654e13fdd3e182629c155c3296ea67ffd39e4fe6b63dd"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.34.3.zip"
+        sha256: "83a3be4a8d796ade17b093317747b33acfe3077a32a5c1a6fb3d6bfdad1908b4"
+    - game_version: "1.26.36"
+      bds_build: "1.26.36.1"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.26.36.1.zip"
+        sha256: "ca3e9463a793aefb22f02b7baade1bbc9196d54514386d1acbec7c32fabc30d4"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.36.1.zip"
+        sha256: "9c8a56a26381e90091a362ae59783e5a90205de0d6e4759e90104f4529e458e4"
+
+registry_blobs:
+  target_commit: "705b8460b472508023e72f399c76f524a875fed7"
+  native_commit: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  files:
+    - path: "server/world/block_states.nbt"
+      target_git_blob: "1e4d94632c61146f65df32b325223d1652a8f081"
+      target_bytes: 2365370
+      native_git_blob: "7006d9d46217425aab8e7d998f70c370b6b9c4eb"
+      native_bytes: 2436125
+      identical: false
+    - path: "server/world/vanilla_items.nbt"
+      target_git_blob: "52af4d9e1d6ed874eb13b56f923ffb714097507a"
+      target_bytes: 192121
+      native_git_blob: "ec858bab04610d414062178116a3b6a7db40918a"
+      native_bytes: 195071
+      identical: false
+    - path: "server/world/chunk/legacy_states.nbt"
+      target_git_blob: "9f2509fe414aaee80c28cfffb2b22e479a906aca"
+      target_bytes: 473225
+      native_git_blob: "9f2509fe414aaee80c28cfffb2b22e479a906aca"
+      native_bytes: 473225
+      identical: true
+    - path: "server/item/creative/creative_items.nbt"
+      target_git_blob: "ebb532f65b18848b4d5b4ce61f77244f85e42770"
+      target_bytes: 144033
+      native_git_blob: "d8319469be8db2b1336e9ff4ad18982f4d399025"
+      native_bytes: 144033
+      identical: false
+    - path: "server/item/recipe/crafting_data.nbt"
+      target_git_blob: "350fc0c124367b7a89df91ee05f6c6d44d75eb14"
+      target_bytes: 881633
+      native_git_blob: "5ee024e95699261768bd4f499b125b94bd058314"
+      native_bytes: 1135160
+      identical: false
+    - path: "server/item/recipe/potion_data.nbt"
+      target_git_blob: "3b9f707eb78842e1a17b50eaf73068b322a3e02c"
+      target_bytes: 33442
+      native_git_blob: "465959b198e4be3e998d8003e3c854f035197e60"
+      native_bytes: 33442
+      identical: false
+    - path: "server/item/recipe/smithing_data.nbt"
+      target_git_blob: "0c84b8db275e981d892d3d2483c8899f56ac0c67"
+      target_bytes: 3074
+      native_git_blob: "0c84b8db275e981d892d3d2483c8899f56ac0c67"
+      native_bytes: 3074
+      identical: true
+    - path: "server/item/recipe/smithing_trim_data.nbt"
+      target_git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"
+      target_bytes: 155
+      native_git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"
+      native_bytes: 155
+      identical: true
+    - path: "server/item/recipe/item_tags.json"
+      target_git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
+      target_bytes: 28139
+      native_git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
+      native_bytes: 28139
+      identical: true
+
+decisions:
+  support_scope: "Stable 1.26.30 through 1.26.36 releases listed above, all under protocol 1001."
+  conversion_direction: "Each target release converts directly to and from native protocol 2169."
+  modding_required: false
+  modding_reason: "Exact historical gophertunnel and Dragonfly sources plus BDS-derived documentation are available."
+  enable_in_protocol_catalog: false
+  enable_reason: "Steps 2 through 5 are not complete."
