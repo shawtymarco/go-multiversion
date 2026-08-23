@@ -1,0 +1,52 @@
+schema_version: 1
+protocol_id: 1001
+game_versions: ["1.26.30", "1.26.31", "1.26.32", "1.26.33", "1.26.34", "1.26.36"]
+source:
+  repository: "https://github.com/df-mc/dragonfly"
+  commit: "705b8460b472508023e72f399c76f524a875fed7"
+  nbt_encoding: "NetworkLittleEndian"
+snapshots:
+  - file: "block_states.nbt"
+    source_path: "server/world/block_states.nbt"
+    git_blob: "1e4d94632c61146f65df32b325223d1652a8f081"
+    bytes: 2365370
+    entries: 16913
+    sha256: "5decc3d672adda62b872ab57a4df525d0c75f1ac53ca4e9e5f710283b1cf4de4"
+  - file: "vanilla_items.nbt"
+    source_path: "server/world/vanilla_items.nbt"
+    git_blob: "52af4d9e1d6ed874eb13b56f923ffb714097507a"
+    bytes: 192121
+    entries: 1933
+    sha256: "0ad3c87f3cc76ad97d4742a24d77ceaf1f8652ed35db2b50937c2f95ff924dec"
+  - file: "creative_items.nbt"
+    source_path: "server/item/creative/creative_items.nbt"
+    git_blob: "ebb532f65b18848b4d5b4ce61f77244f85e42770"
+    bytes: 144033
+    groups: 123
+    items: 1875
+    sha256: "87ab27f1ba243ae49c649d4e7c0807035669a4ae05783fd5d5774294ef3b858d"
+  - file: "crafting_data.nbt"
+    source_path: "server/item/recipe/crafting_data.nbt"
+    git_blob: "350fc0c124367b7a89df91ee05f6c6d44d75eb14"
+    bytes: 881633
+    shaped: 1118
+    shapeless: 1431
+    user_data_shapeless: 0
+    multi: 0
+    sha256: "d2bb26f2fc9e6e88168862973019f01fff4255bde552ff7c74b65c1dc62fb6f8"
+  - file: "potion_data.nbt"
+    source_path: "server/item/recipe/potion_data.nbt"
+    git_blob: "3b9f707eb78842e1a17b50eaf73068b322a3e02c"
+    bytes: 33442
+    potions: 210
+    container_changes: 2
+    sha256: "54cb7f879def3f30f6c969555a7911878b10d5dcdbcb48a67e918459c395e10a"
+shared_native_blobs:
+  - source_path: "server/world/chunk/legacy_states.nbt"
+    git_blob: "9f2509fe414aaee80c28cfffb2b22e479a906aca"
+  - source_path: "server/item/recipe/smithing_data.nbt"
+    git_blob: "0c84b8db275e981d892d3d2483c8899f56ac0c67"
+  - source_path: "server/item/recipe/smithing_trim_data.nbt"
+    git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"
+  - source_path: "server/item/recipe/item_tags.json"
+    git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
