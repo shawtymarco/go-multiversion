@@ -22,6 +22,19 @@ reuse protocol ID 2168, so the adapter inspects the login `GameVersion` when
 choosing the outgoing `SetScore` layout. It does not rewrite resource-pack
 negotiation packets or maintain separate block, item, recipe, or chunk data.
 
+## Development adapters
+
+| Minecraft version | Protocol | Status |
+| --- | ---: | --- |
+| 1.26.30-1.26.34, 1.26.36 | 1001 | Wire adapter complete; registry and chunk conversion pending |
+
+`V1_26_30()` exposes the protocol-1001 adapter for focused development and
+testing. It is intentionally absent from `Protocols()`, so consumers cannot
+advertise incomplete 1.26.3x support by updating this module alone. The wire
+implementation is based on gophertunnel `0a2ecd5633ea1466ff97f6d4718df66ec14d054f`
+and converts directly to the native model at `7f058e5ddc393eaa0480dae338c5eee2feb323e6`.
+Its exact wire audit is recorded in `versions/1.26.3x-wire.md`.
+
 ## Usage
 
 ```go

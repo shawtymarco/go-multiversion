@@ -17,4 +17,12 @@ func TestProtocols(t *testing.T) {
 	if got, want := protocols[0].Ver(), "1.26.44"; got != want {
 		t.Fatalf("unexpected game version: got %q, want %q", got, want)
 	}
+	if got := multiversion.V1_26_30(); got.ID() != 1001 || got.Ver() != "1.26.36" {
+		t.Fatalf("unexpected development protocol: got %d/%q, want 1001/%q", got.ID(), got.Ver(), "1.26.36")
+	}
+	for _, supported := range protocols {
+		if supported.ID() == 1001 {
+			t.Fatal("wire-only protocol 1001 must not be enabled by Protocols")
+		}
+	}
 }

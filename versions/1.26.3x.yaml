@@ -40,9 +40,12 @@ wire_sources:
     commit: "32edc45c9f20591b6529dbbb82de8bc9effba878"
     minecraft_version: "1.26.36.1"
     network_version: 1001
-  pending_step_2_audit:
-    - "Compare the final r26_u3 BDS-derived schema with the final gophertunnel protocol-1001 snapshot."
-    - "Do not assume patch-internal wire identity solely from the shared protocol ID."
+  step_2_audit:
+    status: complete
+    completed_against: "0a2ecd5633ea1466ff97f6d4718df66ec14d054f"
+    schema_cross_check: "Endstone r26_u3 at 32edc45c9f20591b6529dbbb82de8bc9effba878"
+    result: "One protocol-1001 wire adapter covers the locked stable family; no patch-internal branch was identified in the locked schemas."
+    oracle: "Historical gophertunnel decodes and byte-identically re-encodes populated fixtures and both zero-value packet pools."
 
 dragonfly_sources:
   repository: "https://github.com/df-mc/dragonfly"
@@ -181,4 +184,4 @@ decisions:
   modding_required: false
   modding_reason: "Exact historical gophertunnel and Dragonfly sources plus BDS-derived documentation are available."
   enable_in_protocol_catalog: false
-  enable_reason: "Steps 2 through 5 are not complete."
+  enable_reason: "Steps 3 through 5 are not complete."
