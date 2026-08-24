@@ -251,3 +251,63 @@ func TestHistoricalCraftingDataOracle(t *testing.T) {
 		t.Fatalf("CraftingData round trip differs:\n got %x\nwant %x", got, want)
 	}
 }
+
+func TestInitialWorldStateConversion(t *testing.T) {
+	p := Protocol{runtime: &runtimeData{}}
+
+	startGame := &packet.StartGame{
+		BaseGameVersion: "1.26.45",
+		GameVersion:     "1.26.45",
+		GameRules: []protocol.GameRule{
+			{Name: "naturalregeneration", Value: false},
+			{Name: "locatorBar", Value: false},
+		},
+	}
+	converted := p.convertGameplayFromLatest(startGame, nil)
+	if len(converted) != 1 {
+		t.Fatalf("StartGame conversion count: got %d, want 1", len(converted))
+	}
+	targetStartGame := converted[0].(*packet.StartGame)
+	if targetStartGame.BaseGameVersion != Version || targetStartGame.GameVersion != Version {
+		t.Fatalf("StartGame versions: got %q/%q, want %q", targetStartGame.BaseGameVersion, targetStartGame.GameVersion, Version)
+	}
+	if len(targetStartGame.GameRules) != 1 || targetStartGame.GameRules[0].Name != "naturalregeneration" {
+		t.Fatalf("StartGame game rules: %#v", targetStartGame.GameRules)
+	}
+	if len(startGame.GameRules) != 2 || startGame.BaseGameVersion != "1.26.45" || startGame.GameVersion != "1.26.45" {
+		t.Fatalf("StartGame conversion mutated input: %#v", startGame)
+	}
+
+	const (
+		userPack            = "123e4567-e89b-12d3-a456-426614174000"
+		legacyExemptedPack  = "0fba4063-dba1-4281-9b89-ff9390653530"
+		currentExemptedPack = "d34cfa4b-2ad1-453d-a0db-668b429a3ea0"
+	)
+	resourceStack := &packet.ResourcePackStack{
+		BaseGameVersion: "1.26.45",
+		TexturePacks: []protocol.StackResourcePack{
+			{UUID: userPack, Version: "1.0.0"},
+			{UUID: legacyExemptedPack, Version: "1.0.0"},
+			{UUID: currentExemptedPack, Version: "1.26.40"},
+		},
+		Experiments:                  []protocol.ExperimentData{{Name: "cameras", Enabled: true}},
+		ExperimentsPreviouslyToggled: true,
+	}
+	converted = p.convertGameplayFromLatest(resourceStack, nil)
+	if len(converted) != 1 {
+		t.Fatalf("ResourcePackStack conversion count: got %d, want 1", len(converted))
+	}
+	targetStack := converted[0].(*packet.ResourcePackStack)
+	if targetStack.BaseGameVersion != Version {
+		t.Fatalf("ResourcePackStack base version: got %q, want %q", targetStack.BaseGameVersion, Version)
+	}
+	if len(targetStack.TexturePacks) != 2 || targetStack.TexturePacks[0].UUID != userPack || targetStack.TexturePacks[1].UUID != legacyExemptedPack {
+		t.Fatalf("ResourcePackStack texture packs: %#v", targetStack.TexturePacks)
+	}
+	if len(targetStack.Experiments) != 0 || targetStack.ExperimentsPreviouslyToggled {
+		t.Fatalf("ResourcePackStack experiments: %#v", targetStack.Experiments)
+	}
+	if len(resourceStack.TexturePacks) != 3 || len(resourceStack.Experiments) != 1 || !resourceStack.ExperimentsPreviouslyToggled {
+		t.Fatalf("ResourcePackStack conversion mutated input: %#v", resourceStack)
+	}
+}

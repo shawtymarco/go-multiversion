@@ -38,6 +38,7 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 			version = conn.ClientData().GameVersion
 		}
 		cloned.GameVersion, cloned.BaseGameVersion = version, version
+		cloned.GameRules = targetGameRules(current.GameRules)
 		return []packet.Packet{&cloned}
 	case *packet.ResourcePackStack:
 		cloned := *current
@@ -46,6 +47,11 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 			version = conn.ClientData().GameVersion
 		}
 		cloned.BaseGameVersion = version
+		cloned.TexturePacks = targetTexturePacks(current.TexturePacks)
+		// The native stack enables the current-only cameras experiment. The
+		// protocol 486 server stack predates it and sent no experiments here.
+		cloned.Experiments = nil
+		cloned.ExperimentsPreviouslyToggled = false
 		return []packet.Packet{&cloned}
 	case *packet.UpdateAbilities:
 		flags, actions := legacyAbilityFlags(current.AbilityData.Layers)
@@ -147,6 +153,35 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 	default:
 		return []packet.Packet{pk}
 	}
+}
+
+func targetGameRules(rules []protocol.GameRule) []protocol.GameRule {
+	target := make([]protocol.GameRule, 0, len(rules))
+	for _, rule := range rules {
+		if rule.Name == "locatorBar" {
+			continue
+		}
+		target = append(target, rule)
+	}
+	return target
+}
+
+func targetTexturePacks(packs []protocol.StackResourcePack) []protocol.StackResourcePack {
+	target := make([]protocol.StackResourcePack, 0, len(packs))
+	for _, pack := range packs {
+		switch pack.UUID {
+		case "d34cfa4b-2ad1-453d-a0db-668b429a3ea0", // 1.26.40
+			"b41c2785-c512-4a49-af56-3a87afd47c57", // 1.21.30
+			"a4df0cb3-17be-4163-88d7-fcf7002b935d", // 1.21.20
+			"d19adffe-a2e1-4b02-8436-ca4583368c89", // 1.21.10
+			"85d5603d-2824-4b21-8044-34f441f4fce1", // 1.21.0
+			"e977cd13-0a11-4618-96fb-03dfe9c43608", // 1.20.60
+			"0674721c-a0aa-41a1-9ba8-1ed33ea3e7ed": // 1.20.50
+			continue
+		}
+		target = append(target, pack)
+	}
+	return target
 }
 
 func (p Protocol) convertGameplayToLatest(pk packet.Packet, conn *minecraft.Conn) []packet.Packet {
