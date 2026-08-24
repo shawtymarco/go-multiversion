@@ -45,16 +45,30 @@ type BlockMapper struct {
 }
 
 // NewBlockMapper builds an immutable direct mapping. Historical states are
-// ordered using the same stable name-only FNV-1 sort as the locked Dragonfly
-// registry implementation before their runtime IDs are assigned.
+// ordered using the stable name-only FNV-1 sort used by recent Dragonfly block
+// registries before their runtime IDs are assigned.
 func NewBlockMapper(native BlockRegistry, historical []BlockState) (*BlockMapper, error) {
+	return newBlockMapper(native, historical, true)
+}
+
+// NewBlockMapperWithTargetOrder builds an immutable direct mapping while
+// preserving the input historical state order as the target runtime-ID order.
+// It is used by releases whose Dragonfly registry registered the embedded NBT
+// stream directly without a final sorting pass.
+func NewBlockMapperWithTargetOrder(native BlockRegistry, historical []BlockState) (*BlockMapper, error) {
+	return newBlockMapper(native, historical, false)
+}
+
+func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bool) (*BlockMapper, error) {
 	if native == nil {
 		return nil, fmt.Errorf("native block registry is nil")
 	}
 	targetStates := append([]BlockState(nil), historical...)
-	sort.SliceStable(targetStates, func(i, j int) bool {
-		return fnv1String(targetStates[i].Name) < fnv1String(targetStates[j].Name)
-	})
+	if sortTarget {
+		sort.SliceStable(targetStates, func(i, j int) bool {
+			return fnv1String(targetStates[i].Name) < fnv1String(targetStates[j].Name)
+		})
+	}
 
 	targetByKey := make(map[string]uint32, len(targetStates))
 	targetAir, foundAir := uint32(0), false

@@ -1,0 +1,153 @@
+schema_version: 1
+
+family:
+  id: r18_u1
+  label: "Minecraft 1.18.1x stable"
+  canonical_game_version: "1.18.12"
+  protocol_id: 486
+  stable_game_versions:
+    - "1.18.10"
+    - "1.18.11"
+    - "1.18.12"
+  excluded_versions:
+    - version: "1.18.0-1.18.2"
+      reason: "Protocol 475 belongs to Mojang r/18_u0 and requires its own version branch."
+    - version: "1.18.30-1.18.33"
+      reason: "Protocol 503 belongs to Mojang r/18_u3 and requires its own version branch."
+    - version: "1.18.*-preview.*"
+      reason: "Preview builds are outside the stable support scope."
+
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction:
+    commit: "faf9bceadcb30cf431e4c8111ad3b877c7b521a3"
+    game_version: "1.18.10"
+    protocol_id: 486
+  final_target_snapshot:
+    commit: "2cb1e399e53928529916dd2bda1efd11a0ac374d"
+    game_version_constant: "1.18.10"
+    protocol_id: 486
+    rationale: "Last protocol-486 revision before the 1.18.30/protocol-503 update; includes signed sub-chunk offsets, corrected packet-pool registration, and optional recipe stack-request support."
+  native_snapshot:
+    commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6"
+    game_version: "1.26.45"
+    protocol_id: 2169
+  comparison_window:
+    baseline: "2cb1e399e53928529916dd2bda1efd11a0ac374d"
+    native: "7f058e5ddc393eaa0480dae338c5eee2feb323e6"
+    policy: "Convert protocol 486 directly to and from native protocol 2169; protocol 975 is reused only as an implementation layer, never as a chained semantic conversion target."
+  step_2_audit:
+    status: complete
+    result: "170 exact historical zero-value packet fixtures and 30 populated high-risk fixtures pass bidirectionally."
+
+transport:
+  target_raknet_protocol: 10
+  native_raknet_protocol: 11
+  target_first_packet: Login
+  native_first_packet: RequestNetworkSettings
+  target_compression: "Immediate flate; no per-batch algorithm prefix."
+  native_compression: "NetworkSettings-selected algorithm with threshold and algorithm prefix."
+  implementation: "Current upstream go-raknet plus a narrow gophertunnel v10 handshake adapter; no stale transport fork pin."
+  encryption: "AES-CTR with the locked gophertunnel counter/checksum path."
+
+dragonfly_sources:
+  repository: "https://github.com/df-mc/dragonfly"
+  family_update_commit: "631184735b1b0b09aadc6cd605143d6eee783987"
+  final_target_snapshot: "677c8fa1753d662e115e9c610dfe334daed2d265"
+  final_target_pinned_gophertunnel_tag: "v1.19.4"
+  native_data_snapshot: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  castle_fork_snapshot: "10c9a4d1bc6960e5859148160f788133a7ae8125"
+  data_history: "The block, item-runtime, creative, and legacy-state blobs are byte-identical from the family update through the final target snapshot."
+
+protocol_documentation:
+  mojang:
+    repository: "https://github.com/Mojang/bedrock-protocol-docs"
+    branch: "r/18_u1"
+    availability: "The historical branch is no longer exposed by the current public remote; exact gophertunnel Marshal code is the executable authority."
+  endstone:
+    repository: "https://github.com/EndstoneMC/protocol-docs"
+    branch: "r18_u1"
+    availability: "The historical branch is no longer exposed by the current public remote."
+
+bds_catalog:
+  repository: "https://github.com/EndstoneMC/bedrock-server-data"
+  inspected_commit: "fb72aa0319d48e1c81c96c35484a27e2a997b297"
+  target_build: "not used"
+  windows_sha256: "not used"
+  linux_sha256: "not used"
+  rationale: "The current public catalog does not retain 1.18.1x metadata and exact historical Git registry blobs are available, so no BDS extraction or modding is required."
+
+registry_blobs:
+  target_commit: "677c8fa1753d662e115e9c610dfe334daed2d265"
+  native_commit: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  files:
+    - path: "server/world/block_states.nbt"
+      target_git_blob: "df8c6f77b8070acaa3514e6f5749ad6e38f3c09e"
+      target_bytes: 1174608
+      output_sha256: "cedd121a64ed81646012cfaeef72b7908957f38328a3d9bb4e5adfff82d1744b"
+      entry_count: 7946
+      identical_to_native: false
+    - path: "server/world/item_runtime_ids.nbt"
+      target_git_blob: "e58e154fd2060c590b9aa3ca5688a337431ffb0c"
+      target_bytes: 30027
+      output_sha256: "e800bb455965cb1ab603c5d023c48e9a936371e04036a2439f4d5d330483b6bb"
+      entry_count: 1091
+      identical_to_native: false
+    - path: "server/item/creative/creative_items.nbt"
+      target_git_blob: "4d5be4ed21f01c61174cf41d577794c15674aca8"
+      target_bytes: 134053
+      output_sha256: "d411505e21ff37f6144ccc00b14e6b39ed1cb8cc80901076a599314f73d0e571"
+      entry_count: 1388
+      identical_to_native: false
+    - path: "server/world/chunk/legacy_states.nbt"
+      target_git_blob: "c38d55d35b6f6709f4d0a12304c08c16cb78e9f3"
+      target_bytes: 399275
+      output_sha256: "e892de43a47546466b94e696157056dd703d0727271f51ae82f5e4d29a5e38c1"
+      entry_count: 3307
+      identical_to_native: false
+    - path: "minecraft/conn.go default biome definitions"
+      target_git_blob: "generated from gophertunnel source constant"
+      target_bytes: 3413
+      output_sha256: "dc7dec09e45b333583120f826c3b4ddd986f707515673c543f442f576601954f"
+      entry_count: 71
+  absent_historical_assets:
+    - "Dragonfly 1.18.1x did not track crafting, potion, smithing, or biome registry blobs; those were produced dynamically or by gophertunnel at runtime."
+
+community_cross_checks:
+  - repository: "https://github.com/didntpot/multiversion"
+    commit: "c6253875066911c7be93b99e02ccb5e7a772f479"
+    use: "Packet and v8/v9 chunk-path checklist only. GPL-3.0 code and unprovenanced assets are not copied."
+  - repository: "https://github.com/TedacMC/tedac"
+    branch: "feature/1.16.100"
+    commit: "78eef6d2f47760bfac860a0fd222c2ed78455f05"
+    use: "Architecture cross-check for legacy packet ownership only; it targets protocol 419 and is not a wire source for protocol 486."
+
+decisions:
+  support_scope: "Stable Minecraft 1.18.10, 1.18.11, and 1.18.12 clients using protocol 486."
+  conversion_direction: "Direct semantic conversion between protocol 486 and native protocol 2169."
+  implementation_reuse: "The protocol-975 wire layer is a shared codec base; protocol-486 owns every additional historical difference and its own registries."
+  chunk_format: "Sub-chunk version 9 with 3D biome palettes, confirmed by Dragonfly 631184735b1b0b09aadc6cd605143d6eee783987."
+  modding_required: false
+  enable_in_protocol_catalog: true
+  enable_reason: "Wire/data/mapping/chunk gates and the automated deployment matrix pass; real-client evidence remains pending."
+  block_fallback_policy: "Map native-only states to protocol-486 minecraft:air and record every fallback."
+  item_fallback_policy: "Hide native-only items clientbound and reject unknown target items serverbound."
+
+mapping_evidence:
+  native_blocks: 17499
+  target_blocks: 7946
+  block_fallbacks: 9617
+  native_items: 1976
+  target_items: 1091
+  native_item_fallbacks: 926
+  target_item_fallbacks: 13
+  fallback_report_sha256: "b22f883718c52fb458bbbc5207c266cee1aec3403a12948ca3c95186e3a88622"
+
+validation:
+  automated:
+    - "1.18.10 cache-off: login, spawn, creative, recipes, inventory, commands, chunk"
+    - "1.18.11 cache-off: login, spawn, creative, recipes, inventory, commands, chunk"
+    - "1.18.12 cache-off/cold-cache/warm-cache: complete packet set"
+    - "Native 2169 advertisement and protocol 1001/975/827 regression matrices pass"
+  real_client: pending
+  support_label: "implemented and automated; real-client verification pending"

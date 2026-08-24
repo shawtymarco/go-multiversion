@@ -129,3 +129,50 @@ func TestItemMapperResolvesHistoricalAliases(t *testing.T) {
 		t.Fatalf("target alias entry changed on wire: got %#v, want %#v", got, wantEntries)
 	}
 }
+
+func TestBlockMapperPreservesTargetOrder(t *testing.T) {
+	native := testBlockRegistry{states: []BlockState{
+		{Name: "minecraft:air"},
+		{Name: "minecraft:stone"},
+	}}
+	target := []BlockState{
+		{Name: "minecraft:stone"},
+		{Name: "minecraft:air"},
+	}
+	mapper, err := NewBlockMapperWithTargetOrder(native, target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := mapper.TargetRuntimeID("minecraft:stone", nil); !ok || got != 0 {
+		t.Fatalf("stone target runtime ID: got %d/%v, want 0/true", got, ok)
+	}
+	if got, ok := mapper.TargetRuntimeID("minecraft:air", nil); !ok || got != 1 {
+		t.Fatalf("air target runtime ID: got %d/%v, want 1/true", got, ok)
+	}
+	states := mapper.TargetStates()
+	if len(states) != 2 || states[0].Name != "minecraft:stone" || states[1].Name != "minecraft:air" {
+		t.Fatalf("target state order changed: %#v", states)
+	}
+}
+
+func TestItemMapperAllowsExplicitTargetOnlyEntries(t *testing.T) {
+	native := []protocol.ItemEntry{{Name: "minecraft:stone", RuntimeID: 2}}
+	target := map[string]TargetItem{
+		"minecraft:stone":       {RuntimeID: 7},
+		"minecraft:old_feature": {RuntimeID: -9},
+	}
+	mapper, err := NewItemMapperAllowingTargetOnly(native, target, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := mapper.TargetToNative(-9); ok {
+		t.Fatal("target-only item unexpectedly mapped serverbound")
+	}
+	if got := mapper.TargetEntries(); len(got) != 2 {
+		t.Fatalf("advertised target registry size: got %d, want 2", len(got))
+	}
+	fallbacks := mapper.TargetFallbacks()
+	if len(fallbacks) != 1 || fallbacks[0].TargetRuntimeID != -9 || fallbacks[0].WireName != "minecraft:old_feature" {
+		t.Fatalf("target-only fallback report: %#v", fallbacks)
+	}
+}

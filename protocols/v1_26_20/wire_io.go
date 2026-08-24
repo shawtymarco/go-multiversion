@@ -30,6 +30,9 @@ func asWireIO(io protocol.IO) *wireIO {
 	case *wireWriter:
 		return legacy.wireIO
 	}
+	if inherited, ok := io.(interface{ LegacyWireReading() bool }); ok {
+		return newWireIO(io, inherited.LegacyWireReading())
+	}
 	return newWireIO(io, false)
 }
 

@@ -52,6 +52,12 @@ The current compatibility family is:
   Dragonfly `93c84812`, semantic item/block mapping against the current native
   registries, and the same version-9 pre-hash palette hook. Preview builds and
   unlisted 1.21.x families are not implied.
+- Minecraft 1.18.10-1.18.12 / protocol 486: direct semantic adapter based on
+  gophertunnel `2cb1e399`, historical registries from Dragonfly `677c8fa1`,
+  RakNet v10/Login-first legacy flate negotiation in the gophertunnel fork,
+  numeric recipe/item conversion, ungrouped creative content, and version-9
+  chunk palettes through the existing pre-hash hook. Protocol 475, protocol
+  503, previews, and other 1.18.x release trains are not implied.
 
 ## Verification
 

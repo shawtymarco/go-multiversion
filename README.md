@@ -16,6 +16,7 @@
 | 975 | 1.26.20, 1.26.21, 1.26.23 | `v1_26_20` | ✅ | ✅ 1.26.20/1.26.21 · 🧪 1.26.23 automated |
 | 844 | 1.21.110-1.21.114 | `v1_21_110` | ✅ | ✅ 1.21.114 |
 | 827 | 1.21.100-1.21.102 | `v1_21_100` | ✅ | ✅ 1.21.100 |
+| 486 | 1.18.10-1.18.12 | `v1_18_10` | ✅ | 🧪 Automated matrix |
 
 > [!NOTE]
 > Version coverage is explicit. Unlisted releases and previews are not implied.
@@ -31,7 +32,7 @@ conf.AcceptedProtocolsProvider = func(blocks world.BlockRegistry) ([]minecraft.P
 }
 ```
 
-`ProtocolsWithRegistries` returns `2168`, `1001`, `975`, `844`, and `827` in
+`ProtocolsWithRegistries` returns `2168`, `1001`, `975`, `844`, `827`, and `486` in
 that order. The parameterless `Protocols()` intentionally omits adapters that
 need native block and item registries.
 
@@ -60,8 +61,11 @@ hooks:
 > [!WARNING]
 > Stock upstream Dragonfly does not currently provide these hooks. It cannot be
 > used as a drop-in replacement for registry-aware protocols `1001`, `975`,
-> `844`, or `827`. Without pre-hash palette mapping, old clients receive native block
+> `844`, `827`, or `486`. Without pre-hash palette mapping, old clients receive native block
 > runtime IDs and incompatible cache blobs.
+
+Protocol `486` additionally requires matching gophertunnel Login-first, legacy
+compression, and RakNet v10 compatibility hooks.
 
 ## 🙏 Credits
 
