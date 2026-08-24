@@ -37,6 +37,11 @@ The current compatibility family is:
   mapping against `ba86ce95`. It is enabled only through the registry-aware
   constructor; the parameterless `Protocols()` remains safe for unconfigured
   consumers.
+- Minecraft 1.26.20, 1.26.21, and 1.26.23 / protocol 975: direct wire adapter
+  based on `de090ae`, historical data from Dragonfly `7c304285`, semantic
+  item/block mapping against the current native registries, numeric-to-string
+  sound conversion, and the same pre-hash palette hook. Preview builds and
+  unlisted 1.26.2x releases are not implied.
 - Minecraft 1.21.110-1.21.114 / protocol 844: direct wire adapter based on
   `bf05a1a`, historical data from Dragonfly `1872684e`, semantic item/block
   mapping against the current native registries, and version-9 palette mapping
