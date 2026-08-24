@@ -28,6 +28,7 @@ negotiation packets or maintain separate block, item, recipe, or chunk data.
 | Minecraft version | Protocol | Status |
 | --- | ---: | --- |
 | 1.21.110-1.21.114 | 844 | Steps 1-6 complete; real-client validation pending |
+| 1.21.100-1.21.102 | 827 | Steps 1-5 complete; downstream validation tracked by consumers |
 
 `V1_26_30()` exposes the wire-only protocol-1001 adapter for focused tests.
 Production consumers use `ProtocolsWithRegistries` so block and item mappings
@@ -40,10 +41,16 @@ Its exact wire audit is recorded in `versions/1.26.3x-wire.md`.
 
 `V1_21_110()` exposes protocol 844 for focused wire tests. Registry-aware
 consumers receive it from `ProtocolsWithRegistries` after validating the exact
-1.21.11x block/item snapshots and semantic aliases. Minecraft 1.21.120 and all
-other 1.21.x families remain outside this adapter. Its locked sources and
+1.21.11x block/item snapshots and semantic aliases. Minecraft 1.21.120 and
+unlisted 1.21.x families remain outside this adapter. Its locked sources and
 audits are recorded under `versions/1.21.11x*.md` and
 `versions/1.21.11x.yaml`.
+
+`V1_21_100()` exposes protocol 827 for focused wire tests. Registry-aware
+consumers receive it from `ProtocolsWithRegistries` after validating the exact
+1.21.10x block/item snapshots, including the historical chain alias. Its
+locked sources and audits are recorded under `versions/1.21.10x*.md` and
+`versions/1.21.10x.yaml`.
 
 ## Usage
 
@@ -57,6 +64,6 @@ legacyProtocols := multiversion.Protocols()
 accepted-protocol configuration alongside its native/default protocol as
 required by that consumer.
 
-For protocols 1001 and 844, pass the finalised native block registry and the exact
-native item entries to `ProtocolsWithRegistries`. Dragonfly consumers should
-do this through its post-finalisation `AcceptedProtocolsProvider` hook.
+For protocols 1001, 844, and 827, pass the finalised native block registry and
+the exact native item entries to `ProtocolsWithRegistries`. Dragonfly consumers
+should do this through its post-finalisation `AcceptedProtocolsProvider` hook.
