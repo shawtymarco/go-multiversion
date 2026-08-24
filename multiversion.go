@@ -6,6 +6,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/shawtymarco/df-multiversion/mapping"
+	"github.com/shawtymarco/df-multiversion/protocols/v1_21_110"
 	"github.com/shawtymarco/df-multiversion/protocols/v1_26_30"
 	"github.com/shawtymarco/df-multiversion/protocols/v1_26_44"
 )
@@ -22,6 +23,19 @@ func V1_26_30() minecraft.Protocol {
 	return v1_26_30.New()
 }
 
+// V1_21_110 returns the wire-only Minecraft protocol 844 family adapter for
+// stable Minecraft 1.21.110 through 1.21.114. Registry-aware consumers should
+// use ProtocolsWithRegistries before advertising it.
+func V1_21_110() minecraft.Protocol {
+	return v1_21_110.New()
+}
+
+// V1_21_110WithBlockRegistry returns a configured protocol-844 adapter using
+// a current native block registry. Item mapping is initialised from ItemRegistry.
+func V1_21_110WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
+	return v1_21_110.NewWithBlockRegistry(native)
+}
+
 // V1_26_30WithBlockRegistry returns a fully configured protocol-1001 adapter
 // using a current native block registry.
 func V1_26_30WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
@@ -35,7 +49,11 @@ func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Proto
 	if err != nil {
 		return nil, err
 	}
-	return []minecraft.Protocol{v1_26_44.New(), legacy}, nil
+	older, err := V1_21_110WithBlockRegistry(native)
+	if err != nil {
+		return nil, err
+	}
+	return []minecraft.Protocol{v1_26_44.New(), legacy, older}, nil
 }
 
 // ProtocolsWithRegistries returns all verified adapters after eagerly
@@ -45,7 +63,11 @@ func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protoco
 	if err != nil {
 		return nil, err
 	}
-	return []minecraft.Protocol{v1_26_44.New(), legacy}, nil
+	older, err := v1_21_110.NewWithRegistries(native, nativeItems)
+	if err != nil {
+		return nil, err
+	}
+	return []minecraft.Protocol{v1_26_44.New(), legacy, older}, nil
 }
 
 // V1_26_44 returns the Minecraft protocol 2168 family adapter. The adapter

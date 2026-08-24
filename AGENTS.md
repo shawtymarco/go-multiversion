@@ -37,6 +37,11 @@ The current compatibility family is:
   mapping against `ba86ce95`. It is enabled only through the registry-aware
   constructor; the parameterless `Protocols()` remains safe for unconfigured
   consumers.
+- Minecraft 1.21.110-1.21.114 / protocol 844: direct wire adapter based on
+  `bf05a1a`, historical data from Dragonfly `1872684e`, semantic item/block
+  mapping against the current native registries, and version-9 palette mapping
+  through Dragonfly's existing pre-hash hook. Only this 1.21.11x family is in
+  scope; 1.21.120/protocol 859 and other 1.21.x families are not implied.
 
 ## Verification
 

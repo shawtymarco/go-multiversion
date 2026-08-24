@@ -1,0 +1,192 @@
+schema_version: 1
+
+family:
+  id: r21_u11
+  label: "Minecraft 1.21.11x stable"
+  canonical_game_version: "1.21.114"
+  protocol_id: 844
+  stable_game_versions:
+    - "1.21.110"
+    - "1.21.111"
+    - "1.21.112"
+    - "1.21.113"
+    - "1.21.114"
+  notes:
+    - "1.21.112 was published as a PlayStation-only client hotfix; the locked BDS catalog also contains build 1.21.112.1."
+    - "The historical gophertunnel implementation identifies the family as 1.21.111; later 1.21.11x hotfixes did not introduce another gophertunnel protocol update."
+  excluded_versions:
+    - version: "1.21.115-1.21.119"
+      reason: "No stable release is present in the locked Endstone version registry."
+    - version: "1.21.120"
+      reason: "Starts r21_u12 and protocol 859; it is outside this adapter."
+    - version: "1.21.110-preview.*"
+      reason: "Preview builds are outside the stable support scope."
+
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction:
+    commit: "312cff6b214427ecba247f96f4097337a4aad2fb"
+    tag: "v1.50.0"
+    game_version_constant: "1.21.111"
+    protocol_id: 844
+  final_target_snapshot:
+    commit: "bf05a1ac6b1da4046890196dc49e15a621dcdbd6"
+    game_version_constant: "1.21.111"
+    protocol_id: 844
+    rationale: "Last gophertunnel commit before the 1.21.120/protocol-859 update; includes all corrections made while protocol 844 was native."
+  native_snapshot:
+    commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6"
+    game_version: "1.26.45"
+    protocol_id: 2169
+  step_2_audit:
+    status: complete
+    completed_against: "bf05a1ac6b1da4046890196dc49e15a621dcdbd6"
+    result: "One protocol-844 adapter covers the five locked stable releases; no patch-internal wire split was identified."
+    oracle: "Historical gophertunnel decodes and byte-identically re-encodes both packet pools and all populated/high-risk fixtures."
+
+dragonfly_sources:
+  repository: "https://github.com/df-mc/dragonfly"
+  family_update_commit: "4f2d8cf2e37f78e6bef1230027e566c88288f3d2"
+  final_target_snapshot: "1872684e6f38a5b80f09b341c77f9e63b8c9d11e"
+  final_target_pinned_gophertunnel_tag: "v1.50.0"
+  final_target_pinned_gophertunnel_commit: "312cff6b214427ecba247f96f4097337a4aad2fb"
+  native_snapshot: "10c9a4d1bc6960e5859148160f788133a7ae8125"
+  native_data_baseline: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  data_history: "All listed registry blobs are identical between the family update and final target snapshots; the intervening commit adds native Copper item implementations."
+
+protocol_documentation:
+  mojang:
+    repository: "https://github.com/Mojang/bedrock-protocol-docs"
+    branch: "r/21_u11"
+    commit: "dde7580f247ead8734bdb94672654ef9016c946a"
+    release_label: "r/21_U11"
+  release_notes:
+    - game_version: "1.21.111"
+      url: "https://feedback.minecraft.net/hc/en-us/articles/39932063411213-Minecraft-Bedrock-Edition-1-21-111-The-Copper-Age"
+    - game_version: "1.21.112"
+      url: "https://feedback.minecraft.net/hc/en-us/articles/40112424372749-Minecraft-1-21-112-PlayStation-Only"
+    - game_version: "1.21.113"
+      url: "https://feedback.minecraft.net/hc/en-us/articles/40208685845005-Minecraft-1-21-113"
+    - game_version: "1.21.114"
+      url: "https://feedback.minecraft.net/hc/en-us/articles/40380755991181-Minecraft-1-21-114-Bedrock"
+
+bds_catalog:
+  repository: "https://github.com/EndstoneMC/bedrock-server-data"
+  branch: v2
+  commit: "fb72aa0319d48e1c81c96c35484a27e2a997b297"
+  releases:
+    - game_version: "1.21.110"
+      bds_build: "1.21.110.2"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.21.110.2.zip"
+        sha256: "60a1a3c9413cdb713f81be698617b3cd80bd3ca40cd38bb7e26014059be14aee"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.110.2.zip"
+        sha256: "3cced088174db37fb737cb91e107d2c1523ae39f06aeb040e23a617c2bdab4e5"
+    - game_version: "1.21.111"
+      bds_build: "1.21.111.1"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.21.111.1.zip"
+        sha256: "f6305a710786d3a699d410264dd8451057e19187db74b9c7839cca7ceb5893a3"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.111.1.zip"
+        sha256: "659349ccf409bbc1a6b9e336d78e328466fcca266cc01e4038c382d14300c111"
+    - game_version: "1.21.112"
+      bds_build: "1.21.112.1"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.21.112.1.zip"
+        sha256: "35efad517c1581ed6b71b8e9e3f0a1f64854b7c7836e6579140eb08e3fa63d10"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.112.1.zip"
+        sha256: "61b89ecc530d5256eb4ac66720ccfd765d5fd1d9869a6726e96f98685f6767ba"
+    - game_version: "1.21.113"
+      bds_build: "1.21.113.1"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.21.113.1.zip"
+        sha256: "9102ef108929673399bcde87d88227bacdcb5f3310cbfcf93587831b365ec20a"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.113.1.zip"
+        sha256: "01e2e7a81665805a255df38496ec78d4b35735793551e98f82fcd315ab89cbe9"
+    - game_version: "1.21.114"
+      bds_build: "1.21.114.1"
+      windows:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win/bedrock-server-1.21.114.1.zip"
+        sha256: "fa6c630388072050c89ce455e7154258dbe5d1e1bb54491e15184fef27f7f62c"
+      linux:
+        url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.114.1.zip"
+        sha256: "15096fba97eb83c51e23bb2d7fe701499202f4e623d6aab9caf8aa385179b032"
+
+registry_blobs:
+  target_commit: "1872684e6f38a5b80f09b341c77f9e63b8c9d11e"
+  native_commit: "10c9a4d1bc6960e5859148160f788133a7ae8125"
+  files:
+    - path: "server/world/block_states.nbt"
+      target_git_blob: "53ba0264b1e99958596d4491a93bda8a9064c172"
+      target_bytes: 2156052
+      native_git_blob: "7006d9d46217425aab8e7d998f70c370b6b9c4eb"
+      native_bytes: 2436125
+      identical: false
+    - path: "server/world/vanilla_items.nbt"
+      target_git_blob: "776bb371e1cc7406dca5ceef2ec18a76e4965682"
+      target_bytes: 174797
+      native_git_blob: "ec858bab04610d414062178116a3b6a7db40918a"
+      native_bytes: 195071
+      identical: false
+    - path: "server/world/chunk/legacy_states.nbt"
+      target_git_blob: "9f2509fe414aaee80c28cfffb2b22e479a906aca"
+      target_bytes: 473225
+      native_git_blob: "9f2509fe414aaee80c28cfffb2b22e479a906aca"
+      native_bytes: 473225
+      identical: true
+    - path: "server/item/creative/creative_items.nbt"
+      target_git_blob: "eb732f602026ff79c41c4da6d0124c39577a92d0"
+      target_bytes: 149137
+      native_git_blob: "d8319469be8db2b1336e9ff4ad18982f4d399025"
+      native_bytes: 144033
+      identical: false
+    - path: "server/item/recipe/crafting_data.nbt"
+      target_git_blob: "e0e0dff4914f29e539efc71d443273f3032e85ef"
+      target_bytes: 829092
+      native_git_blob: "5ee024e95699261768bd4f499b125b94bd058314"
+      native_bytes: 1135160
+      identical: false
+    - path: "server/item/recipe/furnace_data.nbt"
+      target_git_blob: "94ea9a73f17c900553c062f138acc661a96bf2c8"
+      target_bytes: 37590
+      native_path_present: false
+      identical: false
+    - path: "server/item/recipe/potion_data.nbt"
+      target_git_blob: "1ba17e28ab1fdfc9b98b3b38a8378b36d642e5f0"
+      target_bytes: 33442
+      native_git_blob: "465959b198e4be3e998d8003e3c854f035197e60"
+      native_bytes: 33442
+      identical: false
+    - path: "server/item/recipe/smithing_data.nbt"
+      target_git_blob: "362d1e7903f2b84c97501f1b1dbddf475b5d2649"
+      target_bytes: 2351
+      native_git_blob: "0c84b8db275e981d892d3d2483c8899f56ac0c67"
+      native_bytes: 3074
+      identical: false
+    - path: "server/item/recipe/smithing_trim_data.nbt"
+      target_git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"
+      target_bytes: 155
+      native_git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"
+      native_bytes: 155
+      identical: true
+    - path: "server/item/recipe/item_tags.json"
+      target_git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
+      target_bytes: 28139
+      native_git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
+      native_bytes: 28139
+      identical: true
+
+decisions:
+  support_scope: "Only stable Minecraft 1.21.110 through 1.21.114 under protocol 844; 1.21.120 and every other 1.21.x family remain unsupported."
+  conversion_direction: "Each accepted target converts directly to and from native protocol 2169."
+  patch_selection: "One protocol-844 adapter; the locked historical sources show no patch-internal wire split in 1.21.11x. Unknown protocol-844 GameVersion values are rejected from the supported-version policy."
+  modding_required: false
+  modding_reason: "Exact historical gophertunnel and Dragonfly sources, Mojang protocol documentation, and BDS metadata are available."
+  enable_in_protocol_catalog: true
+  enable_reason: "ProtocolsWithRegistries validates protocol-844 block/item mappings before advertisement; parameterless Protocols remains registry-free."
+  block_fallback_policy: "Map native-only states to protocol-844 minecraft:air; all 1,654 fallbacks are recorded in data/v844/fallbacks.json."
+  item_fallback_policy: "Hide 160 native-only items clientbound and reject unknown target items serverbound; historical aliases are resolved semantically while their wire registry names remain unchanged."

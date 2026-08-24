@@ -1,0 +1,71 @@
+schema_version: 1
+protocol_id: 844
+game_versions: ["1.21.110", "1.21.111", "1.21.112", "1.21.113", "1.21.114"]
+source:
+  repository: "https://github.com/df-mc/dragonfly"
+  commit: "1872684e6f38a5b80f09b341c77f9e63b8c9d11e"
+  nbt_encoding: "NetworkLittleEndian"
+snapshots:
+  - file: "block_states.nbt"
+    source_path: "server/world/block_states.nbt"
+    git_blob: "53ba0264b1e99958596d4491a93bda8a9064c172"
+    bytes: 2156052
+    entries: 15845
+    sha256: "6b9ecc2b7ddd3b9cd59b5e745d2a704b35e44496c67bcde570f3ea9bcfaed068"
+  - file: "vanilla_items.nbt"
+    source_path: "server/world/vanilla_items.nbt"
+    git_blob: "776bb371e1cc7406dca5ceef2ec18a76e4965682"
+    bytes: 174797
+    entries: 1888
+    sha256: "338a5ee40257b3665355635c357151e3cc41f3032168c90bb34dd5706e322082"
+  - file: "creative_items.nbt"
+    source_path: "server/item/creative/creative_items.nbt"
+    git_blob: "eb732f602026ff79c41c4da6d0124c39577a92d0"
+    bytes: 149137
+    groups: 120
+    items: 1810
+    sha256: "0508b029fe2e0f50894a48239f4e034f5ad2c3289a8028308270f3ff6af13bcb"
+  - file: "crafting_data.nbt"
+    source_path: "server/item/recipe/crafting_data.nbt"
+    git_blob: "e0e0dff4914f29e539efc71d443273f3032e85ef"
+    bytes: 829092
+    shaped: 1084
+    shapeless: 1121
+    user_data_shapeless: 0
+    multi: 0
+    sha256: "f1f4477ee9f5e43474c092595a22f023d1a40a040474dbfb74752dc3f05423ed"
+  - file: "furnace_data.nbt"
+    source_path: "server/item/recipe/furnace_data.nbt"
+    git_blob: "94ea9a73f17c900553c062f138acc661a96bf2c8"
+    bytes: 37590
+    entries: 251
+    sha256: "0b3e7c1ebb3b656e2039631a4cb3be88a5099f73ce7f74a156885ce786dfb04e"
+  - file: "potion_data.nbt"
+    source_path: "server/item/recipe/potion_data.nbt"
+    git_blob: "1ba17e28ab1fdfc9b98b3b38a8378b36d642e5f0"
+    bytes: 33442
+    potions: 210
+    container_changes: 2
+    sha256: "faaac0150e1627f39d778c99d257b6c00ad56d08f15d138c8dd56c634b815ef7"
+  - file: "smithing_data.nbt"
+    source_path: "server/item/recipe/smithing_data.nbt"
+    git_blob: "362d1e7903f2b84c97501f1b1dbddf475b5d2649"
+    bytes: 2351
+    entries: 9
+    sha256: "99c9eb3ea54fca8a43c880fa91e6f1eb0ca350a051aad7e5ba1621659e3e4f7b"
+shared_native_blobs:
+  - source_path: "server/world/chunk/legacy_states.nbt"
+    git_blob: "9f2509fe414aaee80c28cfffb2b22e479a906aca"
+  - source_path: "server/item/recipe/smithing_trim_data.nbt"
+    git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"
+  - source_path: "server/item/recipe/item_tags.json"
+    git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
+fallback_report:
+  file: "fallbacks.json"
+  native_dragonfly_commit: "10c9a4d1bc6960e5859148160f788133a7ae8125"
+  block_policy: "substitute minecraft:air"
+  block_states: 1654
+  item_policy: "hide clientbound and reject serverbound"
+  items: 160
+  sha256: "893c63520f286239badb720ecd5450f819f9d128a2fb8230b80e13c61c800626"
+  generation: "Set DFMV_V844_FALLBACK_REPORT and run CastleOnline's protocol-844 registry integration test."

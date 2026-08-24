@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strings"
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
@@ -22,20 +23,32 @@ type ItemFallback struct {
 	Name            string
 }
 
-// ItemMapper maps current and target item network IDs by exact identifier.
+// ItemMapper maps current and target item network IDs by semantic identifier.
 type ItemMapper struct {
-	nativeToTarget map[int32]int32
-	targetToNative map[int32]int32
-	nativeNames    map[int32]string
-	targetNames    map[int32]string
-	targetByName   map[string]int32
-	targetEntries  []protocol.ItemEntry
-	fallbacks      []ItemFallback
+	nativeToTarget       map[int32]int32
+	targetToNative       map[int32]int32
+	nativeNames          map[int32]string
+	targetNames          map[int32]string
+	targetByName         map[string]int32
+	targetWireByName     map[string]string
+	targetResolvedByWire map[string]string
+	targetEntries        []protocol.ItemEntry
+	fallbacks            []ItemFallback
 }
 
 // NewItemMapper builds an immutable item mapping from the current ItemRegistry
 // packet and the historical identifier-keyed snapshot.
 func NewItemMapper(native []protocol.ItemEntry, target map[string]TargetItem) (*ItemMapper, error) {
+	return NewItemMapperWithResolver(native, target, func(name string) string { return name })
+}
+
+// NewItemMapperWithResolver builds an immutable item mapping after resolving
+// historical target identifiers to their current semantic identifiers. The
+// original target identifiers remain unchanged in TargetEntries.
+func NewItemMapperWithResolver(native []protocol.ItemEntry, target map[string]TargetItem, resolve func(string) string) (*ItemMapper, error) {
+	if resolve == nil {
+		resolve = func(name string) string { return name }
+	}
 	nativeByName := make(map[string]int32, len(native))
 	nativeNames := make(map[int32]string, len(native))
 	for _, entry := range native {
@@ -47,16 +60,34 @@ func NewItemMapper(native []protocol.ItemEntry, target map[string]TargetItem) (*
 	}
 
 	targetByName := make(map[string]int32, len(target))
+	targetSourceNames := make(map[string]string, len(target))
+	targetResolvedByWire := make(map[string]string, len(target))
 	targetNames := make(map[int32]string, len(target))
+	targetWireNames := make(map[int32]string, len(target))
 	targetEntries := make([]protocol.ItemEntry, 0, len(target))
-	for name, entry := range target {
+	targetIdentifiers := make([]string, 0, len(target))
+	for name := range target {
+		targetIdentifiers = append(targetIdentifiers, name)
+	}
+	sort.Strings(targetIdentifiers)
+	for _, name := range targetIdentifiers {
+		entry := target[name]
 		if entry.RuntimeID < math.MinInt16 || entry.RuntimeID > math.MaxInt16 {
 			return nil, fmt.Errorf("target item %s runtime ID %d exceeds int16", name, entry.RuntimeID)
 		}
-		if other, ok := targetNames[entry.RuntimeID]; ok && other != name {
+		if other, ok := targetWireNames[entry.RuntimeID]; ok && other != name {
 			return nil, fmt.Errorf("target item runtime ID %d is shared by %s and %s", entry.RuntimeID, other, name)
 		}
-		targetByName[name], targetNames[entry.RuntimeID] = entry.RuntimeID, name
+		resolvedName := resolve(name)
+		if resolvedName == "" {
+			return nil, fmt.Errorf("target item %s resolved to an empty identifier", name)
+		}
+		targetWireNames[entry.RuntimeID], targetNames[entry.RuntimeID] = name, resolvedName
+		targetResolvedByWire[name] = resolvedName
+		if previousID, exists := targetByName[resolvedName]; !exists || (name == resolvedName && targetSourceNames[resolvedName] != resolvedName) || (name != resolvedName && targetSourceNames[resolvedName] != resolvedName && entry.RuntimeID < previousID) {
+			targetByName[resolvedName] = entry.RuntimeID
+			targetSourceNames[resolvedName] = name
+		}
 		targetEntries = append(targetEntries, protocol.ItemEntry{
 			Name:           name,
 			RuntimeID:      int16(entry.RuntimeID),
@@ -85,23 +116,57 @@ func NewItemMapper(native []protocol.ItemEntry, target map[string]TargetItem) (*
 	})
 
 	targetToNative := make(map[int32]int32, len(target))
-	for name, targetRuntimeID := range targetByName {
+	targetRuntimeIDs := make([]int, 0, len(targetNames))
+	for targetRuntimeID := range targetNames {
+		targetRuntimeIDs = append(targetRuntimeIDs, int(targetRuntimeID))
+	}
+	sort.Ints(targetRuntimeIDs)
+	var missing []string
+	for _, rawRuntimeID := range targetRuntimeIDs {
+		targetRuntimeID := int32(rawRuntimeID)
+		name := targetNames[targetRuntimeID]
 		nativeRuntimeID, ok := nativeByName[name]
 		if !ok {
-			return nil, fmt.Errorf("target item %s at runtime ID %d has no native item", name, targetRuntimeID)
+			missing = append(missing, fmt.Sprintf("%d=%s->%s", targetRuntimeID, targetWireNames[targetRuntimeID], name))
+			continue
 		}
 		targetToNative[targetRuntimeID] = nativeRuntimeID
 	}
+	if len(missing) != 0 {
+		return nil, fmt.Errorf("%d target items have no native item: %s", len(missing), strings.Join(missing, ", "))
+	}
 
 	return &ItemMapper{
-		nativeToTarget: nativeToTarget,
-		targetToNative: targetToNative,
-		nativeNames:    nativeNames,
-		targetNames:    targetNames,
-		targetByName:   targetByName,
-		targetEntries:  targetEntries,
-		fallbacks:      fallbacks,
+		nativeToTarget:       nativeToTarget,
+		targetToNative:       targetToNative,
+		nativeNames:          nativeNames,
+		targetNames:          targetNames,
+		targetByName:         targetByName,
+		targetWireByName:     targetSourceNames,
+		targetResolvedByWire: targetResolvedByWire,
+		targetEntries:        targetEntries,
+		fallbacks:            fallbacks,
 	}, nil
+}
+
+// TargetWireIdentifier resolves a current semantic item identifier to the
+// historical identifier advertised in the target ItemRegistry.
+func (m *ItemMapper) TargetWireIdentifier(name string) (string, bool) {
+	if m == nil {
+		return "", false
+	}
+	wire, ok := m.targetWireByName[name]
+	return wire, ok
+}
+
+// TargetSemanticIdentifier resolves a historical wire identifier to the
+// current semantic identifier.
+func (m *ItemMapper) TargetSemanticIdentifier(name string) (string, bool) {
+	if m == nil {
+		return "", false
+	}
+	resolved, ok := m.targetResolvedByWire[name]
+	return resolved, ok
 }
 
 // NativeToTarget maps an item network ID. Air remains network ID zero.

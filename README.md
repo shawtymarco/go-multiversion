@@ -13,6 +13,7 @@ converts older releases at the network boundary.
 | 1.26.45 | 2169 | Native gophertunnel protocol |
 | 1.26.44 | 2168 | `v1_26_44` double-optional `SetScore` layout |
 | 1.26.40-1.26.43 | 2168 | `v1_26_44` shared native `SetScore` layout |
+| 1.26.30-1.26.34, 1.26.36 | 1001 | Registry-aware `v1_26_30` direct adapter |
 
 The 1.26.40-1.26.43 layout is based on gophertunnel commit
 `06952754f1a41e01f1d2a2f5e15414c9504f8902`, and the 1.26.44 layout is based
@@ -26,7 +27,7 @@ negotiation packets or maintain separate block, item, recipe, or chunk data.
 
 | Minecraft version | Protocol | Status |
 | --- | ---: | --- |
-| 1.26.30-1.26.34, 1.26.36 | 1001 | Wire, registry, gameplay packet, and pre-hash chunk conversion complete; real-client release matrix pending |
+| 1.21.110-1.21.114 | 844 | Steps 1-6 complete; real-client validation pending |
 
 `V1_26_30()` exposes the wire-only protocol-1001 adapter for focused tests.
 Production consumers use `ProtocolsWithRegistries` so block and item mappings
@@ -36,6 +37,13 @@ from reusing native runtime IDs. The wire
 implementation is based on gophertunnel `0a2ecd5633ea1466ff97f6d4718df66ec14d054f`
 and converts directly to the native model at `7f058e5ddc393eaa0480dae338c5eee2feb323e6`.
 Its exact wire audit is recorded in `versions/1.26.3x-wire.md`.
+
+`V1_21_110()` exposes protocol 844 for focused wire tests. Registry-aware
+consumers receive it from `ProtocolsWithRegistries` after validating the exact
+1.21.11x block/item snapshots and semantic aliases. Minecraft 1.21.120 and all
+other 1.21.x families remain outside this adapter. Its locked sources and
+audits are recorded under `versions/1.21.11x*.md` and
+`versions/1.21.11x.yaml`.
 
 ## Usage
 
@@ -49,6 +57,6 @@ legacyProtocols := multiversion.Protocols()
 accepted-protocol configuration alongside its native/default protocol as
 required by that consumer.
 
-For protocol 1001, pass the finalised native block registry and the exact
+For protocols 1001 and 844, pass the finalised native block registry and the exact
 native item entries to `ProtocolsWithRegistries`. Dragonfly consumers should
 do this through its post-finalisation `AcceptedProtocolsProvider` hook.
