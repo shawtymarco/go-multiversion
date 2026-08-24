@@ -42,6 +42,11 @@ The current compatibility family is:
   mapping against the current native registries, and version-9 palette mapping
   through Dragonfly's existing pre-hash hook. Only this 1.21.11x family is in
   scope; 1.21.120/protocol 859 and other 1.21.x families are not implied.
+- Minecraft 1.21.100-1.21.102 / protocol 827: direct wire adapter based on
+  `49e707e` plus the applicable later wire corrections, historical data from
+  Dragonfly `93c84812`, semantic item/block mapping against the current native
+  registries, and the same version-9 pre-hash palette hook. Preview builds and
+  unlisted 1.21.x families are not implied.
 
 ## Verification
 
