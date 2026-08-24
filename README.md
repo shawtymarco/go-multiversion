@@ -1,69 +1,77 @@
-# df-multiversion
+# 🐉 df-multiversion
 
-Minecraft Bedrock protocol compatibility adapters for Dragonfly and other
-gophertunnel-based servers.
+A gophertunnel protocol interface implementation for running selected older
+Minecraft Bedrock clients against a current Dragonfly server.
 
-The library keeps the server model on gophertunnel's latest native protocol and
-converts older releases at the network boundary.
+> [!IMPORTANT]
+> The server always keeps the latest gophertunnel protocol as its native model.
+> Every older release converts directly to and from native at the network boundary.
 
-## Supported versions
+## ✅ Supported Versions
 
-| Minecraft version | Protocol | Role |
-| --- | ---: | --- |
-| 1.26.45 | 2169 | Native gophertunnel protocol |
-| 1.26.44 | 2168 | `v1_26_44` double-optional `SetScore` layout |
-| 1.26.40-1.26.43 | 2168 | `v1_26_44` shared native `SetScore` layout |
-| 1.26.30-1.26.34, 1.26.36 | 1001 | Registry-aware `v1_26_30` direct adapter |
+| Protocol ID | Minecraft version | Adapter | Support | Real client |
+|------------:|-------------------|---------|:-------:|-------------|
+| 2169 | 1.26.45 | Native gophertunnel | ✅ | ✅ Native advertisement |
+| 2168 | 1.26.40-1.26.44 | `v1_26_44` | ✅ | ✅ |
+| 1001 | 1.26.30-1.26.34, 1.26.36 | `v1_26_30` | ✅ | ✅ 1.26.33 |
+| 844 | 1.21.110-1.21.114 | `v1_21_110` | ✅ | ✅ 1.21.114 |
+| 827 | 1.21.100-1.21.102 | `v1_21_100` | ✅ | ✅ 1.21.100 |
 
-The 1.26.40-1.26.43 layout is based on gophertunnel commit
-`06952754f1a41e01f1d2a2f5e15414c9504f8902`, and the 1.26.44 layout is based
-on `8a2b1f7939b051227fbef9d05c0f5b1d96ac2993`. Native 1.26.45 is based on
-`7f058e5ddc393eaa0480dae338c5eee2feb323e6`. Releases 1.26.40 through 1.26.44
-reuse protocol ID 2168, so the adapter inspects the login `GameVersion` when
-choosing the outgoing `SetScore` layout. It does not rewrite resource-pack
-negotiation packets or maintain separate block, item, recipe, or chunk data.
+> [!NOTE]
+> ✅ marks adapters enabled by the registry-aware protocol catalogue. The real-client
+> column records representative builds that have connected successfully to CastleOnline.
 
-## Development adapters
+> [!WARNING]
+> Version coverage is explicit. A supported protocol family does not imply support for
+> unlisted previews, releases, or another release train.
 
-| Minecraft version | Protocol | Status |
-| --- | ---: | --- |
-| 1.21.110-1.21.114 | 844 | Steps 1-6 complete; real-client validation pending |
-| 1.21.100-1.21.102 | 827 | Steps 1-5 complete; downstream validation tracked by consumers |
+## 🔌 How It Works
 
-`V1_26_30()` exposes the wire-only protocol-1001 adapter for focused tests.
-Production consumers use `ProtocolsWithRegistries` so block and item mappings
-are validated before the listener advertises protocol 1001. The adapter stays
-absent from the parameterless `Protocols()` to prevent an unconfigured server
-from reusing native runtime IDs. The wire
-implementation is based on gophertunnel `0a2ecd5633ea1466ff97f6d4718df66ec14d054f`
-and converts directly to the native model at `7f058e5ddc393eaa0480dae338c5eee2feb323e6`.
-Its exact wire audit is recorded in `versions/1.26.3x-wire.md`.
+- **2168** selects the correct 1.26.40-1.26.44 `SetScore` layout from the login
+  `GameVersion` because those releases reuse one protocol ID.
+- **1001, 844, and 827** use exact historical block/item data, semantic registry
+  mappings, creative-selection preservation, recipe filtering, and protocol-aware
+  chunk palette encoding before cache hashing.
+- Unknown blocks use recorded fallbacks; unknown items are hidden clientbound and
+  rejected serverbound instead of reusing numeric runtime IDs.
+- Native gameplay state is never downgraded in memory. Conversion happens per
+  connection at the protocol boundary.
 
-`V1_21_110()` exposes protocol 844 for focused wire tests. Registry-aware
-consumers receive it from `ProtocolsWithRegistries` after validating the exact
-1.21.11x block/item snapshots and semantic aliases. Minecraft 1.21.120 and
-unlisted 1.21.x families remain outside this adapter. Its locked sources and
-audits are recorded under `versions/1.21.11x*.md` and
-`versions/1.21.11x.yaml`.
+## 🚀 Usage
 
-`V1_21_100()` exposes protocol 827 for focused wire tests. Registry-aware
-consumers receive it from `ProtocolsWithRegistries` after validating the exact
-1.21.10x block/item snapshots, including the historical chain alias. Its
-locked sources and audits are recorded under `versions/1.21.10x*.md` and
-`versions/1.21.10x.yaml`.
-
-## Usage
+Registry-aware consumers should initialise every mapped adapter only after their
+native block and item registries are finalised:
 
 ```go
-import multiversion "github.com/shawtymarco/df-multiversion"
-
-legacyProtocols := multiversion.Protocols()
+protocols, err := multiversion.ProtocolsWithRegistries(nativeBlocks, nativeItems)
+if err != nil {
+	return err
+}
 ```
 
-`Protocols` returns non-native protocols only. Pass them to the consumer's
-accepted-protocol configuration alongside its native/default protocol as
-required by that consumer.
+`ProtocolsWithRegistries` returns the verified non-native protocols in this order:
 
-For protocols 1001, 844, and 827, pass the finalised native block registry and
-the exact native item entries to `ProtocolsWithRegistries`. Dragonfly consumers
-should do this through its post-finalisation `AcceptedProtocolsProvider` hook.
+```text
+2168, 1001, 844, 827
+```
+
+The parameterless `Protocols()` intentionally returns only adapters that do not
+need runtime registries. This prevents an unconfigured consumer from reusing native
+runtime IDs for an older client.
+
+## 📚 Version Evidence
+
+| Family | Source lock | Wire audit | Mapping | Chunks |
+|--------|-------------|------------|---------|--------|
+| 1.26.3x | [`1.26.3x.yaml`](versions/1.26.3x.yaml) | [`wire`](versions/1.26.3x-wire.md) | [`mapping`](versions/1.26.3x-mapping.md) | [`chunks`](versions/1.26.3x-chunks.md) |
+| 1.21.11x | [`1.21.11x.yaml`](versions/1.21.11x.yaml) | [`wire`](versions/1.21.11x-wire.md) | [`mapping`](versions/1.21.11x-mapping.md) | [`chunks`](versions/1.21.11x-chunks.md) |
+| 1.21.10x | [`1.21.10x.yaml`](versions/1.21.10x.yaml) | [`wire`](versions/1.21.10x-wire.md) | [`mapping`](versions/1.21.10x-mapping.md) | [`chunks`](versions/1.21.10x-chunks.md) |
+
+## 🙏 Credits
+
+- [Sandertv/gophertunnel](https://github.com/Sandertv/gophertunnel)
+- [df-mc/dragonfly](https://github.com/df-mc/dragonfly)
+- [Mojang/bedrock-protocol-docs](https://github.com/Mojang/bedrock-protocol-docs)
+- [iAmFrogger/legacy-version](https://github.com/iAmFrogger/legacy-version) — README table inspiration
+
+See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for bundled historical-source notices.
