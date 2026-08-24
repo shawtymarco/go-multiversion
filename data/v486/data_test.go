@@ -47,8 +47,8 @@ func TestSnapshotsDecode(t *testing.T) {
 	if _, ok := items["minecraft:air"]; !ok {
 		t.Fatal("item registry does not contain minecraft:air")
 	}
-	foundAir := false
-	for _, state := range states {
+	airRuntimeID := -1
+	for runtimeID, state := range states {
 		if state.Name == "" {
 			t.Fatal("block registry contains an empty identifier")
 		}
@@ -59,10 +59,12 @@ func TestSnapshotsDecode(t *testing.T) {
 				t.Fatalf("block state %s property %s has unsupported NBT type %T", state.Name, name, value)
 			}
 		}
-		foundAir = foundAir || state.Name == "minecraft:air"
+		if state.Name == "minecraft:air" {
+			airRuntimeID = runtimeID
+		}
 	}
-	if !foundAir {
-		t.Fatal("block registry does not contain minecraft:air")
+	if airRuntimeID != 134 {
+		t.Fatalf("minecraft:air runtime ID: got %d, want 134", airRuntimeID)
 	}
 }
 
@@ -72,7 +74,7 @@ func TestFallbackReport(t *testing.T) {
 		t.Fatal(err)
 	}
 	data = bytes.ReplaceAll(data, []byte("\r\n"), []byte("\n"))
-	if got, want := fmt.Sprintf("%x", sha256.Sum256(data)), "b22f883718c52fb458bbbc5207c266cee1aec3403a12948ca3c95186e3a88622"; got != want {
+	if got, want := fmt.Sprintf("%x", sha256.Sum256(data)), "a8f8ac92ded30dd9ef08634c3bbd8da38689cff8b10338aa02bb10c374fedadf"; got != want {
 		t.Fatalf("fallback report SHA256: got %s, want %s", got, want)
 	}
 	var report struct {

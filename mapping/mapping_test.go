@@ -130,6 +130,31 @@ func TestItemMapperResolvesHistoricalAliases(t *testing.T) {
 	}
 }
 
+func TestBlockMapperPreservesTargetOrder(t *testing.T) {
+	native := testBlockRegistry{states: []BlockState{
+		{Name: "minecraft:air"},
+		{Name: "minecraft:stone"},
+	}}
+	target := []BlockState{
+		{Name: "minecraft:stone"},
+		{Name: "minecraft:air"},
+	}
+	mapper, err := NewBlockMapperWithTargetOrder(native, target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := mapper.TargetRuntimeID("minecraft:stone", nil); !ok || got != 0 {
+		t.Fatalf("stone target runtime ID: got %d/%v, want 0/true", got, ok)
+	}
+	if got, ok := mapper.TargetRuntimeID("minecraft:air", nil); !ok || got != 1 {
+		t.Fatalf("air target runtime ID: got %d/%v, want 1/true", got, ok)
+	}
+	states := mapper.TargetStates()
+	if len(states) != 2 || states[0].Name != "minecraft:stone" || states[1].Name != "minecraft:air" {
+		t.Fatalf("target state order changed: %#v", states)
+	}
+}
+
 func TestItemMapperAllowsExplicitTargetOnlyEntries(t *testing.T) {
 	native := []protocol.ItemEntry{{Name: "minecraft:stone", RuntimeID: 2}}
 	target := map[string]TargetItem{

@@ -30,7 +30,7 @@ func newRuntimeData(native mapping.BlockRegistry, nativeItems []protocol.ItemEnt
 	for index, state := range historicalStates {
 		states[index] = mapping.BlockState{Name: state.Name, Properties: state.Properties, Version: state.Version}
 	}
-	blocks, err := mapping.NewBlockMapper(native, states)
+	blocks, err := mapping.NewBlockMapperWithTargetOrder(native, states)
 	if err != nil {
 		return nil, fmt.Errorf("build block mapping: %w", err)
 	}
