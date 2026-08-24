@@ -311,3 +311,17 @@ func TestInitialWorldStateConversion(t *testing.T) {
 		t.Fatalf("ResourcePackStack conversion mutated input: %#v", resourceStack)
 	}
 }
+
+func TestPreSpawnPackets(t *testing.T) {
+	p := Protocol{}
+	packets := p.PreSpawnPackets()
+	if len(packets) != 1 {
+		t.Fatalf("pre-spawn packet count: got %d, want 1", len(packets))
+	}
+	if _, ok := packets[0].(*packet.BiomeDefinitionList); !ok {
+		t.Fatalf("pre-spawn packet: got %T, want *packet.BiomeDefinitionList", packets[0])
+	}
+	if packets[0] == p.PreSpawnPackets()[0] {
+		t.Fatal("PreSpawnPackets returned a shared packet instance")
+	}
+}

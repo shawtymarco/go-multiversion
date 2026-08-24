@@ -67,6 +67,13 @@ func (Protocol) Ver() string { return Version }
 // active flate batches for RakNet v10 clients.
 func (Protocol) LegacyNetworkSettings() packet.Compression { return packet.FlateCompression }
 
+// PreSpawnPackets restores the protocol-486 spawn order. The 1.18 client
+// requires biome definitions before PlayStatusPlayerSpawn and may crash while
+// initialising achievements if they have not arrived yet.
+func (Protocol) PreSpawnPackets() []packet.Packet {
+	return []packet.Packet{&packet.BiomeDefinitionList{}}
+}
+
 func (p Protocol) MapBlockRuntimeID(runtimeID uint32) (uint32, bool) {
 	if p.runtime == nil || p.runtime.blocks == nil {
 		return 0, false
