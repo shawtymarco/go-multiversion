@@ -5,7 +5,7 @@ import (
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	"github.com/shawtymarco/df-multiversion/mapping"
+	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
 func (p Protocol) targetCreativeContent(current *packet.CreativeContent, items *mapping.ItemMapper) (*packet.CreativeContent, error) {

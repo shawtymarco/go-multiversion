@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
-	v1001 "github.com/shawtymarco/df-multiversion/data/v1001"
-	"github.com/shawtymarco/df-multiversion/mapping"
+	v1001 "github.com/shawtymarco/go-multiversion/data/v1001"
+	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
 type runtimeData struct {

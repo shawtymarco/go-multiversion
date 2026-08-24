@@ -3,7 +3,7 @@ package v1_26_30
 import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	"github.com/shawtymarco/df-multiversion/mapping"
+	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
 func mapCraftingData(pk *packet.CraftingData, items *mapping.ItemMapper, blocks *mapping.BlockMapper) *packet.CraftingData {

@@ -1,6 +1,10 @@
-# 🐉 df-multiversion
+<p align="center">
+  <img src="assets/go-gopher.png" alt="Go gopher" width="180">
+</p>
 
-Minecraft Bedrock multiversion adapters for gophertunnel and Dragonfly.
+<h1 align="center">go-multiversion</h1>
+
+<p align="center">Minecraft Bedrock multiversion adapters for gophertunnel and Dragonfly.</p>
 
 ## ✅ Supported Versions
 
@@ -38,7 +42,7 @@ native block and item registries.
   the current native protocol model and generic protocol interface.
 - [df-mc/worldupgrader](https://github.com/df-mc/worldupgrader) upgrades
   historical block and item identifiers before semantic mapping.
-- `df-multiversion` does **not** import Dragonfly directly.
+- `go-multiversion` does **not** import Dragonfly directly.
 
 **Dragonfly integration**
 
@@ -65,3 +69,5 @@ hooks:
 - [df-mc/worldupgrader](https://github.com/df-mc/worldupgrader)
 - [Mojang/bedrock-protocol-docs](https://github.com/Mojang/bedrock-protocol-docs)
 - [EndstoneMC/bedrock-server-data](https://github.com/EndstoneMC/bedrock-server-data)
+- [Go gopher](https://go.dev/blog/gopher) by Renee French, used under
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

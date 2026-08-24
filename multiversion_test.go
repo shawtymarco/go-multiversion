@@ -3,7 +3,7 @@ package multiversion_test
 import (
 	"testing"
 
-	multiversion "github.com/shawtymarco/df-multiversion"
+	multiversion "github.com/shawtymarco/go-multiversion"
 )
 
 func TestProtocols(t *testing.T) {

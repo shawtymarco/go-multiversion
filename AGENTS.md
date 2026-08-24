@@ -1,4 +1,4 @@
-# df-multiversion
+# go-multiversion
 
 Minecraft Bedrock protocol compatibility library for Dragonfly and other
 gophertunnel-based servers.

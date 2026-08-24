@@ -7,8 +7,8 @@ import (
 
 	"github.com/df-mc/worldupgrader/itemupgrader"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
-	v827 "github.com/shawtymarco/df-multiversion/data/v827"
-	"github.com/shawtymarco/df-multiversion/mapping"
+	v827 "github.com/shawtymarco/go-multiversion/data/v827"
+	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
 type runtimeData struct {

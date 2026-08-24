@@ -5,7 +5,7 @@ import (
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	"github.com/shawtymarco/df-multiversion/mapping"
+	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
 func mapInventoryTransaction(pk *packet.InventoryTransaction, items *mapping.ItemMapper, blocks *mapping.BlockMapper, direction mappingDirection) (*packet.InventoryTransaction, bool) {

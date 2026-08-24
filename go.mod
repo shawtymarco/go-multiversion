@@ -1,4 +1,4 @@
-module github.com/shawtymarco/df-multiversion
+module github.com/shawtymarco/go-multiversion
 
 go 1.25.0
 

@@ -5,11 +5,11 @@ package multiversion
 import (
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
-	"github.com/shawtymarco/df-multiversion/mapping"
-	"github.com/shawtymarco/df-multiversion/protocols/v1_21_100"
-	"github.com/shawtymarco/df-multiversion/protocols/v1_21_110"
-	"github.com/shawtymarco/df-multiversion/protocols/v1_26_30"
-	"github.com/shawtymarco/df-multiversion/protocols/v1_26_44"
+	"github.com/shawtymarco/go-multiversion/mapping"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_21_100"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_21_110"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_26_30"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_26_44"
 )
 
 // Protocols returns all non-native protocols supported by this module.
