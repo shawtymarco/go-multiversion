@@ -13,6 +13,7 @@
 | 2169 | 1.26.45 | Native gophertunnel | ✅ | ✅ Native advertisement |
 | 2168 | 1.26.40-1.26.44 | `v1_26_44` | ✅ | ✅ |
 | 1001 | 1.26.30-1.26.34, 1.26.36 | `v1_26_30` | ✅ | ✅ 1.26.33 |
+| 975 | 1.26.20, 1.26.21, 1.26.23 | `v1_26_20` | ✅ | ✅ 1.26.20/1.26.21 · 🧪 1.26.23 automated |
 | 844 | 1.21.110-1.21.114 | `v1_21_110` | ✅ | ✅ 1.21.114 |
 | 827 | 1.21.100-1.21.102 | `v1_21_100` | ✅ | ✅ 1.21.100 |
 
@@ -30,9 +31,9 @@ conf.AcceptedProtocolsProvider = func(blocks world.BlockRegistry) ([]minecraft.P
 }
 ```
 
-`ProtocolsWithRegistries` returns `2168`, `1001`, `844`, and `827` in that
-order. The parameterless `Protocols()` intentionally omits adapters that need
-native block and item registries.
+`ProtocolsWithRegistries` returns `2168`, `1001`, `975`, `844`, and `827` in
+that order. The parameterless `Protocols()` intentionally omits adapters that
+need native block and item registries.
 
 ## 🔗 Dependencies
 
@@ -58,8 +59,8 @@ hooks:
 
 > [!WARNING]
 > Stock upstream Dragonfly does not currently provide these hooks. It cannot be
-> used as a drop-in replacement for registry-aware protocols `1001`, `844`, or
-> `827`. Without pre-hash palette mapping, old clients receive native block
+> used as a drop-in replacement for registry-aware protocols `1001`, `975`,
+> `844`, or `827`. Without pre-hash palette mapping, old clients receive native block
 > runtime IDs and incompatible cache blobs.
 
 ## 🙏 Credits
