@@ -53,6 +53,12 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		cloned.Experiments = nil
 		cloned.ExperimentsPreviouslyToggled = false
 		return []packet.Packet{&cloned}
+	case *packet.ModalFormRequest:
+		cloned := *current
+		// Forms carry a versioned JSON schema inside an otherwise unchanged
+		// packet, so downgrade the document at the protocol boundary.
+		cloned.FormData = targetFormData(current.FormData)
+		return []packet.Packet{&cloned}
 	case *packet.UpdateAbilities:
 		flags, actions := legacyAbilityFlags(current.AbilityData.Layers)
 		return []packet.Packet{&packet.AdventureSettings{
