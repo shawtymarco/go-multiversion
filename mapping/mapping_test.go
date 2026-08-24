@@ -129,3 +129,25 @@ func TestItemMapperResolvesHistoricalAliases(t *testing.T) {
 		t.Fatalf("target alias entry changed on wire: got %#v, want %#v", got, wantEntries)
 	}
 }
+
+func TestItemMapperAllowsExplicitTargetOnlyEntries(t *testing.T) {
+	native := []protocol.ItemEntry{{Name: "minecraft:stone", RuntimeID: 2}}
+	target := map[string]TargetItem{
+		"minecraft:stone":       {RuntimeID: 7},
+		"minecraft:old_feature": {RuntimeID: -9},
+	}
+	mapper, err := NewItemMapperAllowingTargetOnly(native, target, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := mapper.TargetToNative(-9); ok {
+		t.Fatal("target-only item unexpectedly mapped serverbound")
+	}
+	if got := mapper.TargetEntries(); len(got) != 2 {
+		t.Fatalf("advertised target registry size: got %d, want 2", len(got))
+	}
+	fallbacks := mapper.TargetFallbacks()
+	if len(fallbacks) != 1 || fallbacks[0].TargetRuntimeID != -9 || fallbacks[0].WireName != "minecraft:old_feature" {
+		t.Fatalf("target-only fallback report: %#v", fallbacks)
+	}
+}

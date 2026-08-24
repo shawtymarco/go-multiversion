@@ -23,6 +23,14 @@ type ItemFallback struct {
 	Name            string
 }
 
+// TargetItemFallback records one historical target item that has no semantic
+// item in the current native registry and is therefore rejected serverbound.
+type TargetItemFallback struct {
+	TargetRuntimeID int32  `json:"target_runtime_id"`
+	WireName        string `json:"wire_name"`
+	ResolvedName    string `json:"resolved_name"`
+}
+
 // ItemMapper maps current and target item network IDs by semantic identifier.
 type ItemMapper struct {
 	nativeToTarget       map[int32]int32
@@ -34,6 +42,7 @@ type ItemMapper struct {
 	targetResolvedByWire map[string]string
 	targetEntries        []protocol.ItemEntry
 	fallbacks            []ItemFallback
+	targetFallbacks      []TargetItemFallback
 }
 
 // NewItemMapper builds an immutable item mapping from the current ItemRegistry
@@ -46,6 +55,18 @@ func NewItemMapper(native []protocol.ItemEntry, target map[string]TargetItem) (*
 // historical target identifiers to their current semantic identifiers. The
 // original target identifiers remain unchanged in TargetEntries.
 func NewItemMapperWithResolver(native []protocol.ItemEntry, target map[string]TargetItem, resolve func(string) string) (*ItemMapper, error) {
+	return newItemMapperWithResolver(native, target, resolve, false)
+}
+
+// NewItemMapperAllowingTargetOnly builds a mapping that keeps historical
+// target-only entries in the advertised registry while rejecting them when
+// received serverbound. Use only when the exact target registry contains
+// removed or experimental items with no valid native semantic replacement.
+func NewItemMapperAllowingTargetOnly(native []protocol.ItemEntry, target map[string]TargetItem, resolve func(string) string) (*ItemMapper, error) {
+	return newItemMapperWithResolver(native, target, resolve, true)
+}
+
+func newItemMapperWithResolver(native []protocol.ItemEntry, target map[string]TargetItem, resolve func(string) string, allowTargetOnly bool) (*ItemMapper, error) {
 	if resolve == nil {
 		resolve = func(name string) string { return name }
 	}
@@ -122,17 +143,19 @@ func NewItemMapperWithResolver(native []protocol.ItemEntry, target map[string]Ta
 	}
 	sort.Ints(targetRuntimeIDs)
 	var missing []string
+	targetFallbacks := make([]TargetItemFallback, 0)
 	for _, rawRuntimeID := range targetRuntimeIDs {
 		targetRuntimeID := int32(rawRuntimeID)
 		name := targetNames[targetRuntimeID]
 		nativeRuntimeID, ok := nativeByName[name]
 		if !ok {
 			missing = append(missing, fmt.Sprintf("%d=%s->%s", targetRuntimeID, targetWireNames[targetRuntimeID], name))
+			targetFallbacks = append(targetFallbacks, TargetItemFallback{TargetRuntimeID: targetRuntimeID, WireName: targetWireNames[targetRuntimeID], ResolvedName: name})
 			continue
 		}
 		targetToNative[targetRuntimeID] = nativeRuntimeID
 	}
-	if len(missing) != 0 {
+	if len(missing) != 0 && !allowTargetOnly {
 		return nil, fmt.Errorf("%d target items have no native item: %s", len(missing), strings.Join(missing, ", "))
 	}
 
@@ -146,7 +169,17 @@ func NewItemMapperWithResolver(native []protocol.ItemEntry, target map[string]Ta
 		targetResolvedByWire: targetResolvedByWire,
 		targetEntries:        targetEntries,
 		fallbacks:            fallbacks,
+		targetFallbacks:      targetFallbacks,
 	}, nil
+}
+
+// TargetFallbacks returns historical target entries that are advertised for
+// registry fidelity but rejected serverbound because native has no equivalent.
+func (m *ItemMapper) TargetFallbacks() []TargetItemFallback {
+	if m == nil {
+		return nil
+	}
+	return append([]TargetItemFallback(nil), m.targetFallbacks...)
 }
 
 // TargetWireIdentifier resolves a current semantic item identifier to the

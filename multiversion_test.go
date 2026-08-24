@@ -29,8 +29,11 @@ func TestProtocols(t *testing.T) {
 	if got := multiversion.V1_21_100(); got.ID() != 827 || got.Ver() != "1.21.102" {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 827/%q", got.ID(), got.Ver(), "1.21.102")
 	}
+	if got := multiversion.V1_18_10(); got.ID() != 486 || got.Ver() != "1.18.12" {
+		t.Fatalf("unexpected development protocol: got %d/%q, want 486/%q", got.ID(), got.Ver(), "1.18.12")
+	}
 	for _, supported := range protocols {
-		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 844 || supported.ID() == 827 {
+		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 844 || supported.ID() == 827 || supported.ID() == 486 {
 			t.Fatalf("registry-aware protocol %d must not be enabled by Protocols", supported.ID())
 		}
 	}
