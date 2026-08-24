@@ -8,7 +8,7 @@
 
 ## ✅ Supported Versions
 
-| Protocol ID | Minecraft version | Adapter | Support | Real client |
+| Protocol ID | Minecraft version | Adapter | Support | Tested |
 |------------:|-------------------|---------|:-------:|-------------|
 | 2169 | 1.26.45 | Native gophertunnel | ✅ | ✅ Native advertisement |
 | 2168 | 1.26.40-1.26.44 | `v1_26_44` | ✅ | ✅ |
@@ -16,7 +16,7 @@
 | 975 | 1.26.20, 1.26.21, 1.26.23 | `v1_26_20` | ✅ | ✅ 1.26.20/1.26.21 · 🧪 1.26.23 automated |
 | 844 | 1.21.110-1.21.114 | `v1_21_110` | ✅ | ✅ 1.21.114 |
 | 827 | 1.21.100-1.21.102 | `v1_21_100` | ✅ | ✅ 1.21.100 |
-| 486 | 1.18.10-1.18.12 | `v1_18_10` | ✅ | 🧪 Automated matrix |
+| 486 | 1.18.10-1.18.12 | `v1_18_10` | ✅ | ✅ 1.18.10 · 🧪 1.18.11/1.18.12 automated |
 
 > [!NOTE]
 > Version coverage is explicit. Unlisted releases and previews are not implied.
@@ -46,11 +46,25 @@ need native block and item registries.
   historical block and item identifiers before semantic mapping.
 - `go-multiversion` does **not** import Dragonfly directly.
 
+**Minecraft 1.18 transport**
+
+Servers that want to accept protocol `486` clients must use
+[`shawtymarco/gophertunnel`](https://github.com/shawtymarco/gophertunnel) at
+`823172d1d90e238566d6bcc16b41978832d90a93` or an equivalent implementation.
+The fork keeps the `github.com/sandertv/gophertunnel` module path while adding:
+
+- RakNet v10 acceptance without changing the native v11 advertisement;
+- Login-first protocol selection and legacy flate batches without an algorithm prefix;
+- protocol-owned pre-spawn packets required before `PlayStatus(PlayerSpawn)`.
+
+The standard RakNet v11 and `RequestNetworkSettings` path remains the native
+path for non-1.18 clients.
+
 **Dragonfly integration**
 
 Dragonfly consumers require
 [`shawtymarco/dragonfly`](https://github.com/shawtymarco/dragonfly) at
-`10c9a4d1bc6960e5859148160f788133a7ae8125` or an implementation with equivalent
+`dc54cf36e662411a770a9f0e91c1825cc310eb0a` or an implementation with equivalent
 hooks:
 
 - `AcceptedProtocolsProvider` after block-registry finalisation;
@@ -64,8 +78,9 @@ hooks:
 > `844`, `827`, or `486`. Without pre-hash palette mapping, old clients receive native block
 > runtime IDs and incompatible cache blobs.
 
-Protocol `486` additionally requires matching gophertunnel Login-first, legacy
-compression, and RakNet v10 compatibility hooks.
+Protocol `486` additionally requires the gophertunnel fork above. The adapter
+alone cannot make a stock listener accept RakNet v10 or decode Login-first
+legacy batches.
 
 ## 🙏 Credits
 
