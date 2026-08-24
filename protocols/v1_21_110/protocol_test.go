@@ -238,6 +238,13 @@ func wireFixtures() []packetFixture {
 		{name: "v844/command_output", new: func() packet.Packet {
 			return &packet.CommandOutput{CommandOrigin: protocol.CommandOrigin{Origin: protocol.CommandOriginPlayer, RequestID: "request"}, OutputType: packet.CommandOutputTypeDataSet, SuccessCount: 2, OutputMessages: []protocol.CommandOutputMessage{{Success: true, Message: "ok", Parameters: []string{"x"}}}, DataSet: protocol.Option("data")}
 		}},
+		{name: "v844/available_commands_enum_index", new: func() packet.Packet {
+			enums := make([]protocol.CommandEnum, 10)
+			for index := range enums {
+				enums[index] = protocol.CommandEnum{Type: "enum" + strconv.Itoa(index)}
+			}
+			return &packet.AvailableCommands{Enums: enums, Commands: []protocol.Command{{Name: "enumtest", Overloads: []protocol.CommandOverload{{Parameters: []protocol.CommandParameter{{Name: "value", Type: protocol.CommandArgValid | protocol.CommandArgEnum | 9}}}}}}}
+		}},
 		{name: "v844/show_store_offer", new: func() packet.Packet {
 			return &packet.ShowStoreOffer{OfferID: uuid.MustParse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"), Type: packet.StoreOfferTypeMarketplace}
 		}},
@@ -335,6 +342,25 @@ func TestStableGameVersions(t *testing.T) {
 		if isStableGameVersion(version) {
 			t.Fatalf("out-of-scope version %q was accepted", version)
 		}
+	}
+}
+
+func TestCommandEnumIndexIsNotArgumentType(t *testing.T) {
+	value := uint32(protocol.CommandArgValid | protocol.CommandArgEnum | 9)
+	if got := commandArgumentTo844(nil, value); got != value {
+		t.Fatalf("enum index changed during downgrade: got %#x, want %#x", got, value)
+	}
+	if got := commandArgumentFrom844(nil, value); got != value {
+		t.Fatalf("enum index changed during upgrade: got %#x, want %#x", got, value)
+	}
+}
+
+func TestNewCommandArgumentsUseHistoricalFallbacks(t *testing.T) {
+	if got, want := commandArgumentTo844(nil, protocol.CommandArgValid|protocol.CommandArgTypeStandaloneTarget), uint32(protocol.CommandArgValid|8); got != want {
+		t.Fatalf("standalone target mapping: got %#x, want %#x", got, want)
+	}
+	if got, want := commandArgumentTo844(nil, protocol.CommandArgValid|999), uint32(protocol.CommandArgValid|4); got != want {
+		t.Fatalf("unknown argument fallback: got %#x, want %#x", got, want)
 	}
 }
 

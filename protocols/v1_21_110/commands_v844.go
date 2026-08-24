@@ -106,16 +106,27 @@ func marshalCommandParameter844(raw protocol.IO, value *protocol.CommandParamete
 }
 
 func commandArgumentTo844(io *wireIO, value uint32) uint32 {
+	if value&(protocol.CommandArgEnum|protocol.CommandArgSoftEnum|protocol.CommandArgSuffixed) != 0 {
+		return value
+	}
 	flags, kind := value&^0xfffff, value&0xfffff
+	if kind == protocol.CommandArgTypeStandaloneTarget || kind == protocol.CommandArgTypeNonIDTarget {
+		return flags | 8
+	}
 	legacy, ok := commandArgument844ByCurrent[kind]
 	if !ok {
-		io.UnknownEnumOption(kind, "command argument type")
-		return flags
+		// Protocol 844 has no representation for newer basic argument types.
+		// RValue is the historical generic parser and keeps one unsupported
+		// command usage from terminating the entire server write loop.
+		return flags | 4
 	}
 	return flags | legacy
 }
 
 func commandArgumentFrom844(io *wireIO, value uint32) uint32 {
+	if value&(protocol.CommandArgEnum|protocol.CommandArgSoftEnum|protocol.CommandArgSuffixed) != 0 {
+		return value
+	}
 	flags, kind := value&^0xfffff, value&0xfffff
 	current, ok := commandArgumentCurrentBy844[kind]
 	if !ok {
