@@ -53,6 +53,31 @@ func TestBlockMapperExactAndFallback(t *testing.T) {
 	}
 }
 
+func TestBlockMapperNormalisesSyntheticDropperProperty(t *testing.T) {
+	native := testBlockRegistry{states: []BlockState{
+		{Name: "minecraft:air"},
+		{Name: "minecraft:dropper", Properties: map[string]any{"facing_direction": int32(0), "toggle_bit": false}},
+	}}
+	target := []BlockState{
+		{Name: "minecraft:air"},
+		{Name: "minecraft:dropper", Properties: map[string]any{"facing_direction": int32(0), "triggered_bit": uint8(0)}},
+	}
+	mapper, err := NewBlockMapper(native, target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	targetRID, exact := mapper.NativeToTarget(1)
+	if !exact {
+		t.Fatal("synthetic dropper unexpectedly used the air fallback")
+	}
+	if nativeRID, ok := mapper.TargetToNative(targetRID); !ok || nativeRID != 1 {
+		t.Fatalf("synthetic dropper reverse mapping = %d/%v, want 1/true", nativeRID, ok)
+	}
+	if fallbacks := mapper.Fallbacks(); len(fallbacks) != 0 {
+		t.Fatalf("synthetic dropper fallbacks = %#v, want none", fallbacks)
+	}
+}
+
 func TestStateKeyPreservesTypesAndOrder(t *testing.T) {
 	left, err := StateKey("minecraft:test", map[string]any{"b": int32(1), "a": uint8(1)})
 	if err != nil {
