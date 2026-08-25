@@ -2,13 +2,50 @@ package v1_26_44
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"reflect"
 	"testing"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
+
+func TestPlayerAuthInputUsesProtocol2169BaseLayout(t *testing.T) {
+	flags := protocol.NewInputFlags(packet.InputFlagCount)
+	flags.Set(packet.InputFlagJumping)
+	current := &packet.PlayerAuthInput{
+		Pitch: 1, Yaw: 2, Position: mgl32.Vec3{3, 4, 5}, MoveVector: mgl32.Vec2{0.25, -0.5}, HeadYaw: 6,
+		InputData: flags, InputMode: packet.InputModeMouse, PlayMode: packet.PlayModeNormal,
+		InteractionModel: packet.InteractionModelCrosshair, Tick: 8, Delta: mgl32.Vec3{0.1, 0.2, 0.3},
+	}
+	converted := Protocol{}.ConvertFromLatest(current, nil)
+	if len(converted) != 1 {
+		t.Fatalf("converted packet count: got %d, want 1", len(converted))
+	}
+	var payload bytes.Buffer
+	converted[0].Marshal(Protocol{}.NewWriter(&payload, 0))
+	if got, want := payload.Len(), 97; got != want {
+		t.Fatalf("payload length: got %d, want %d", got, want)
+	}
+	if got, want := fmt.Sprintf("%x", sha256.Sum256(payload.Bytes())), "23bf8bbc027ea084c030fb1e0e3fd844d3b7c1316c97b28a923fda821993efcb"; got != want {
+		t.Fatalf("payload SHA256: got %s, want %s", got, want)
+	}
+
+	constructor := Protocol{}.Packets(true)[packet.IDPlayerAuthInput]
+	decoded := constructor()
+	reader := bytes.NewBuffer(bytes.Clone(payload.Bytes()))
+	decoded.Marshal(Protocol{}.NewReader(reader, 0, true))
+	if reader.Len() != 0 {
+		t.Fatalf("PlayerAuthInput has %d unread bytes", reader.Len())
+	}
+	latest := Protocol{}.ConvertToLatest(decoded, nil)
+	if len(latest) != 1 {
+		t.Fatalf("latest packet count: got %d, want 1", len(latest))
+	}
+}
 
 func TestSetScoreRoundTrip(t *testing.T) {
 	want := &packet.SetScore{Entries: []protocol.ScoreboardEntry{

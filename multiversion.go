@@ -97,9 +97,25 @@ func V1_26_45WithRegistries(native mapping.BlockRegistry, nativeItems []protocol
 	return v1_26_45.NewWithRegistries(native, nativeItems)
 }
 
+// V1_26_44WithBlockRegistry returns the protocol-2168 family adapter layered
+// on the protocol-2169 shared registry baseline.
+func V1_26_44WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
+	return v1_26_44.NewWithBlockRegistry(native)
+}
+
+// V1_26_44WithRegistries validates the protocol-2168 family's shared block
+// and item registries against the protocol-2192 native model.
+func V1_26_44WithRegistries(native mapping.BlockRegistry, nativeItems []protocol.ItemEntry) (minecraft.Protocol, error) {
+	return v1_26_44.NewWithRegistries(native, nativeItems)
+}
+
 // ProtocolsWithBlockRegistry returns all verified non-native protocols,
 // including protocol 1001 configured against the current block registry.
 func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Protocol, error) {
+	u4, err := V1_26_44WithBlockRegistry(native)
+	if err != nil {
+		return nil, err
+	}
 	legacy, err := V1_26_30WithBlockRegistry(native)
 	if err != nil {
 		return nil, err
@@ -120,12 +136,16 @@ func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Proto
 	if err != nil {
 		return nil, err
 	}
-	return []minecraft.Protocol{v1_26_44.New(), legacy, u2, older, oldest, v486}, nil
+	return []minecraft.Protocol{u4, legacy, u2, older, oldest, v486}, nil
 }
 
 // ProtocolsWithRegistries returns all verified adapters after eagerly
 // validating the current block and item registries.
 func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protocol.ItemEntry) ([]minecraft.Protocol, error) {
+	u4, err := V1_26_44WithRegistries(native, nativeItems)
+	if err != nil {
+		return nil, err
+	}
 	legacy, err := v1_26_30.NewWithRegistries(native, nativeItems)
 	if err != nil {
 		return nil, err
@@ -146,7 +166,7 @@ func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protoco
 	if err != nil {
 		return nil, err
 	}
-	return []minecraft.Protocol{v1_26_44.New(), legacy, u2, older, oldest, v486}, nil
+	return []minecraft.Protocol{u4, legacy, u2, older, oldest, v486}, nil
 }
 
 // V1_26_44 returns the Minecraft protocol 2168 family adapter. The adapter
