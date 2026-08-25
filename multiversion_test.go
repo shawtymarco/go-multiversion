@@ -20,6 +20,9 @@ func TestProtocols(t *testing.T) {
 	if got := multiversion.V1_26_30(); got.ID() != 1001 || got.Ver() != "1.26.36" {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 1001/%q", got.ID(), got.Ver(), "1.26.36")
 	}
+	if got := multiversion.V1_26_45(); got.ID() != 2169 || got.Ver() != "1.26.45" {
+		t.Fatalf("unexpected outgoing native protocol: got %d/%q, want 2169/%q", got.ID(), got.Ver(), "1.26.45")
+	}
 	if got := multiversion.V1_26_20(); got.ID() != 975 || got.Ver() != "1.26.23" {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 975/%q", got.ID(), got.Ver(), "1.26.23")
 	}

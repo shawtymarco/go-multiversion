@@ -58,7 +58,7 @@ func (entry *scoreboardEntry) Marshal(io protocol.IO) {
 		if entry.ObjectiveName != "" {
 			objective = protocol.Option(entry.ObjectiveName)
 		}
-		protocol.DoubleOptionalFunc(io, &objective, io.String)
+		doubleOptionalFunc(io, &objective, io.String)
 		entry.ObjectiveName, _ = objective.Value()
 	case protocol.ScoreboardIdentityEntity, protocol.ScoreboardIdentityPlayer:
 		io.String(&entry.ObjectiveName)
@@ -69,4 +69,16 @@ func (entry *scoreboardEntry) Marshal(io protocol.IO) {
 		io.Int32(&entry.Score)
 		io.String(&entry.DisplayName)
 	}
+}
+
+// doubleOptionalFunc preserves the protocol-2168 outer presence flag removed
+// from the protocol-2192 native IO helpers.
+func doubleOptionalFunc[T any](io protocol.IO, value *protocol.Optional[T], marshal func(*T)) {
+	present := true
+	io.Bool(&present)
+	if !present {
+		*value = protocol.Optional[T]{}
+		return
+	}
+	protocol.OptionalFunc(io, value, marshal)
 }

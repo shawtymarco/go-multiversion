@@ -12,6 +12,7 @@ import (
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_20"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_30"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_44"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_26_45"
 )
 
 // Protocols returns all non-native protocols supported by this module.
@@ -84,6 +85,18 @@ func V1_26_20WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol
 	return v1_26_20.NewWithBlockRegistry(native)
 }
 
+// V1_26_45WithBlockRegistry returns the outgoing-native protocol-2169
+// adapter configured against the protocol-2192 native block registry.
+func V1_26_45WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
+	return v1_26_45.NewWithBlockRegistry(native)
+}
+
+// V1_26_45WithRegistries validates the outgoing-native protocol-2169 block
+// and item snapshots against the protocol-2192 native registries.
+func V1_26_45WithRegistries(native mapping.BlockRegistry, nativeItems []protocol.ItemEntry) (minecraft.Protocol, error) {
+	return v1_26_45.NewWithRegistries(native, nativeItems)
+}
+
 // ProtocolsWithBlockRegistry returns all verified non-native protocols,
 // including protocol 1001 configured against the current block registry.
 func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Protocol, error) {
@@ -141,4 +154,11 @@ func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protoco
 // API compatibility.
 func V1_26_44() minecraft.Protocol {
 	return v1_26_44.New()
+}
+
+// V1_26_45 returns the wire-only Minecraft 1.26.45/protocol 2169 adapter.
+// Registry-aware consumers must not advertise it until its outgoing-native
+// registry snapshot is configured against the protocol-2192 native data.
+func V1_26_45() minecraft.Protocol {
+	return v1_26_45.New()
 }

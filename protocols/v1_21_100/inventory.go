@@ -119,9 +119,9 @@ func marshalPlayerInventoryAction(io *wireIO, data *protocol.UseItemTransactionD
 	} else if io.reading {
 		data.LegacySetItemSlots = protocol.Optional[[]protocol.LegacySetItemSlot]{}
 	}
-	actions, _ := data.Actions.Value()
+	actions := data.Actions
 	protocol.FuncIOSlice(io.directional(), &actions, marshalLegacyPlayerInventoryAction)
-	data.Actions = protocol.Option(actions)
+	data.Actions = actions
 	io.Varuint32(&data.ActionType)
 	io.Varuint32(&data.TriggerType)
 	io.UBlockPos(&data.BlockPosition)

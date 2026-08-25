@@ -109,10 +109,26 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 	}
 
 	targetToNative := make([]uint32, len(targetStates))
+	targetCompatibleByNativeKey := make(map[string]uint32, len(targetStates))
 	unresolved := make([]string, 0)
 	for targetRuntimeID, state := range targetStates {
 		key, _ := StateKey(state.Name, state.Properties)
 		nativeRuntimeID, ok := nativeByKey[key]
+		if !ok {
+			// New native releases may move client-derived visual state into the
+			// server registry. Older targets omit these properties entirely, so
+			// resolve them to the neutral native state while preserving every
+			// property the target did carry.
+			for _, properties := range nativeCompatibilityVariants(state.Properties) {
+				compatibleKey, err := StateKey(state.Name, properties)
+				if err != nil {
+					return nil, fmt.Errorf("compatible target runtime ID %d: %w", targetRuntimeID, err)
+				}
+				if nativeRuntimeID, ok = nativeByKey[compatibleKey]; ok {
+					break
+				}
+			}
+		}
 		if !ok {
 			upgraded := blockupgrader.Upgrade(blockupgrader.BlockState{
 				Name:       state.Name,
@@ -125,6 +141,17 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 			}
 			nativeRuntimeID, ok = nativeByKey[upgradedKey]
 			if !ok {
+				for _, properties := range nativeCompatibilityVariants(upgraded.Properties) {
+					compatibleKey, err := StateKey(upgraded.Name, properties)
+					if err != nil {
+						return nil, fmt.Errorf("compatible upgraded target runtime ID %d: %w", targetRuntimeID, err)
+					}
+					if nativeRuntimeID, ok = nativeByKey[compatibleKey]; ok {
+						break
+					}
+				}
+			}
+			if !ok {
 				if len(unresolved) < 32 {
 					unresolved = append(unresolved, fmt.Sprintf("%s%v (RID %d) -> %s%v", state.Name, state.Properties, targetRuntimeID, upgraded.Name, upgraded.Properties))
 				}
@@ -132,6 +159,14 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 			}
 		}
 		targetToNative[targetRuntimeID] = nativeRuntimeID
+		resolved := nativeStates[nativeRuntimeID]
+		compatibleKey, err := StateKey(resolved.Name, stripNativeCompatibilityProperties(resolved.Properties))
+		if err != nil {
+			return nil, fmt.Errorf("resolved target runtime ID %d: %w", targetRuntimeID, err)
+		}
+		if _, exists := targetCompatibleByNativeKey[compatibleKey]; !exists {
+			targetCompatibleByNativeKey[compatibleKey] = uint32(targetRuntimeID)
+		}
 	}
 	if len(unresolved) != 0 {
 		return nil, fmt.Errorf("target registry has unresolved native states:\n%s", strings.Join(unresolved, "\n"))
@@ -145,6 +180,18 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 		key, _ := StateKey(state.Name, state.Properties)
 		if targetRuntimeID, ok := targetByKey[key]; ok {
 			nativeToTarget[runtimeID], nativeExact[runtimeID] = targetRuntimeID, true
+			continue
+		}
+		stripped := stripNativeCompatibilityProperties(state.Properties)
+		if len(stripped) != len(state.Properties) {
+			compatibleKey, _ := StateKey(state.Name, stripped)
+			if targetRuntimeID, ok := targetByKey[compatibleKey]; ok {
+				nativeToTarget[runtimeID], nativeExact[runtimeID] = targetRuntimeID, true
+				continue
+			}
+			if targetRuntimeID, ok := targetCompatibleByNativeKey[compatibleKey]; ok {
+				nativeToTarget[runtimeID], nativeExact[runtimeID] = targetRuntimeID, true
+			}
 		}
 	}
 	for targetRuntimeID, nativeRuntimeID := range targetToNative {
@@ -277,6 +324,56 @@ func cloneProperties(properties map[string]any) map[string]any {
 		cloned[key] = value
 	}
 	return cloned
+}
+
+var nativeCompatibilityDefaults = map[string]any{
+	"minecraft:corner":           "none",
+	"minecraft:connection_north": false,
+	"minecraft:connection_east":  false,
+	"minecraft:connection_south": false,
+	"minecraft:connection_west":  false,
+}
+
+func nativeCompatibilityVariants(properties map[string]any) []map[string]any {
+	variants := make([]map[string]any, 0, 2)
+	if _, exists := properties["minecraft:corner"]; !exists {
+		withCorner := cloneProperties(properties)
+		if withCorner == nil {
+			withCorner = map[string]any{}
+		}
+		withCorner["minecraft:corner"] = "none"
+		variants = append(variants, withCorner)
+	}
+	missingConnection := false
+	for name := range nativeCompatibilityDefaults {
+		if name == "minecraft:corner" {
+			continue
+		}
+		if _, exists := properties[name]; !exists {
+			missingConnection = true
+		}
+	}
+	if missingConnection {
+		withConnections := cloneProperties(properties)
+		if withConnections == nil {
+			withConnections = map[string]any{}
+		}
+		for name, value := range nativeCompatibilityDefaults {
+			if name != "minecraft:corner" {
+				withConnections[name] = value
+			}
+		}
+		variants = append(variants, withConnections)
+	}
+	return variants
+}
+
+func stripNativeCompatibilityProperties(properties map[string]any) map[string]any {
+	stripped := cloneProperties(properties)
+	for name := range nativeCompatibilityDefaults {
+		delete(stripped, name)
+	}
+	return stripped
 }
 
 func fnv1String(value string) uint64 {

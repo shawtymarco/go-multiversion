@@ -155,6 +155,52 @@ func TestBlockMapperPreservesTargetOrder(t *testing.T) {
 	}
 }
 
+func TestBlockMapperBridgesNativeVisualStateExpansion(t *testing.T) {
+	native := testBlockRegistry{states: []BlockState{
+		{Name: "minecraft:air"},
+		{Name: "minecraft:oak_stairs", Properties: map[string]any{"upside_down_bit": false, "weirdo_direction": int32(0), "minecraft:corner": "none"}},
+		{Name: "minecraft:oak_stairs", Properties: map[string]any{"upside_down_bit": false, "weirdo_direction": int32(0), "minecraft:corner": "inner_left"}},
+		{Name: "minecraft:glass_pane", Properties: map[string]any{
+			"minecraft:connection_north": false, "minecraft:connection_east": false,
+			"minecraft:connection_south": false, "minecraft:connection_west": false,
+		}},
+		{Name: "minecraft:glass_pane", Properties: map[string]any{
+			"minecraft:connection_north": true, "minecraft:connection_east": false,
+			"minecraft:connection_south": false, "minecraft:connection_west": false,
+		}},
+	}}
+	target := []BlockState{
+		{Name: "minecraft:air"},
+		{Name: "minecraft:oak_stairs", Properties: map[string]any{"upside_down_bit": uint8(0), "weirdo_direction": int32(0)}},
+		{Name: "minecraft:glass_pane"},
+	}
+	mapper, err := NewBlockMapper(native, target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	stairsTarget, ok := mapper.TargetRuntimeID("minecraft:oak_stairs", target[1].Properties)
+	if !ok {
+		t.Fatal("target stairs state is missing")
+	}
+	if got, ok := mapper.TargetToNative(stairsTarget); !ok || got != 1 {
+		t.Fatalf("target stairs neutral native mapping: got %d/%t, want 1/true", got, ok)
+	}
+	for _, nativeRID := range []uint32{1, 2} {
+		if got, exact := mapper.NativeToTarget(nativeRID); !exact || got != stairsTarget {
+			t.Fatalf("native stairs RID %d mapping: got %d/%t", nativeRID, got, exact)
+		}
+	}
+	paneTarget, ok := mapper.TargetRuntimeID("minecraft:glass_pane", nil)
+	if !ok {
+		t.Fatal("target glass pane state is missing")
+	}
+	for _, nativeRID := range []uint32{3, 4} {
+		if got, exact := mapper.NativeToTarget(nativeRID); !exact || got != paneTarget {
+			t.Fatalf("native pane RID %d mapping: got %d/%t", nativeRID, got, exact)
+		}
+	}
+}
+
 func TestItemMapperAllowsExplicitTargetOnlyEntries(t *testing.T) {
 	native := []protocol.ItemEntry{{Name: "minecraft:stone", RuntimeID: 2}}
 	target := map[string]TargetItem{

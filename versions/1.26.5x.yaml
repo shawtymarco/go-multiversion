@@ -1,0 +1,108 @@
+schema_version: 1
+
+family:
+  id: r26_u5
+  label: "Minecraft 1.26.50 preview"
+  canonical_game_version: "1.26.50.26"
+  protocol_id: 2192
+  stability: preview
+  preview_game_versions:
+    - "1.26.50.26"
+  excluded_versions:
+    - version: "1.26.50 stable"
+      reason: "No stable client, BDS build, protocol snapshot, or Dragonfly data snapshot is locked yet."
+
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction:
+    commit: "e95f6c6"
+    game_version: "1.26.50"
+    protocol_id: 2192
+  current_preview_snapshot:
+    commit: "27901ba2e83567e13dfdd9da72604c953c750d8b"
+    game_version_constant: "1.26.50"
+    protocol_id: 2192
+    status: "Work-in-progress feature branch; not a final stable snapshot."
+  outgoing_native_snapshot:
+    commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6"
+    game_version: "1.26.45"
+    protocol_id: 2169
+
+dragonfly_sources:
+  repository: "https://github.com/df-mc/dragonfly"
+  pull_request: "https://github.com/df-mc/dragonfly/pull/1444"
+  base_branch: "feat/nethernet"
+  introduction_commit: "89b42eada4c94532d6191283821348784cda5599"
+  current_preview_snapshot: "48d54301b43063733f54492f91809a54ebb4518c"
+  outgoing_native_upstream_snapshot: "2faedc39"
+  outgoing_native_fork_snapshot: "dc54cf36e662411a770a9f0e91c1825cc310eb0a"
+  provenance_status: "PR contains generated runtime blobs but does not document the exact extraction command or BDS hashes."
+
+protocol_documentation:
+  mojang:
+    repository: "https://github.com/Mojang/bedrock-protocol-docs"
+    branch: "automated/1.26.50-preview.26"
+    commit: "8e1a600dd9fbc3f32f8bdc6ef0a17e7e29b1e6f2"
+    minecraft_version: "1.26.50-beta.26"
+    network_version: 2192
+  endstone:
+    repository: "https://github.com/EndstoneMC/protocol-docs"
+    branch: "r26_u5"
+    commit: "1775217cd16621a90664b287e80b407893628eef"
+    minecraft_version: "1.26.50.26 preview"
+    network_version: 2192
+
+bds_catalog:
+  repository: "https://github.com/EndstoneMC/bedrock-server-data"
+  branch: v2
+  commit: "fb72aa0319d48e1c81c96c35484a27e2a997b297"
+  build:
+    game_version: "1.26.50-preview.26"
+    bds_build: "1.26.50.26"
+    windows:
+      url: "https://www.minecraft.net/bedrockdedicatedserver/bin-win-preview/bedrock-server-1.26.50.26.zip"
+      sha256: "f7ae3975b7a5c1aa98ae434e7497d9391893166513a5656929cc89082f693734"
+    linux:
+      url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux-preview/bedrock-server-1.26.50.26.zip"
+      sha256: "6b11ad050ddaf4f6ed40438011cf0b5c65dca4360fb9038048a1d2af24d5c899"
+
+registry_blobs:
+  source_commit: "48d54301b43063733f54492f91809a54ebb4518c"
+  files:
+    - path: "server/world/block_states.nbt"
+      git_blob: "ee29e5e039086c10bdfb964621a8e146b4f7af19"
+      bytes: 3102889
+    - path: "server/world/data_driven_blocks.nbt"
+      git_blob: "4271381a586dfecd6050a259e2f7304d555ac99c"
+      bytes: 80180
+    - path: "server/world/vanilla_items.nbt"
+      git_blob: "f5a06ce962910dce44aa59d2bffb56b9e31cd52b"
+      bytes: 204667
+    - path: "server/item/creative/creative_items.nbt"
+      git_blob: "171fd47c7efef9e1a9f15395e12f859ce4b46841"
+      bytes: 160601
+    - path: "server/item/recipe/crafting_data.nbt"
+      git_blob: "6f01c9b8aec212b642757f205890e93fc6432be2"
+      bytes: 1502513
+    - path: "server/item/recipe/potion_data.nbt"
+      git_blob: "731d8d043e7f52ac040de1d3a6419f91f322689f"
+      bytes: 33442
+    - path: "server/item/recipe/item_tags.json"
+      git_blob: "e999d50e6aa405820817c1ac3031600cf049e657"
+      bytes: 47306
+
+transport:
+  target_raknet_protocol: 11
+  outgoing_native_raknet_protocol: 11
+  first_minecraft_packet: "RequestNetworkSettings"
+  batch_compression_format: "Modern negotiated compression with algorithm prefix."
+  encryption_format: "Unchanged from outgoing native in the locked gophertunnel diff."
+
+decisions:
+  support_scope: "Preparation against 1.26.50.26 Preview only; do not advertise as stable support."
+  outgoing_native_policy: "Preserve Minecraft 1.26.45/protocol 2169 as a new historical adapter."
+  conversion_direction: "Every historical adapter converts directly to and from protocol 2192 native semantics."
+  modding_required: false
+  modding_reason: "Published Mojang, Endstone, gophertunnel, and Dragonfly preview artifacts cover the preparation scope."
+  consumer_enabled: false
+  promotion_ready: false

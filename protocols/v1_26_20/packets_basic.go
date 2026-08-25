@@ -150,10 +150,14 @@ func marshalDimensionData(io *wireIO, raw packet.Packet) {
 	protocol.FuncIOSlice(io.directional(), &pk.Definitions, func(raw protocol.IO, definition *protocol.DimensionDefinition) {
 		legacy := asWireIO(raw)
 		legacy.String(&definition.Name)
-		legacy.Varint32(&definition.Range[0])
-		legacy.Varint32(&definition.Range[1])
+		maximumY, minimumY := definition.MinimumY+definition.HeightRange, definition.MinimumY
+		legacy.Varint32(&maximumY)
+		legacy.Varint32(&minimumY)
 		legacy.Varint32(&definition.Generator)
 		legacy.Varint32(&definition.DimensionType)
+		if legacy.reading {
+			definition.MinimumY, definition.HeightRange = minimumY, maximumY-minimumY
+		}
 	})
 }
 

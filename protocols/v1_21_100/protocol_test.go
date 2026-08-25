@@ -85,7 +85,7 @@ func wireFixtures() []packetFixture {
 			return &packet.ClientMovementPredictionSync{ActorFlags: flags, BoundingBoxScale: 1, MovementSpeed: 2, EntityUniqueID: 3, Flying: true}
 		}},
 		{name: "full/dimension_data", new: func() packet.Packet {
-			return &packet.DimensionData{Definitions: []protocol.DimensionDefinition{{Name: "dimension", Range: [2]int32{320, -64}, Generator: protocol.GeneratorOverworld, DimensionType: 1000}}}
+			return &packet.DimensionData{Definitions: []protocol.DimensionDefinition{{Name: "dimension", MinimumY: -64, HeightRange: 384, Generator: protocol.GeneratorOverworld, DimensionType: 1000}}}
 		}},
 		{name: "full/add_actor_shared_io", new: func() packet.Packet {
 			return &packet.AddActor{EntityUniqueID: 1, EntityRuntimeID: 2, EntityType: "minecraft:pig", EntityMetadata: protocol.EntityMetadata{1: byte(1), 2: int32(2)}}

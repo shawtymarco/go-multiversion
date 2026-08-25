@@ -89,7 +89,8 @@ func marshalBossEvent(io *wireIO, raw packet.Packet) {
 		io.Uint16(&screenDarkening)
 		marshalLegacyBossAppearance(io, pk)
 	case packet.BossEventRegisterPlayer, packet.BossEventUnregisterPlayer, packet.BossEventRequest:
-		io.Varint64(&pk.PlayerUniqueID)
+		var discardedPlayerUniqueID int64
+		io.Varint64(&discardedPlayerUniqueID)
 	case packet.BossEventHide:
 	case packet.BossEventHealthPercentage:
 		io.Float32(&pk.HealthPercentage)

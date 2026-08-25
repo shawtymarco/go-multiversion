@@ -154,6 +154,8 @@ func (Protocol) Packets(listener bool) packet.Pool {
 	// Protocol 1001 left packet ID 16 unused. UpdateBlock was not accepted as
 	// a client-originating packet by the historical listener pool.
 	delete(pool, packet.IDServerPlayerPostMovePosition)
+	delete(pool, packet.IDSetPlayerFurnaceOptions)
+	delete(pool, packet.IDRecordStarted)
 	if listener {
 		delete(pool, packet.IDUpdateBlock)
 	}

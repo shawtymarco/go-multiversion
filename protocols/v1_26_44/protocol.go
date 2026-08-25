@@ -30,9 +30,13 @@ func (Protocol) Ver() string { return Version }
 
 func (Protocol) Packets(listener bool) packet.Pool {
 	if listener {
-		return packet.NewClientPool()
+		pool := packet.NewClientPool()
+		delete(pool, packet.IDSetPlayerFurnaceOptions)
+		return pool
 	}
 	pool := packet.NewServerPool()
+	delete(pool, packet.IDSetPlayerFurnaceOptions)
+	delete(pool, packet.IDRecordStarted)
 	pool[packet.IDSetScore] = func() packet.Packet { return &setScore{} }
 	return pool
 }

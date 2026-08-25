@@ -20,7 +20,11 @@ func marshalBossEvent(io *wireIO, raw packet.Packet) {
 		io.Uint16(&screenDarkening)
 		marshalLegacyBossAppearance(io, pk)
 	case packet.BossEventRegisterPlayer, packet.BossEventUnregisterPlayer, packet.BossEventRequest:
-		io.Varint64(&pk.PlayerUniqueID)
+		// Protocol 2192 removed PlayerUniqueID from the native BossEvent model.
+		// Consume the historical field on read; unsupported outbound registration
+		// events are filtered before this marshal path.
+		var discardedPlayerUniqueID int64
+		io.Varint64(&discardedPlayerUniqueID)
 	case packet.BossEventHide:
 	case packet.BossEventHealthPercentage:
 		io.Float32(&pk.HealthPercentage)

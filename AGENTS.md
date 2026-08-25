@@ -27,6 +27,10 @@ gophertunnel-based servers.
 
 The current compatibility family is:
 
+- On `feat/all_26_u5`, Minecraft 1.26.50.26 Preview / protocol 2192 is the preparation-only native model from
+  gophertunnel `27901ba`; Dragonfly data comes from PR #1444 at `48d54301`. Minecraft 1.26.45 / protocol 2169
+  is preserved by a direct historical wire and registry adapter. Do not advertise this as stable 1.26.50 or
+  add protocol 2169 to the automatic catalog until the stable source/data and consumer gate are complete.
 - Minecraft 1.26.45 / protocol 2169: native gophertunnel at `7f058e5`.
 - Minecraft 1.26.44 / protocol 2168: double-optional `SetScore` adapter based
   on `8a2b1f7`.

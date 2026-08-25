@@ -161,11 +161,11 @@ func (Protocol) Packets(listener bool) packet.Pool {
 	if listener {
 		delete(pool, packet.IDUpdateBlock)
 		delete(pool, packet.IDSimpleEvent)
-		for id := uint32(packet.IDServerBoundPackSettingChange); id <= uint32(packet.IDPartyDestinationCookieResponse); id++ {
+		for id := uint32(packet.IDServerBoundPackSettingChange); id <= uint32(packet.IDRecordStarted); id++ {
 			delete(pool, id)
 		}
 	} else {
-		for id := uint32(packet.IDPrimitiveShapes); id <= uint32(packet.IDPartyDestinationCookieResponse); id++ {
+		for id := uint32(packet.IDPrimitiveShapes); id <= uint32(packet.IDRecordStarted); id++ {
 			delete(pool, id)
 		}
 	}

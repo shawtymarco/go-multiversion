@@ -136,7 +136,7 @@ func wireFixtures() []packetFixture {
 			return &packet.ServerBoundPackSettingChange{PackID: uuid.MustParse("12345678-1234-1234-1234-123456789abc"), PackSetting: protocol.PackSetting{Name: "setting", Value: true}}
 		}},
 		{name: "full/dimension_data", new: func() packet.Packet {
-			return &packet.DimensionData{Definitions: []protocol.DimensionDefinition{{Name: "dimension", Range: [2]int32{320, -64}, Generator: protocol.GeneratorOverworld, DimensionType: 1000}}}
+			return &packet.DimensionData{Definitions: []protocol.DimensionDefinition{{Name: "dimension", MinimumY: -64, HeightRange: 384, Generator: protocol.GeneratorOverworld, DimensionType: 1000}}}
 		}},
 		{name: "full/add_actor_shared_io", new: func() packet.Packet {
 			return &packet.AddActor{EntityUniqueID: 1, EntityRuntimeID: 2, EntityType: "minecraft:pig", EntityMetadata: protocol.EntityMetadata{1: byte(1), 2: int32(2)}}

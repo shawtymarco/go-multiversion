@@ -41,6 +41,19 @@ func mapInventoryTransactionData(value protocol.InventoryTransactionData, items 
 		return &cloned, true
 	case *protocol.UseItemTransactionData:
 		cloned := *data
+		cloned.Actions = make([]protocol.InventoryAction, len(data.Actions))
+		for index, action := range data.Actions {
+			cloned.Actions[index] = action
+			var actionOK bool
+			cloned.Actions[index].OldItem, actionOK = mapItemInstance(action.OldItem, items, blocks, direction)
+			if !actionOK {
+				return nil, false
+			}
+			cloned.Actions[index].NewItem, actionOK = mapItemInstance(action.NewItem, items, blocks, direction)
+			if !actionOK {
+				return nil, false
+			}
+		}
 		var ok bool
 		cloned.HeldItem, ok = mapItemInstance(data.HeldItem, items, blocks, direction)
 		if !ok {

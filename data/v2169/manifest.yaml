@@ -1,0 +1,60 @@
+schema_version: 1
+protocol_id: 2169
+game_versions: ["1.26.45"]
+source:
+  repository: "https://github.com/shawtymarco/dragonfly"
+  commit: "dc54cf36e662411a770a9f0e91c1825cc310eb0a"
+  upstream_data_snapshot: "2faedc39"
+  nbt_encoding: "NetworkLittleEndian"
+snapshots:
+  - file: "block_states.nbt"
+    source_path: "server/world/block_states.nbt"
+    git_blob: "7006d9d46217425aab8e7d998f70c370b6b9c4eb"
+    bytes: 2436125
+    entries: 17499
+    sha256: "1dc6d7ea26b48b5b5e4702762e463b95e59eb109f26c0c3b74115d12cb1941a7"
+  - file: "vanilla_items.nbt"
+    source_path: "server/world/vanilla_items.nbt"
+    git_blob: "ec858bab04610d414062178116a3b6a7db40918a"
+    bytes: 195071
+    entries: 1976
+    sha256: "a06a37780c30d10f170f544517ca1bd2ad40a6bce31b22fa126ad633248f5118"
+  - file: "creative_items.nbt"
+    source_path: "server/item/creative/creative_items.nbt"
+    git_blob: "d8319469be8db2b1336e9ff4ad18982f4d399025"
+    bytes: 144033
+    groups: 123
+    items: 1875
+    sha256: "325ef5cc5992bf9b7624a762a62a436469deced5d5a5118b9c7ff959929f23e1"
+  - file: "crafting_data.nbt"
+    source_path: "server/item/recipe/crafting_data.nbt"
+    git_blob: "5ee024e95699261768bd4f499b125b94bd058314"
+    bytes: 1135160
+    shaped: 1118
+    shapeless: 1431
+    user_data_shapeless: 1084
+    multi: 14
+    sha256: "1609f0765b76598707a118941734a01010410b3bf0cd9da2254e4f7fc18f8181"
+  - file: "potion_data.nbt"
+    source_path: "server/item/recipe/potion_data.nbt"
+    git_blob: "465959b198e4be3e998d8003e3c854f035197e60"
+    bytes: 33442
+    potions: 210
+    container_changes: 2
+    sha256: "282b72a6fe238d7fd3cdb7a9b19eae9eec40647357c708ee0a431d65db87af5b"
+  - file: "item_tags.json"
+    source_path: "server/item/recipe/item_tags.json"
+    git_blob: "59031ed59fa52a359679823d93062af97f9be27d"
+    bytes: 28139
+    sha256_lf: "ac6b456e0c477acc45347d9b3ffd149081f91809518315d454219728d499e58d"
+fallback_report:
+  file: "fallbacks.json"
+  native_dragonfly_commit: "fb64bf3f"
+  target_dragonfly_commit: "dc54cf36e662411a770a9f0e91c1825cc310eb0a"
+  block_policy: "substitute minecraft:air"
+  block_states: 1417
+  item_policy: "hide clientbound and reject serverbound"
+  items: 100
+  sha256: "d8b55dc054359a5e738449645385d4d1bb811f64ca00eaec01e0545e66215aaf"
+  native_visual_state_bridge: "Strip protocol-2192 corner/connection properties outbound and add neutral values inbound before fallback classification."
+consumer_enablement: false

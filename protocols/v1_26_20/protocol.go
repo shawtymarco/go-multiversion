@@ -157,6 +157,8 @@ func (Protocol) Packets(listener bool) packet.Pool {
 	delete(pool, packet.IDClientboundUpdateSoundData)
 	delete(pool, packet.IDSendPartyDestinationCookie)
 	delete(pool, packet.IDPartyDestinationCookieResponse)
+	delete(pool, packet.IDSetPlayerFurnaceOptions)
+	delete(pool, packet.IDRecordStarted)
 	if listener {
 		delete(pool, packet.IDUpdateBlock)
 	}
