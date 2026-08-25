@@ -90,6 +90,7 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 	}
 
 	nativeByKey := make(map[string]uint32, native.BlockCount())
+	nativeAliases := make(map[string]uint32)
 	nativeStates := make([]BlockState, native.BlockCount())
 	for index := range native.BlockCount() {
 		runtimeID := uint32(index)
@@ -105,6 +106,16 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 			return nil, fmt.Errorf("duplicate native block state %s at runtime ID %d", name, runtimeID)
 		}
 		nativeByKey[key] = runtimeID
+		aliasKey, err := StateKey(name, nativeCompatibilityProperties(name, properties))
+		if err != nil {
+			return nil, fmt.Errorf("native runtime ID %d compatibility alias: %w", runtimeID, err)
+		}
+		if aliasKey != key {
+			if existing, exists := nativeAliases[aliasKey]; exists && existing != runtimeID {
+				return nil, fmt.Errorf("duplicate native compatibility state %s at runtime IDs %d and %d", name, existing, runtimeID)
+			}
+			nativeAliases[aliasKey] = runtimeID
+		}
 		nativeStates[index] = BlockState{Name: name, Properties: cloneProperties(properties)}
 	}
 
@@ -125,6 +136,9 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 			}
 			nativeRuntimeID, ok = nativeByKey[upgradedKey]
 			if !ok {
+				nativeRuntimeID, ok = nativeAliases[upgradedKey]
+			}
+			if !ok {
 				if len(unresolved) < 32 {
 					unresolved = append(unresolved, fmt.Sprintf("%s%v (RID %d) -> %s%v", state.Name, state.Properties, targetRuntimeID, upgraded.Name, upgraded.Properties))
 				}
@@ -144,6 +158,11 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 		state := nativeStates[runtimeID]
 		key, _ := StateKey(state.Name, state.Properties)
 		if targetRuntimeID, ok := targetByKey[key]; ok {
+			nativeToTarget[runtimeID], nativeExact[runtimeID] = targetRuntimeID, true
+			continue
+		}
+		aliasKey, _ := StateKey(state.Name, nativeCompatibilityProperties(state.Name, state.Properties))
+		if targetRuntimeID, ok := targetByKey[aliasKey]; ok {
 			nativeToTarget[runtimeID], nativeExact[runtimeID] = targetRuntimeID, true
 		}
 	}
@@ -275,6 +294,28 @@ func cloneProperties(properties map[string]any) map[string]any {
 	cloned := make(map[string]any, len(properties))
 	for key, value := range properties {
 		cloned[key] = value
+	}
+	return cloned
+}
+
+// nativeCompatibilityProperties normalises known third-party Dragonfly block
+// implementations that still expose an old property name while representing a
+// current vanilla state. bedrock-gophers/inv registers its dropper container
+// with toggle_bit, whereas current and historical registries use
+// triggered_bit. Treating the names as semantic aliases keeps the consumer's
+// synthetic implementation mappable without weakening unresolved target-state
+// validation for unrelated blocks.
+func nativeCompatibilityProperties(name string, properties map[string]any) map[string]any {
+	cloned := cloneProperties(properties)
+	if name != "minecraft:dropper" && name != "minecraft:dispenser" {
+		return cloned
+	}
+	if _, exists := cloned["triggered_bit"]; exists {
+		return cloned
+	}
+	if value, exists := cloned["toggle_bit"]; exists {
+		delete(cloned, "toggle_bit")
+		cloned["triggered_bit"] = value
 	}
 	return cloned
 }
