@@ -5,6 +5,7 @@ import (
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
 )
 
 const (
@@ -286,7 +287,9 @@ func marshalStructureBlockUpdate(io *wireIO, raw packet.Packet) {
 func marshalSubChunkRequest(io *wireIO, raw packet.Packet) {
 	pk := raw.(*packet.SubChunkRequest)
 	io.Varint32(&pk.Dimension)
-	protocol.Slice(io.directional(), &pk.Offsets)
+	count := uint32(len(pk.Offsets))
+	io.Varuint32(&count)
+	packetio.SubChunkOffsets(io.directional(), count, &pk.Offsets)
 	io.Int32(&pk.Position[0])
 	io.Int32(&pk.Position[1])
 	io.Int32(&pk.Position[2])

@@ -345,6 +345,33 @@ func TestStableGameVersions(t *testing.T) {
 	}
 }
 
+func TestSubChunkRequestAcceptsFastTransferOffsetBurst(t *testing.T) {
+	request := &packet.SubChunkRequest{
+		Dimension: 0,
+		Position:  protocol.SubChunkPos{1, 4, -2},
+		Offsets:   make([]protocol.SubChunkOffset, 1067),
+	}
+	for index := range request.Offsets {
+		request.Offsets[index] = protocol.SubChunkOffset{int8(index % 64), int8(index % 24), int8(index % 63)}
+	}
+	encoded := encodeTargetPacketForDirection(t, request, true)
+	constructor := Protocol{}.Packets(true)[packet.IDSubChunkRequest]
+	decoded := constructor()
+	buffer := bytes.NewBuffer(encoded)
+	decoded.Marshal(Protocol{}.NewReader(buffer, 0, true))
+	if buffer.Len() != 0 {
+		t.Fatalf("sub-chunk request left %d unread bytes", buffer.Len())
+	}
+	converted := Protocol{}.ConvertToLatest(decoded, nil)
+	if len(converted) != 1 {
+		t.Fatalf("converted packet count: got %d, want 1", len(converted))
+	}
+	latest := converted[0].(*packet.SubChunkRequest)
+	if got, want := len(latest.Offsets), len(request.Offsets); got != want {
+		t.Fatalf("converted offset count: got %d, want %d", got, want)
+	}
+}
+
 func TestCommandEnumIndexIsNotArgumentType(t *testing.T) {
 	value := uint32(protocol.CommandArgValid | protocol.CommandArgEnum | 9)
 	if got := commandArgumentTo844(nil, value); got != value {

@@ -5,6 +5,7 @@ import (
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
 )
 
 func marshalLevelChunk(io *wireIO, raw packet.Packet) {
@@ -106,14 +107,7 @@ func marshalSubChunkRequest(io *wireIO, raw packet.Packet) {
 	marshalLegacySubChunkPos(io, &pk.Position)
 	count := uint32(len(pk.Offsets))
 	io.Uint32(&count)
-	if io.reading {
-		pk.Offsets = make([]protocol.SubChunkOffset, count)
-	}
-	for index := range pk.Offsets {
-		io.Int8(&pk.Offsets[index][0])
-		io.Int8(&pk.Offsets[index][1])
-		io.Int8(&pk.Offsets[index][2])
-	}
+	packetio.SubChunkOffsets(io.directional(), count, &pk.Offsets)
 }
 
 func marshalLegacySubChunkPos(io *wireIO, position *protocol.SubChunkPos) {
