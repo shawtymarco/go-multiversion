@@ -74,6 +74,11 @@ func (Protocol) PreSpawnPackets() []packet.Packet {
 	return []packet.Packet{&packet.BiomeDefinitionList{}}
 }
 
+// ReuseBiomePalettes reports that protocol 486 predates the 0xff marker used
+// to reuse an equal preceding biome palette in chunk payloads. Sending the
+// marker makes 1.18 clients parse it as an invalid palette header.
+func (Protocol) ReuseBiomePalettes() bool { return false }
+
 func (p Protocol) MapBlockRuntimeID(runtimeID uint32) (uint32, bool) {
 	if p.runtime == nil || p.runtime.blocks == nil {
 		return 0, false

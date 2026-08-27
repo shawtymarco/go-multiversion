@@ -325,3 +325,9 @@ func TestPreSpawnPackets(t *testing.T) {
 		t.Fatal("PreSpawnPackets returned a shared packet instance")
 	}
 }
+
+func TestBiomePaletteReuseDisabled(t *testing.T) {
+	if (Protocol{}).ReuseBiomePalettes() {
+		t.Fatal("protocol 486 enabled biome palette reuse")
+	}
+}
