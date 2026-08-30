@@ -38,11 +38,20 @@ func TestProtocols(t *testing.T) {
 	if got := multiversion.V1_21_100(); got.ID() != 827 || got.Ver() != "1.21.102" {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 827/%q", got.ID(), got.Ver(), "1.21.102")
 	}
+	if got := multiversion.V1_21_50(); got.ID() != 766 || got.Ver() != "1.21.51" {
+		t.Fatalf("unexpected protocol: got %d/%q, want 766/%q", got.ID(), got.Ver(), "1.21.51")
+	}
+	if got := multiversion.V1_21_40(); got.ID() != 748 || got.Ver() != "1.21.44" {
+		t.Fatalf("unexpected protocol: got %d/%q, want 748/%q", got.ID(), got.Ver(), "1.21.44")
+	}
 	if got := multiversion.V1_18_10(); got.ID() != 486 || got.Ver() != "1.18.12" {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 486/%q", got.ID(), got.Ver(), "1.18.12")
 	}
+	if got := multiversion.V1_18_0(); got.ID() != 475 || got.Ver() != "1.18.2" {
+		t.Fatalf("unexpected protocol: got %d/%q, want 475/%q", got.ID(), got.Ver(), "1.18.2")
+	}
 	for _, supported := range protocols {
-		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 944 || supported.ID() == 924 || supported.ID() == 898 || supported.ID() == 844 || supported.ID() == 827 || supported.ID() == 486 {
+		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 944 || supported.ID() == 924 || supported.ID() == 898 || supported.ID() == 844 || supported.ID() == 827 || supported.ID() == 766 || supported.ID() == 748 || supported.ID() == 486 || supported.ID() == 475 {
 			t.Fatalf("registry-aware protocol %d must not be enabled by Protocols", supported.ID())
 		}
 	}

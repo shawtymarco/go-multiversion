@@ -19,7 +19,10 @@
 | 898 | 1.21.130-1.21.132 | `v1_21_130` | 🧪 | 🧪 Historical wire oracle and registry integration |
 | 844 | 1.21.110-1.21.114 | `v1_21_110` | ✅ | ✅ 1.21.114 |
 | 827 | 1.21.100-1.21.102 | `v1_21_100` | ✅ | ✅ 1.21.100 |
+| 766 | 1.21.50-1.21.51 | `v1_21_50` | 🧪 | 🧪 Historical wire oracle and registry integration |
+| 748 | 1.21.40, 1.21.41, 1.21.43, 1.21.44 | `v1_21_40` | 🧪 | 🧪 Historical wire oracle and registry integration |
 | 486 | 1.18.10-1.18.12 | `v1_18_10` | ✅ | ✅ 1.18.10 · 🧪 1.18.11/1.18.12 automated |
+| 475 | 1.18.0-1.18.2 | `v1_18_0` | 🧪 | 🧪 Historical wire oracle and registry integration |
 
 > [!NOTE]
 > Version coverage is explicit. Unlisted releases and previews are not implied.
@@ -36,7 +39,7 @@ conf.AcceptedProtocolsProvider = func(blocks world.BlockRegistry) ([]minecraft.P
 ```
 
 `ProtocolsWithRegistries` returns `2168`, `1001`, `975`, `944`, `924`, `898`,
-`844`, `827`, and `486` in
+`844`, `827`, `766`, `748`, `486`, and `475` in
 that order. The parameterless `Protocols()` intentionally omits adapters that
 need native block and item registries.
 
@@ -52,7 +55,7 @@ need native block and item registries.
 
 **Minecraft 1.18 transport**
 
-Servers that want to accept protocol `486` clients must use
+Servers that want to accept protocol `486` or `475` clients must use
 [`shawtymarco/gophertunnel`](https://github.com/shawtymarco/gophertunnel) at
 `823172d1d90e238566d6bcc16b41978832d90a93` or an equivalent implementation.
 The fork keeps the `github.com/sandertv/gophertunnel` module path while adding:
@@ -79,10 +82,10 @@ hooks:
 > [!WARNING]
 > Stock upstream Dragonfly does not currently provide these hooks. It cannot be
 > used as a drop-in replacement for registry-aware protocols `1001`, `975`, `944`, `924`, `898`,
-> `844`, `827`, or `486`. Without pre-hash palette mapping, old clients receive native block
+> `844`, `827`, `766`, `748`, `486`, or `475`. Without pre-hash palette mapping, old clients receive native block
 > runtime IDs and incompatible cache blobs.
 
-Protocol `486` additionally requires the gophertunnel fork above. The adapter
+Protocols `486` and `475` additionally require the gophertunnel fork above. The adapter
 alone cannot make a stock listener accept RakNet v10 or decode Login-first
 legacy batches.
 

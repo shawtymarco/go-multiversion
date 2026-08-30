@@ -1,0 +1,25 @@
+schema_version: 1
+family:
+  id: r21_u4
+  label: "Minecraft 1.21.4x stable"
+  canonical_game_version: "1.21.44"
+  protocol_id: 748
+  stable_game_versions: ["1.21.40", "1.21.41", "1.21.43", "1.21.44"]
+  excluded_versions: [{version: "1.21.42", reason: "No stable release is present in the locked release catalog."}]
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction: {commit: "eed76a658af11eee7ae14960b5edc65f655cff25", game_version: "1.21.40", protocol_id: 748}
+  final_target_snapshot: {commit: "268adeb5710990ebd95edda3b42b0cf13f58bf8b", game_version: "1.21.40", protocol_id: 748}
+  native_snapshot: {commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6", game_version: "1.26.45", protocol_id: 2169}
+dragonfly_sources:
+  family_update_commit: "dd566fdf6f38573ef977b94abd2b6f5ab2a08bc6"
+  final_target_snapshot: "206bf97c6c88f29ee7006c0e1339491cb3752aa6"
+protocol_documentation: {repository: "https://github.com/Mojang/bedrock-protocol-docs", branch: "r/21_u4", commit: "8dbf811fd0927c505a916e3d1c7d0ff830c0630c"}
+bds_catalog:
+  source: "EndstoneMC/bedrock-server-data legacy main catalog at e4db24ac01b111f1e2814ee7d8d37dfbb625c761"
+  releases:
+    - {game_version: "1.21.40", build: "1.21.40.03", windows_sha256: "524d062b914b13740b7323486fd49dd0ca7fc87916318b6e0c1deb841379d99a", linux_sha256: "60bec88c83648ba7c875e37139dab9cd57d71d06b729c8543389dbcf0813e94b"}
+    - {game_version: "1.21.41", build: "1.21.41.01", windows_sha256: "5fde06f6ccf4b3006f850c15e4faa1fee3910ce4d30e14794de000e3695ebe81", linux_sha256: "b3b0cb9387bb4131f378ce9ca90450075888d6e839d3073dd9cfcb54a135750c"}
+    - {game_version: "1.21.43", build: "1.21.43.01", windows_sha256: "cd705cc042c4c2b2a2b421e09965215d39da7a235634d9b3432e14fa56f41e9f", linux_sha256: "b6fa0479f3a6a381078b3092b9ec546c59293f27c06b8b8403927a642f99b6a8"}
+    - {game_version: "1.21.44", build: "1.21.44.01", windows_sha256: "a9d4884a884e0510e8e02b5194960e2e3ab688a7bb9215c44c61c35bf9f60e58", linux_sha256: "2dc1fe943939557cde2919d2b180ec938671c10fce9efaa68bfd03cd29e97af0"}
+decisions: {conversion_direction: "Direct protocol 748 to/from native protocol 2169.", chunk_format: "Version-9 pre-hash palettes.", real_client: pending}

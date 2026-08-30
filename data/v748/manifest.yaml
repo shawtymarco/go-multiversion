@@ -1,0 +1,15 @@
+schema_version: 1
+family: {label: "Minecraft 1.21.4x", protocol_id: 748}
+source:
+  repository: "https://github.com/df-mc/dragonfly"
+  commit: "206bf97c6c88f29ee7006c0e1339491cb3752aa6"
+snapshots:
+  - {path: "server/world/block_states.nbt", output: "block_states.nbt", git_blob: "ff4d75701640921818a7fda13f0449f5e3595a19", bytes: 1918591, sha256: "4e434d9c40988697f61ed2053586330796bf5216f602cb051aa9061cd67a4ea7", entries: 14196}
+  - {path: "server/world/item_runtime_ids.nbt", output: "item_runtime_ids.nbt", git_blob: "e1eb29e8491d10cabdb133424de52201b12f7115", bytes: 50902, sha256: "de720c1934997838a1f21e984b37c24716c75c2f203fe7963b36df74548e4f5e", entries: 1749}
+  - {path: "server/item/creative/creative_items.nbt", output: "creative_items.nbt", git_blob: "82f3b87f080c43007317b2070193c5dc248fa5ac", bytes: 115280, sha256: "9f34c8cbc40913124ca9b45e4ea953ae3daefc5cb6a918de11850a7da6b57b20", entries: 1920}
+  - {path: "server/item/recipe/crafting_data.nbt", output: "crafting_data.nbt", git_blob: "72562b025995de0a98acd3667fcfb9ae79ad3ffd", bytes: 780535, sha256: "b6b50c57bcf3d75b1bd88c82f1c629f057995842a0f7ab6e0fc11f60991b8eac"}
+  - {path: "server/item/recipe/furnace_data.nbt", output: "furnace_data.nbt", git_blob: "165f16c112c18efbdac7be46b4e17cb2233d0630", bytes: 31755, sha256: "926a37b7d23e6b912e2f9fd2fea7706634be6d4347c3c4edc936a440e34fecd6"}
+  - {path: "server/item/recipe/potion_data.nbt", output: "potion_data.nbt", git_blob: "42d7951ae83a0e9badf8e8d01b0ed268b8e3463a", bytes: 33442, sha256: "e34ad9d698d86e8cecf8303bb97f7d7737a593188c52a2a6925e85849cffb19d"}
+  - {path: "server/item/recipe/smithing_data.nbt", output: "smithing_data.nbt", git_blob: "362d1e7903f2b84c97501f1b1dbddf475b5d2649", bytes: 2351, sha256: "99c9eb3ea54fca8a43c880fa91e6f1eb0ca350a051aad7e5ba1621659e3e4f7b"}
+biomes: {source_commit: "268adeb5710990ebd95edda3b42b0cf13f58bf8b", bytes: 3413, sha256: "dc7dec09e45b333583120f826c3b4ddd986f707515673c543f442f576601954f", entries: 71}
+fallback_report: {sha256: "079bfb8d02826279e5768923e876464855b2f638ea2ddf5dfd494ca1d5f6ba7b", block_fallbacks: 3303, item_fallbacks: 301, target_item_fallbacks: 1}

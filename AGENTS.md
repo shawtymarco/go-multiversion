@@ -69,12 +69,24 @@ The current compatibility family is:
   Dragonfly `93c84812`, semantic item/block mapping against the current native
   registries, and the same version-9 pre-hash palette hook. Preview builds and
   unlisted 1.21.x families are not implied.
+- Minecraft 1.21.50-1.21.51 / protocol 766: direct adapter based on
+  `ecff04b7`, historical data from Dragonfly `800ee178`, ungrouped creative
+  content, StartGame item registry, raw biome NBT, and version-9 pre-hash
+  palette mapping.
+- Minecraft 1.21.40, 1.21.41, 1.21.43, and 1.21.44 / protocol 748: direct
+  adapter based on `268adeb5`, historical data from Dragonfly `206bf97c`,
+  uint64 input flags, legacy resource-pack UUID strings, and version-9
+  pre-hash palette mapping. No stable 1.21.42 release is implied.
 - Minecraft 1.18.10-1.18.12 / protocol 486: direct semantic adapter based on
   gophertunnel `2cb1e399`, historical registries from Dragonfly `677c8fa1`,
   RakNet v10/Login-first legacy flate negotiation in the gophertunnel fork,
   numeric recipe/item conversion, ungrouped creative content, and version-9
   chunk palettes through the existing pre-hash hook. Protocol 475, protocol
   503, previews, and other 1.18.x release trains are not implied.
+- Minecraft 1.18.0-1.18.2 / protocol 475: direct semantic adapter based on
+  gophertunnel `c40bf828`, historical registries from Dragonfly `5ac88dcd`,
+  RakNet v10/Login-first legacy flate, single-response SubChunk conversion,
+  and version-9 palettes through the pre-hash hook.
 
 ## Verification
 

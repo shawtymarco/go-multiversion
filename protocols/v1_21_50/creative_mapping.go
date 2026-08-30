@@ -1,0 +1,44 @@
+package v1_21_50
+
+import (
+	"github.com/sandertv/gophertunnel/minecraft/protocol"
+	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/mapping"
+)
+
+func (p Protocol) targetCreativeContent(current *packet.CreativeContent, items *mapping.ItemMapper) (*packet.CreativeContent, error) {
+	creativeItems := make([]protocol.CreativeItem, 0, len(current.Items))
+	for _, item := range current.Items {
+		stack, ok := p.targetCreativeStack(item.Item, items)
+		if !ok {
+			continue
+		}
+		item.Item = stack
+		// CreativeItemNetworkID is deliberately preserved. Dragonfly resolves
+		// client CraftCreative requests against its filtered native creative
+		// slice, so assigning IDs from the raw historical blob selects unrelated
+		// native items whenever either list skipped an entry.
+		creativeItems = append(creativeItems, item)
+	}
+	return &packet.CreativeContent{Items: creativeItems}, nil
+}
+
+func (p Protocol) targetCreativeStack(stack protocol.ItemStack, items *mapping.ItemMapper) (protocol.ItemStack, bool) {
+	if stack.NetworkID == 0 {
+		return stack, true
+	}
+	networkID, ok := items.NativeToTarget(stack.NetworkID)
+	if !ok {
+		return protocol.ItemStack{}, false
+	}
+	mapped := stack
+	mapped.NetworkID = networkID
+	if stack.BlockRuntimeID > 0 {
+		blockID, valid, exact := p.runtime.blocks.MapNative(uint32(stack.BlockRuntimeID))
+		if !valid || !exact {
+			return protocol.ItemStack{}, false
+		}
+		mapped.BlockRuntimeID = int32(blockID)
+	}
+	return mapped, true
+}

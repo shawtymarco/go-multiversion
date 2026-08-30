@@ -1,0 +1,21 @@
+schema_version: 1
+family:
+  id: r18_u0
+  label: "Minecraft 1.18.0x stable"
+  canonical_game_version: "1.18.2"
+  protocol_id: 475
+  stable_game_versions: ["1.18.0", "1.18.1", "1.18.2"]
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction: {commit: "212f6f709dc5d9a66bb26a6f3df5bd3fb8dfd5d8", game_version: "1.18.0", protocol_id: 475}
+  final_target_snapshot: {commit: "c40bf8288fb93ebd014375e46e4592424153927c", game_version: "1.18.0", protocol_id: 475}
+  native_snapshot: {commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6", game_version: "1.26.45", protocol_id: 2169}
+dragonfly_sources:
+  family_update_commit: "3a7de9eb8d5ce68bb41e5c9b41d6008f6868760d"
+  final_target_snapshot: "5ac88dcd93d5ae79fca6142d9cd326cb23015d2f"
+transport: {raknet_protocol: 10, first_packet: Login, compression: "immediate legacy flate"}
+bds_catalog: {target_build: "not used", rationale: "The current public catalog does not retain 1.18.0x metadata; exact historical Git registry blobs are available."}
+decisions:
+  conversion_direction: "Direct protocol 475 to/from native protocol 2169."
+  chunk_format: "Version-9 palettes; pre-batched single SubChunk response/request layout."
+  real_client: pending

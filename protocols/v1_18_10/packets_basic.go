@@ -219,7 +219,7 @@ func marshalText(io *wireIO, raw packet.Packet) {
 	case packet.TextTypeChat, packet.TextTypeWhisper, packet.TextTypeAnnouncement:
 		io.String(&pk.SourceName)
 		io.String(&pk.Message)
-	case packet.TextTypeRaw, packet.TextTypeTip, packet.TextTypeSystem, packet.TextTypeObject, packet.TextTypeObjectWhisper:
+	case packet.TextTypeRaw, packet.TextTypeTip, packet.TextTypeSystem, packet.TextTypeObject, packet.TextTypeObjectWhisper, packet.TextTypeObjectAnnouncement:
 		io.String(&pk.Message)
 	case packet.TextTypeTranslation, packet.TextTypePopup, packet.TextTypeJukeboxPopup:
 		io.String(&pk.Message)

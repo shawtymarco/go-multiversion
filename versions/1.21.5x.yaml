@@ -1,0 +1,25 @@
+schema_version: 1
+family:
+  id: r21_u5
+  label: "Minecraft 1.21.5x stable"
+  canonical_game_version: "1.21.51"
+  protocol_id: 766
+  stable_game_versions: ["1.21.50", "1.21.51"]
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction: {commit: "e181313e71a3211856709f40a683424d8a38b1ef", game_version: "1.21.50", protocol_id: 766}
+  final_target_snapshot: {commit: "ecff04b74c9d14ae88a284bc45fc9bb180b79853", game_version: "1.21.50", protocol_id: 766}
+  native_snapshot: {commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6", game_version: "1.26.45", protocol_id: 2169}
+dragonfly_sources:
+  family_update_commit: "2a95afa6a7fadd6e072573c26fb899a734a13abf"
+  final_target_snapshot: "800ee17878ab055a1410228b6a2dde4732d04192"
+protocol_documentation: {repository: "https://github.com/Mojang/bedrock-protocol-docs", branch: "r/21_u5", commit: "8808e927b3c4c9ec9dadc97ffd07289cfb70e007"}
+bds_catalog:
+  source: "EndstoneMC/bedrock-server-data legacy main catalog at e4db24ac01b111f1e2814ee7d8d37dfbb625c761"
+  releases:
+    - {game_version: "1.21.50", build: "1.21.50.10", windows_sha256: "09b3d2d4011d56760a7eb4a650c3b9f91e5eb86616eb309e7c41c869f55e871a", linux_sha256: "1b52e1342bb62b9c0cb46a53e4bea625720691cb2dfd3deaa979bcbcf565af7a"}
+    - {game_version: "1.21.51", build: "1.21.51.02", windows_sha256: "270f7bba1fc4724289d81768b619a0692afcefba7577e947f94c33ae15e55c24", linux_sha256: "ac259d3c75b8c1d55a7a1e0e4f0dd1399afb9bbdd85d4b0d0c8b98723634b213"}
+decisions:
+  conversion_direction: "Direct protocol 766 to/from native protocol 2169."
+  chunk_format: "Version-9 palettes through the pre-hash block runtime-ID hook."
+  real_client: pending

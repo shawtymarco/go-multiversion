@@ -1,0 +1,12 @@
+schema_version: 1
+family: {label: "Minecraft 1.18.0x", protocol_id: 475}
+source:
+  repository: "https://github.com/df-mc/dragonfly"
+  commit: "5ac88dcd93d5ae79fca6142d9cd326cb23015d2f"
+snapshots:
+  - {path: "server/world/block_states.nbt", output: "block_states.nbt", git_blob: "e92bf912da0e579d399f3d464a56550c36bfac59", bytes: 1174943, sha256: "1e77f6c9e6c9eb1f57ac51066549f336883b2509cf487086f91e5989400d653b", entries: 7948}
+  - {path: "server/world/item_runtime_ids.nbt", output: "item_runtime_ids.nbt", git_blob: "4af29ae15f78535d2f2ae745c04c3f60f84eac42", bytes: 29729, sha256: "76fb5abd9f18a12f1cba12898b51bdfcb3e9ab04f5c852458c4a0f6175fa3648", entries: 1081}
+  - {path: "server/item/creative/creative_items.nbt", output: "creative_items.nbt", git_blob: "35d41cdec4e5109a6adfd26f47a7eab6e861eead", bytes: 133971, sha256: "bdb590c31fc1732dd49120996d00b3421e976f3d8105b0c6e1ee68720f1111dc", entries: 1386}
+  - {path: "server/world/chunk/legacy_states.nbt", output: "legacy_states.nbt", git_blob: "c38d55d35b6f6709f4d0a12304c08c16cb78e9f3", bytes: 399275, sha256: "e892de43a47546466b94e696157056dd703d0727271f51ae82f5e4d29a5e38c1", entries: 3307}
+biomes: {source_commit: "c40bf8288fb93ebd014375e46e4592424153927c", bytes: 3413, sha256: "dc7dec09e45b333583120f826c3b4ddd986f707515673c543f442f576601954f", entries: 71}
+fallback_report: {sha256: "53bc2d6877dcf46099281f5840fe4e8f4456c5228094e915ef19c6c3e6b6241f", block_fallbacks: 9621, item_fallbacks: 934, target_item_fallbacks: 11}
