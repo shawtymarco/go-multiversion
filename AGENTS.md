@@ -42,6 +42,13 @@ The current compatibility family is:
   item/block mapping against the current native registries, numeric-to-string
   sound conversion, and the same pre-hash palette hook. Preview builds and
   unlisted 1.26.2x releases are not implied.
+- Minecraft 1.26.10-1.26.14 / protocol 944: direct wire adapter based on
+  `165bd86b`, historical data from Dragonfly `16359459`, semantic item/block
+  mapping against the current native registries, the pre-hash palette hook,
+  and the exact target-era furnace recipe payload. The target-only
+  `editor:map_marker_spawn_egg` remains advertised but is rejected
+  serverbound. Protocol 924, previews, and other 1.26.x release trains are not
+  implied.
 - Minecraft 1.21.110-1.21.114 / protocol 844: direct wire adapter based on
   `bf05a1a`, historical data from Dragonfly `1872684e`, semantic item/block
   mapping against the current native registries, and version-9 palette mapping

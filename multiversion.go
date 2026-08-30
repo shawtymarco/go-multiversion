@@ -9,6 +9,7 @@ import (
 	"github.com/shawtymarco/go-multiversion/protocols/v1_18_10"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_21_100"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_21_110"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_26_10"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_20"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_30"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_44"
@@ -31,6 +32,13 @@ func V1_26_30() minecraft.Protocol {
 // should use ProtocolsWithRegistries before advertising it.
 func V1_26_20() minecraft.Protocol {
 	return v1_26_20.New()
+}
+
+// V1_26_10 returns the wire-only Minecraft protocol 944 family adapter for
+// stable Minecraft 1.26.10 through 1.26.14. Registry-aware consumers should
+// use ProtocolsWithRegistries before advertising it.
+func V1_26_10() minecraft.Protocol {
+	return v1_26_10.New()
 }
 
 // V1_21_110 returns the wire-only Minecraft protocol 844 family adapter for
@@ -84,6 +92,12 @@ func V1_26_20WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol
 	return v1_26_20.NewWithBlockRegistry(native)
 }
 
+// V1_26_10WithBlockRegistry returns a configured protocol-944 adapter using a
+// current native block registry. Item mapping is initialised from ItemRegistry.
+func V1_26_10WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
+	return v1_26_10.NewWithBlockRegistry(native)
+}
+
 // ProtocolsWithBlockRegistry returns all verified non-native protocols,
 // including protocol 1001 configured against the current block registry.
 func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Protocol, error) {
@@ -92,6 +106,10 @@ func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Proto
 		return nil, err
 	}
 	u2, err := V1_26_20WithBlockRegistry(native)
+	if err != nil {
+		return nil, err
+	}
+	u1, err := V1_26_10WithBlockRegistry(native)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +125,7 @@ func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Proto
 	if err != nil {
 		return nil, err
 	}
-	return []minecraft.Protocol{v1_26_44.New(), legacy, u2, older, oldest, v486}, nil
+	return []minecraft.Protocol{v1_26_44.New(), legacy, u2, u1, older, oldest, v486}, nil
 }
 
 // ProtocolsWithRegistries returns all verified adapters after eagerly
@@ -118,6 +136,10 @@ func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protoco
 		return nil, err
 	}
 	u2, err := v1_26_20.NewWithRegistries(native, nativeItems)
+	if err != nil {
+		return nil, err
+	}
+	u1, err := v1_26_10.NewWithRegistries(native, nativeItems)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +155,7 @@ func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protoco
 	if err != nil {
 		return nil, err
 	}
-	return []minecraft.Protocol{v1_26_44.New(), legacy, u2, older, oldest, v486}, nil
+	return []minecraft.Protocol{v1_26_44.New(), legacy, u2, u1, older, oldest, v486}, nil
 }
 
 // V1_26_44 returns the Minecraft protocol 2168 family adapter. The adapter

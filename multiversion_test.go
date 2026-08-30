@@ -23,6 +23,9 @@ func TestProtocols(t *testing.T) {
 	if got := multiversion.V1_26_20(); got.ID() != 975 || got.Ver() != "1.26.23" {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 975/%q", got.ID(), got.Ver(), "1.26.23")
 	}
+	if got := multiversion.V1_26_10(); got.ID() != 944 || got.Ver() != "1.26.14" {
+		t.Fatalf("unexpected development protocol: got %d/%q, want 944/%q", got.ID(), got.Ver(), "1.26.14")
+	}
 	if got := multiversion.V1_21_110(); got.ID() != 844 || got.Ver() != "1.21.114" {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 844/%q", got.ID(), got.Ver(), "1.21.114")
 	}
@@ -33,7 +36,7 @@ func TestProtocols(t *testing.T) {
 		t.Fatalf("unexpected development protocol: got %d/%q, want 486/%q", got.ID(), got.Ver(), "1.18.12")
 	}
 	for _, supported := range protocols {
-		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 844 || supported.ID() == 827 || supported.ID() == 486 {
+		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 944 || supported.ID() == 844 || supported.ID() == 827 || supported.ID() == 486 {
 			t.Fatalf("registry-aware protocol %d must not be enabled by Protocols", supported.ID())
 		}
 	}
