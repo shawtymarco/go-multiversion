@@ -4,6 +4,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/legacyform"
 	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
@@ -31,6 +32,14 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 	}
 
 	switch current := pk.(type) {
+	case *packet.ModalFormRequest:
+		cloned := *current
+		cloned.FormData = legacyform.Downgrade(current.FormData)
+		return []packet.Packet{&cloned}
+	case *packet.ServerSettingsResponse:
+		cloned := *current
+		cloned.FormData = legacyform.Downgrade(current.FormData)
+		return []packet.Packet{&cloned}
 	case *packet.CreativeContent:
 		if items == nil {
 			return nil
