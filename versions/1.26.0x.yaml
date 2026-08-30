@@ -1,0 +1,69 @@
+schema_version: 1
+family:
+  id: r26_u0
+  label: "Minecraft 1.26.0-1.26.3 stable"
+  canonical_game_version: "1.26.3"
+  protocol_id: 924
+  stable_game_versions: ["1.26.0", "1.26.1", "1.26.2", "1.26.3"]
+  excluded_versions:
+    - {version: "1.26.10+", reason: "Later release trains have separate protocol IDs and adapters."}
+    - {version: "1.26.0-preview.*", reason: "Preview builds are outside the stable support scope."}
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction: {commit: "0381a954b1e67488268aac76527890de81d36b17", game_version: "1.26.0", protocol_id: 924}
+  final_target_snapshot:
+    commit: "9c440d5f78803810c3e82424f1f331895eaea799"
+    game_version_constant: "1.26.0"
+    protocol_id: 924
+    rationale: "Last target commit before the 1.26.10/protocol-944 update, including target-era diagnostic corrections."
+  native_snapshot: {commit: "7f058e5ddc393eaa0480dae338c5eee2feb323e6", game_version: "1.26.45", protocol_id: 2169}
+  family_latest_evidence: {source: "https://github.com/EndstoneMC/protocol-docs/tree/r26_u0", commit: "5998742eba7ebb6f2129388a577bee69984733bc", minecraft_version: "1.26.3.1", network_version: 924}
+  transport:
+    raknet_protocol: 11
+    first_packet: "RequestNetworkSettings"
+    batch_compression_format: "Negotiated modern batch framing with algorithm byte"
+    encryption_format: "Native modern encryption path"
+    result: "No transport fork or legacy bootstrap hook is required."
+  step_2_audit:
+    status: complete
+    completed_against: "9c440d5f78803810c3e82424f1f331895eaea799"
+    schema_cross_check: "Mojang r/26_u0 at 7573d1907adb7d5e724c88788245519b867a76c3 and Endstone r26_u0 at 5998742eba7ebb6f2129388a577bee69984733bc"
+    result: "One protocol-924 adapter covers all four locked stable releases; no patch-internal wire branch was identified."
+    oracle: "Exact historical Reader/Writer passes populated high-risk fixtures, both packet pools, and the configured furnace payload."
+dragonfly_sources:
+  repository: "https://github.com/df-mc/dragonfly"
+  family_update_commit: "1ec432bade047d0b93a49a27c7b5907ceb687c70"
+  final_target_snapshot: "3e4f0bbedce69ae25273b942258e9399976ea3e1"
+  final_target_pinned_gophertunnel_tag: "v1.54.0"
+  native_snapshot: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  data_history: "All listed release registry blobs are identical between the family update and final target snapshots."
+protocol_documentation:
+  mojang: {repository: "https://github.com/Mojang/bedrock-protocol-docs", branch: "r/26_u0", commit: "7573d1907adb7d5e724c88788245519b867a76c3"}
+  endstone: {repository: "https://github.com/EndstoneMC/protocol-docs", branch: "r26_u0", commit: "5998742eba7ebb6f2129388a577bee69984733bc"}
+bds_catalog:
+  repository: "https://github.com/EndstoneMC/bedrock-server-data"
+  branch: v2
+  commit: "484a4bc3f5d9ca6ac36509a4c00709ded5bc1244"
+  releases:
+    - {game_version: "1.26.0", bds_build: "1.26.0.2", windows_sha256: "b87522673ba9e94416b4e9f064e944e925f80558d7b50e249c026d35b479b84b", linux_sha256: "d1990caafe5e3edf1853c414f8bb8eb67f9efc8b9a2f4d15221162cf893ab2a2"}
+    - {game_version: "1.26.1", bds_build: "1.26.1.1", windows_sha256: "20e8862164b3bad4f9e5a11fa9d28b441ef03a69ef3dde0b4d99efd2e44ca1db", linux_sha256: "901d466565c537a408b2845b80b00bb4d5c0e90672a6074aad81eebfef64e40e"}
+    - {game_version: "1.26.2", bds_build: "1.26.2.1", windows_sha256: "03ffc13cb51161cc89d784af4f65c3baf6db413fdbae099e7cc1bad0a1a09456", linux_sha256: "9be513b3f7fc910e3ab10b7f43055d2f147667091659e96065ef984f722b268f"}
+    - {game_version: "1.26.3", bds_build: "1.26.3.1", windows_sha256: "f135e6e7b578b0986e041f0bedf5772ddd0027c8684b3cbc8d6610a9208d61fe", linux_sha256: "1b03ac717d239d47a3f374dba673125d3f2a6a05968b5933f9e87affceb6b9c8"}
+registry_blobs:
+  target_commit: "3e4f0bbedce69ae25273b942258e9399976ea3e1"
+  native_commit: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  files:
+    - {path: "server/world/block_states.nbt", target_git_blob: "53ba0264b1e99958596d4491a93bda8a9064c172", native_git_blob: "7006d9d46217425aab8e7d998f70c370b6b9c4eb", identical: false}
+    - {path: "server/world/vanilla_items.nbt", target_git_blob: "27d9be720773b71031b1b1949765c6348dc763cc", native_git_blob: "ec858bab04610d414062178116a3b6a7db40918a", identical: false}
+    - {path: "server/item/creative/creative_items.nbt", target_git_blob: "85492bd10d4f9bc102332a548d2d4ae675bedb62", native_git_blob: "d8319469be8db2b1336e9ff4ad18982f4d399025", identical: false}
+    - {path: "server/item/recipe/crafting_data.nbt", target_git_blob: "cc025ee4ddd592bbe0201fc914e1312f33bbb28a", native_git_blob: "5ee024e95699261768bd4f499b125b94bd058314", identical: false}
+    - {path: "server/item/recipe/furnace_data.nbt", target_git_blob: "cb855de319a07d9c5d83f6b0317dd4af7cdfb524", native_present: false, identical: false}
+    - {path: "server/item/recipe/potion_data.nbt", target_git_blob: "7d13e6740bc8765ed71134d4ecc3ac8b7acf46e5", native_git_blob: "465959b198e4be3e998d8003e3c854f035197e60", identical: false}
+decisions:
+  support_scope: "Stable 1.26.0 through 1.26.3 only."
+  conversion_direction: "Direct protocol 924 to/from native protocol 2169."
+  modding_required: false
+  enable_reason: "ProtocolsWithRegistries validates block/item mappings before advertisement."
+  block_fallback_policy: "Map native-only states to verified target air RID 12530."
+  item_fallback_policy: "Hide native-only items clientbound and reject unknown target items serverbound."
+  real_client_status: "Deferred to the server operator."

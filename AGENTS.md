@@ -49,6 +49,16 @@ The current compatibility family is:
   `editor:map_marker_spawn_egg` remains advertised but is rejected
   serverbound. Protocol 924, previews, and other 1.26.x release trains are not
   implied.
+- Minecraft 1.26.0-1.26.3 / protocol 924: direct wire adapter based on
+  `9c440d5f`, historical data from Dragonfly `3e4f0bbe`, unsigned-Y block
+  positions, legacy camera and StartGame layouts, exact furnace data, semantic
+  registry mapping, and the generic pre-hash palette hook. Preview builds and
+  protocol 898 or 944 releases are not implied.
+- Minecraft 1.21.130-1.21.132 / protocol 898: direct wire adapter based on
+  `c839e607`, historical data from Dragonfly `8d1311b3`, legacy Text and
+  BookEdit layouts, target-specific smithing audit data, semantic registry
+  mapping, and the generic pre-hash palette hook. Preview builds and earlier
+  1.21.x release trains are not implied.
 - Minecraft 1.21.110-1.21.114 / protocol 844: direct wire adapter based on
   `bf05a1a`, historical data from Dragonfly `1872684e`, semantic item/block
   mapping against the current native registries, and version-9 palette mapping

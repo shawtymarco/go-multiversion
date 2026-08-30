@@ -1,0 +1,69 @@
+schema_version: 1
+protocol_id: 898
+game_versions: ["1.21.130", "1.21.131", "1.21.132"]
+source:
+  repository: "https://github.com/df-mc/dragonfly"
+  commit: "8d1311b36535d03c7e79932b7ddaf057922ce1f3"
+  nbt_encoding: "NetworkLittleEndian"
+snapshots:
+  - file: "block_states.nbt"
+    source_path: "server/world/block_states.nbt"
+    git_blob: "53ba0264b1e99958596d4491a93bda8a9064c172"
+    bytes: 2156052
+    entries: 15845
+    ordering: "Stable FNV-1 sort by identifier, preserving source order within an identifier."
+    anchors: {"minecraft:stone": 2532, "minecraft:grass_block": 11062, "minecraft:air": 12530, "minecraft:bedrock": 13079, "minecraft:oak_planks": 14388}
+    sha256: "6b9ecc2b7ddd3b9cd59b5e745d2a704b35e44496c67bcde570f3ea9bcfaed068"
+  - file: "vanilla_items.nbt"
+    source_path: "server/world/vanilla_items.nbt"
+    git_blob: "1f157667a03e58015a0a8dab99c111b30184b575"
+    bytes: 189586
+    entries: 1905
+    sha256: "f267b3e73603e1117af489910a02b98c629e92cc44eb7278f8e02bcf47417110"
+  - file: "creative_items.nbt"
+    source_path: "server/item/creative/creative_items.nbt"
+    git_blob: "9d4e6cb99954f5dd740426b139fa6fa076a9bce7"
+    bytes: 151325
+    groups: 123
+    items: 1843
+    sha256: "aed147536e6509aa26587f6b453f4c1dfbdcc7c437e9ad7dd0e6dbfa6277c6ef"
+  - file: "crafting_data.nbt"
+    source_path: "server/item/recipe/crafting_data.nbt"
+    git_blob: "abe95e9e967a03f7c0a36843836a532082ff6c32"
+    bytes: 831510
+    shaped: 1090
+    shapeless: 1121
+    sha256: "2958de8a39b256a30910fe13fa135b2ff6f08c14640b90a5e0f2cb247f3ddb7f"
+  - file: "furnace_data.nbt"
+    source_path: "server/item/recipe/furnace_data.nbt"
+    git_blob: "ae185c3d13de4ee927222b340194e32b10dcb6e8"
+    bytes: 39264
+    entries: 263
+    sha256: "218db815fd0710f303724d55de95356b44f3c0a2afe09d494d973f938faff4ef"
+  - file: "potion_data.nbt"
+    source_path: "server/item/recipe/potion_data.nbt"
+    git_blob: "2e96e9f02b2e0942b5c34317f65b44940b5e40a1"
+    bytes: 33442
+    potions: 210
+    container_changes: 2
+    sha256: "4aac61af7f8059d2cdb9c22d2e1f2864d3d3915fc92ded80391f06ae0d0e5a8c"
+  - file: "smithing_data.nbt"
+    source_path: "server/item/recipe/smithing_data.nbt"
+    git_blob: "3a79f967575dc09f2b2bcbd2b3218e71ab1963e3"
+    bytes: 3158
+    entries: 12
+    sha256: "e1fb5d48b576fcfc62b43c748f0fb5aaea98d3e9a359e5b33da885d79f08149f"
+shared_native_blobs:
+  - {source_path: "server/world/chunk/legacy_states.nbt", git_blob: "9f2509fe414aaee80c28cfffb2b22e479a906aca"}
+  - {source_path: "server/item/recipe/smithing_trim_data.nbt", git_blob: "fc74a8386fc82578d21430dc54a41ef0e3c8fa41"}
+  - {source_path: "server/item/recipe/item_tags.json", git_blob: "59031ed59fa52a359679823d93062af97f9be27d"}
+fallback_report:
+  file: "fallbacks.json"
+  native_dragonfly_commit: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+  block_policy: "substitute minecraft:air"
+  block_states: 1654
+  item_policy: "hide native-only items and reject unknown target items"
+  items: 143
+  target_only_items: 0
+  sha256: "0e3c2d81880925cb543426fc8d52193c39798691267d64534dc655634b674014"
+  generation: "Set DFMV_V898_FALLBACK_REPORT and run BRBW's protocol-898 registry integration test."
