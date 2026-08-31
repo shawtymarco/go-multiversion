@@ -74,10 +74,13 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		}
 		return []packet.Packet{p.targetCreativeContent(current, items)}
 	case *packet.CraftingData:
-		if items == nil {
-			return nil
-		}
-		return []packet.Packet{mapCraftingData(current, items, p.runtime.blocks)}
+		// Dragonfly 677c8fa1, the target-era 1.18.12 server snapshot, did not
+		// publish CraftingData. A retail 1.18.12 client deterministically access
+		// violates while initialising the converted current recipe catalogue,
+		// even though the packet round-trips structurally. Keep the client's
+		// built-in recipes, matching the historical server, instead of sending
+		// recipe kinds and identifiers introduced by later releases.
+		return nil
 	case *packet.AddPlayer:
 		cloned := *current
 		if mapped, ok := mapItemInstance(current.HeldItem, items, p.runtime.blocks, toTarget); ok {

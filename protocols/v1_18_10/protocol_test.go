@@ -313,6 +313,20 @@ func TestInitialWorldStateConversion(t *testing.T) {
 	}
 }
 
+func TestCraftingDataMatchesHistoricalServerOmission(t *testing.T) {
+	p := Protocol{runtime: &runtimeData{}}
+	pk := &packet.CraftingData{
+		ShapelessRecipes: []protocol.ShapelessRecipe{{RecipeID: "current"}},
+		ClearRecipes:     true,
+	}
+	if converted := p.convertGameplayFromLatest(pk, nil); len(converted) != 0 {
+		t.Fatalf("CraftingData conversion count: got %d, want 0", len(converted))
+	}
+	if len(pk.ShapelessRecipes) != 1 || pk.ShapelessRecipes[0].RecipeID != "current" || !pk.ClearRecipes {
+		t.Fatalf("CraftingData conversion mutated input: %#v", pk)
+	}
+}
+
 func TestPreSpawnPackets(t *testing.T) {
 	p := Protocol{}
 	packets := p.PreSpawnPackets()
