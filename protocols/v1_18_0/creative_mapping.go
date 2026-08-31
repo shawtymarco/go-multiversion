@@ -22,21 +22,5 @@ func (p Protocol) targetCreativeContent(current *packet.CreativeContent, items *
 }
 
 func (p Protocol) targetCreativeStack(stack protocol.ItemStack, items *mapping.ItemMapper) (protocol.ItemStack, bool) {
-	if stack.NetworkID == 0 {
-		return stack, true
-	}
-	networkID, ok := items.NativeToTarget(stack.NetworkID)
-	if !ok {
-		return protocol.ItemStack{}, false
-	}
-	mapped := stack
-	mapped.NetworkID = networkID
-	if stack.BlockRuntimeID > 0 {
-		blockID, valid, exact := p.runtime.blocks.MapNative(uint32(stack.BlockRuntimeID))
-		if !valid || !exact {
-			return protocol.ItemStack{}, false
-		}
-		mapped.BlockRuntimeID = int32(blockID)
-	}
-	return mapped, true
+	return mapItemStack(stack, items, p.runtime.blocks, toTarget)
 }

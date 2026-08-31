@@ -315,12 +315,20 @@ func mapItemStack(stack protocol.ItemStack, items *mapping.ItemMapper, blocks *m
 	} else {
 		mapped.NetworkID, ok = items.TargetToNative(stack.NetworkID)
 	}
+	if stack.BlockRuntimeID > 0 && blocks != nil {
+		if blockNetworkID, found := blockItemNetworkID(stack.BlockRuntimeID, items, blocks, direction); found {
+			mapped.NetworkID, ok = blockNetworkID, true
+		}
+	}
 	if !ok {
 		return protocol.ItemStack{}, false
 	}
 	if stack.BlockRuntimeID > 0 && blocks != nil {
 		if direction == toTarget {
-			blockRuntimeID, _ := blocks.NativeToTarget(uint32(stack.BlockRuntimeID))
+			blockRuntimeID, valid, exact := blocks.MapNative(uint32(stack.BlockRuntimeID))
+			if !valid || !exact {
+				return protocol.ItemStack{}, false
+			}
 			mapped.BlockRuntimeID = int32(blockRuntimeID)
 		} else {
 			blockRuntimeID, found := blocks.TargetToNative(uint32(stack.BlockRuntimeID))
@@ -331,6 +339,29 @@ func mapItemStack(stack protocol.ItemStack, items *mapping.ItemMapper, blocks *m
 		}
 	}
 	return mapped, true
+}
+
+func blockItemNetworkID(blockRuntimeID int32, items *mapping.ItemMapper, blocks *mapping.BlockMapper, direction mappingDirection) (int32, bool) {
+	if direction == toTarget {
+		targetRuntimeID, valid, exact := blocks.MapNative(uint32(blockRuntimeID))
+		if !valid || !exact {
+			return 0, false
+		}
+		state, ok := blocks.TargetState(targetRuntimeID)
+		if !ok {
+			return 0, false
+		}
+		return items.TargetWireRuntimeID(state.Name)
+	}
+	nativeRuntimeID, ok := blocks.TargetToNative(uint32(blockRuntimeID))
+	if !ok {
+		return 0, false
+	}
+	state, ok := blocks.NativeState(nativeRuntimeID)
+	if !ok {
+		return 0, false
+	}
+	return items.NativeRuntimeID(state.Name)
 }
 
 func mapItemInstance(instance protocol.ItemInstance, items *mapping.ItemMapper, blocks *mapping.BlockMapper, direction mappingDirection) (protocol.ItemInstance, bool) {

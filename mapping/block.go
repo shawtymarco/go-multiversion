@@ -37,6 +37,7 @@ type BlockFallback struct {
 type BlockMapper struct {
 	nativeToTarget []uint32
 	nativeExact    []bool
+	nativeStates   []BlockState
 	targetToNative []uint32
 	targetStates   []BlockState
 	targetByKey    map[string]uint32
@@ -188,12 +189,33 @@ func newBlockMapper(native BlockRegistry, historical []BlockState, sortTarget bo
 	return &BlockMapper{
 		nativeToTarget: nativeToTarget,
 		nativeExact:    nativeExact,
+		nativeStates:   nativeStates,
 		targetToNative: targetToNative,
 		targetStates:   targetStates,
 		targetByKey:    targetByKey,
 		fallbacks:      fallbacks,
 		targetAir:      targetAir,
 	}, nil
+}
+
+// NativeState returns the current block state represented by runtimeID.
+func (m *BlockMapper) NativeState(runtimeID uint32) (BlockState, bool) {
+	if m == nil || runtimeID >= uint32(len(m.nativeStates)) {
+		return BlockState{}, false
+	}
+	state := m.nativeStates[runtimeID]
+	state.Properties = cloneProperties(state.Properties)
+	return state, true
+}
+
+// TargetState returns the historical block state represented by runtimeID.
+func (m *BlockMapper) TargetState(runtimeID uint32) (BlockState, bool) {
+	if m == nil || runtimeID >= uint32(len(m.targetStates)) {
+		return BlockState{}, false
+	}
+	state := m.targetStates[runtimeID]
+	state.Properties = cloneProperties(state.Properties)
+	return state, true
 }
 
 // NativeToTarget maps a current runtime ID to protocol 1001. exact is false

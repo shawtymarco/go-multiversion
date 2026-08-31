@@ -35,9 +35,11 @@ type TargetItemFallback struct {
 type ItemMapper struct {
 	nativeToTarget       map[int32]int32
 	targetToNative       map[int32]int32
+	nativeByName         map[string]int32
 	nativeNames          map[int32]string
 	targetNames          map[int32]string
 	targetByName         map[string]int32
+	targetByWire         map[string]int32
 	targetWireByName     map[string]string
 	targetResolvedByWire map[string]string
 	targetEntries        []protocol.ItemEntry
@@ -81,6 +83,7 @@ func newItemMapperWithResolver(native []protocol.ItemEntry, target map[string]Ta
 	}
 
 	targetByName := make(map[string]int32, len(target))
+	targetByWire := make(map[string]int32, len(target))
 	targetSourceNames := make(map[string]string, len(target))
 	targetResolvedByWire := make(map[string]string, len(target))
 	targetNames := make(map[int32]string, len(target))
@@ -104,6 +107,7 @@ func newItemMapperWithResolver(native []protocol.ItemEntry, target map[string]Ta
 			return nil, fmt.Errorf("target item %s resolved to an empty identifier", name)
 		}
 		targetWireNames[entry.RuntimeID], targetNames[entry.RuntimeID] = name, resolvedName
+		targetByWire[name] = entry.RuntimeID
 		targetResolvedByWire[name] = resolvedName
 		if previousID, exists := targetByName[resolvedName]; !exists || (name == resolvedName && targetSourceNames[resolvedName] != resolvedName) || (name != resolvedName && targetSourceNames[resolvedName] != resolvedName && entry.RuntimeID < previousID) {
 			targetByName[resolvedName] = entry.RuntimeID
@@ -162,15 +166,39 @@ func newItemMapperWithResolver(native []protocol.ItemEntry, target map[string]Ta
 	return &ItemMapper{
 		nativeToTarget:       nativeToTarget,
 		targetToNative:       targetToNative,
+		nativeByName:         nativeByName,
 		nativeNames:          nativeNames,
 		targetNames:          targetNames,
 		targetByName:         targetByName,
+		targetByWire:         targetByWire,
 		targetWireByName:     targetSourceNames,
 		targetResolvedByWire: targetResolvedByWire,
 		targetEntries:        targetEntries,
 		fallbacks:            fallbacks,
 		targetFallbacks:      targetFallbacks,
 	}, nil
+}
+
+// TargetWireRuntimeID resolves the identifier exactly as advertised by the
+// historical item registry. Historical block state names use these wire names
+// even when item upgrading resolves them to a flattened current identifier.
+func (m *ItemMapper) TargetWireRuntimeID(name string) (int32, bool) {
+	if m == nil {
+		return 0, false
+	}
+	runtimeID, ok := m.targetByWire[name]
+	return runtimeID, ok
+}
+
+// NativeRuntimeID resolves a current semantic item identifier to its network
+// ID. It is used for historical block-items whose old registry exposed one
+// generic item identifier while BlockRuntimeID carried the concrete variant.
+func (m *ItemMapper) NativeRuntimeID(name string) (int32, bool) {
+	if m == nil {
+		return 0, false
+	}
+	runtimeID, ok := m.nativeByName[name]
+	return runtimeID, ok
 }
 
 // TargetFallbacks returns historical target entries that are advertised for
