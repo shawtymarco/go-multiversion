@@ -68,6 +68,8 @@ var packetMarshals = map[uint32]packetMarshal{
 	packet.IDText:                              marshalText,
 	packet.IDTransfer:                          marshalTransfer,
 	packet.IDUpdateAttributes:                  marshalUpdateAttributes,
+	packet.IDUpdateBlock:                       marshalUpdateBlock,
+	packet.IDUpdateBlockSynced:                 marshalUpdateBlockSynced,
 	packet.IDUpdatePlayerGameType:              marshalUpdatePlayerGameType,
 }
 

@@ -211,6 +211,28 @@ func marshalStopSound(io *wireIO, raw packet.Packet) {
 	}
 }
 
+func marshalUpdateBlock(io *wireIO, raw packet.Packet) {
+	pk := raw.(*packet.UpdateBlock)
+	marshalUnsignedBlockPos(io, &pk.Position)
+	io.Varuint32(&pk.NewBlockRuntimeID)
+	io.Varuint32(&pk.Flags)
+	io.Varuint32(&pk.Layer)
+}
+
+func marshalUpdateBlockSynced(io *wireIO, raw packet.Packet) {
+	pk := raw.(*packet.UpdateBlockSynced)
+	marshalUnsignedBlockPos(io, &pk.Position)
+	io.Varuint32(&pk.NewBlockRuntimeID)
+	io.Varuint32(&pk.Flags)
+	io.Varuint32(&pk.Layer)
+	entityUniqueID := int64(pk.EntityUniqueID)
+	io.Varint64(&entityUniqueID)
+	if io.reading {
+		pk.EntityUniqueID = uint64(entityUniqueID)
+	}
+	io.Varuint64(&pk.TransitionType)
+}
+
 func marshalText(io *wireIO, raw packet.Packet) {
 	pk := raw.(*packet.Text)
 	io.Uint8(&pk.TextType)
