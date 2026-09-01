@@ -15,6 +15,8 @@ var (
 	blockStateData []byte
 	//go:embed item_runtime_ids.json
 	itemRuntimeIDData []byte
+	//go:embed block_item_meta.json
+	blockItemMetadataData []byte
 	//go:embed biome_definitions.nbt
 	biomeDefinitionData []byte
 )
@@ -54,6 +56,14 @@ func Items() (map[string]ItemEntry, error) {
 	return items, nil
 }
 
+func BlockItemMetadata() ([]int16, error) {
+	var metadata []int16
+	if err := json.Unmarshal(blockItemMetadataData, &metadata); err != nil {
+		return nil, fmt.Errorf("decode block item metadata: %w", err)
+	}
+	return metadata, nil
+}
+
 func BiomeDefinitions() []byte { return bytes.Clone(biomeDefinitionData) }
 
 func RawSnapshot(name string) ([]byte, bool) {
@@ -63,6 +73,8 @@ func RawSnapshot(name string) ([]byte, bool) {
 		data = blockStateData
 	case "item_runtime_ids.json":
 		data = itemRuntimeIDData
+	case "block_item_meta.json":
+		data = blockItemMetadataData
 	case "biome_definitions.nbt":
 		data = biomeDefinitionData
 	default:

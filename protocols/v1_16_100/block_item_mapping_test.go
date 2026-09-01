@@ -30,14 +30,47 @@ func TestLegacyBlockItemUsesBlockVariantForNetworkID(t *testing.T) {
 	if !valid || !exact {
 		t.Fatal("lime wool block did not map exactly")
 	}
+	targetState, ok := blocks.TargetState(targetBlockRuntimeID)
+	if !ok {
+		t.Fatal("lime wool target state is absent")
+	}
+	if metadata, ok := targetBlockItemMeta(targetState); !ok || metadata != 5 {
+		t.Fatalf("lime wool target metadata = %d/%v, want 5/true", metadata, ok)
+	}
 	native := protocol.ItemStack{
 		ItemType:       protocol.ItemType{NetworkID: 501},
 		BlockRuntimeID: 1,
 		Count:          64,
 	}
 	target, ok := mapItemStack(native, items, blocks, toTarget)
-	if !ok || target.NetworkID != 35 || target.BlockRuntimeID != int32(targetBlockRuntimeID) || target.Count != 64 {
+	if !ok || target.NetworkID != 35 || target.MetadataValue != 5 || target.BlockRuntimeID != 0 || target.Count != 64 {
 		t.Fatalf("target wool stack = %#v, %v", target, ok)
+	}
+	legacyState, ok := targetBlockItemState("minecraft:wool", target.MetadataValue)
+	if !ok {
+		t.Fatal("lime wool metadata did not resolve a target state")
+	}
+	targetSemanticName, ok := items.TargetIdentifier(target.NetworkID)
+	if !ok || targetSemanticName != "minecraft:white_wool" {
+		t.Fatalf("lime wool target semantic identifier = %q/%v", targetSemanticName, ok)
+	}
+	if targetName, ok := items.TargetWireIdentifier(targetSemanticName); !ok || targetName != "minecraft:wool" {
+		t.Fatalf("lime wool target wire identifier = %q/%v", targetName, ok)
+	}
+	legacyRID, ok := blocks.TargetRuntimeID(legacyState.Name, legacyState.Properties)
+	if !ok {
+		t.Fatalf("lime wool target state is absent from mapper: %#v", legacyState)
+	}
+	nativeRID, ok := blocks.TargetToNative(legacyRID)
+	if !ok || nativeRID != 1 {
+		t.Fatalf("lime wool target state maps to native RID %d/%v, want 1/true", nativeRID, ok)
+	}
+	nativeState, ok := blocks.NativeState(nativeRID)
+	if !ok {
+		t.Fatal("lime wool native state is absent")
+	}
+	if itemRID, ok := items.NativeRuntimeID(nativeState.Name); !ok || itemRID != 501 {
+		t.Fatalf("lime wool native item = %d/%v, want 501/true", itemRID, ok)
 	}
 	roundTrip, ok := mapItemStack(target, items, blocks, toNative)
 	if !ok || roundTrip.NetworkID != native.NetworkID || roundTrip.BlockRuntimeID != native.BlockRuntimeID || roundTrip.Count != native.Count {

@@ -20,12 +20,16 @@ func TestSnapshotsDecode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	metadata, err := BlockItemMetadata()
+	if err != nil {
+		t.Fatal(err)
+	}
 	var biomes map[string]any
 	if err := nbt.NewDecoder(bytes.NewReader(BiomeDefinitions())).Decode(&biomes); err != nil {
 		t.Fatalf("decode biome definitions: %v", err)
 	}
-	if len(states) != 6611 || len(items) != 914 || len(biomes) != 71 {
-		t.Fatalf("registry counts: blocks=%d items=%d biomes=%d", len(states), len(items), len(biomes))
+	if len(states) != 6611 || len(metadata) != len(states) || len(items) != 914 || len(biomes) != 71 {
+		t.Fatalf("registry counts: blocks=%d metadata=%d items=%d biomes=%d", len(states), len(metadata), len(items), len(biomes))
 	}
 	airRuntimeID := -1
 	for runtimeID, state := range states {
@@ -72,6 +76,7 @@ func TestFallbackReport(t *testing.T) {
 func TestSnapshotHashes(t *testing.T) {
 	want := map[string]string{
 		"block_states.nbt":      "23ceac32f48fa15b5a8125a4455c84f1687ca93fd87cdf5b7e3ed1c72cc2c224",
+		"block_item_meta.json":  "d57297e043392bea53518c92144bdcf57b11257d8680853777c2d4abfdaa8816",
 		"item_runtime_ids.json": "5657da3bb9118b3914242d3349537d226b119a8dd2b28ef622d6b94ef59c4d42",
 		"biome_definitions.nbt": "dc7dec09e45b333583120f826c3b4ddd986f707515673c543f442f576601954f",
 	}

@@ -75,6 +75,17 @@ target_data_sources:
     bytes: 3413
     entries: 71
     sha256: "dc7dec09e45b333583120f826c3b4ddd986f707515673c543f442f576601954f"
+  - repository: "https://github.com/TedacMC/tedac"
+    commit: "11e82a142a780ee53149bcc5065d09239cc18c15"
+    paths:
+      - "tedac/legacymappings/block_state_meta_map.json"
+      - "tedac/legacymappings/block_id_map.json"
+      - "tedac/latestmappings/block_states.nbt"
+    output: "block_item_meta.json"
+    entries: 6611
+    unmatched_internal_states_default_zero: 73
+    sha256: "d57297e043392bea53518c92144bdcf57b11257d8680853777c2d4abfdaa8816"
+    use: "Restore legacy item metadata after protocol 419 removes BlockRuntimeID from item stacks."
 
 bds_catalog:
   repository: "https://github.com/EndstoneMC/bedrock-server-data"
