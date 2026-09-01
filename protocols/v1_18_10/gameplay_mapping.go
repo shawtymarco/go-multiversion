@@ -4,6 +4,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/itemconv"
 	"github.com/shawtymarco/go-multiversion/internal/packetconv"
 	"github.com/shawtymarco/go-multiversion/mapping"
 )
@@ -331,9 +332,15 @@ func mapItemStack(stack protocol.ItemStack, items *mapping.ItemMapper, blocks *m
 	mapped := stack
 	var ok bool
 	if direction == toTarget {
-		mapped.NetworkID, ok = items.NativeToTarget(stack.NetworkID)
+		if mapped, ok = itemconv.DowngradeLegacySpawnEgg(stack, items); !ok {
+			mapped = stack
+			mapped.NetworkID, ok = items.NativeToTarget(stack.NetworkID)
+		}
 	} else {
-		mapped.NetworkID, ok = items.TargetToNative(stack.NetworkID)
+		if mapped, ok = itemconv.UpgradeLegacySpawnEgg(stack, items); !ok {
+			mapped = stack
+			mapped.NetworkID, ok = items.TargetToNative(stack.NetworkID)
+		}
 	}
 	if stack.BlockRuntimeID > 0 && blocks != nil {
 		if blockNetworkID, found := blockItemNetworkID(stack.BlockRuntimeID, items, blocks, direction); found {
