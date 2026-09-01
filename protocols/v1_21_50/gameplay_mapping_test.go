@@ -94,6 +94,47 @@ func TestGameplayBlockMappingFallbackAndRoundTrip(t *testing.T) {
 	}
 }
 
+func TestGameplayBlockSoundMappingPreservesInputAndRoundTrips(t *testing.T) {
+	p := testMappedProtocol(t)
+	targetRuntimeID, exact := p.runtime.blocks.NativeToTarget(1)
+	if !exact {
+		t.Fatal("stone mapping unexpectedly used fallback")
+	}
+	for _, soundType := range []string{
+		packet.SoundEventDoorOpen,
+		packet.SoundEventDoorClose,
+		packet.SoundEventTrapdoorOpen,
+		packet.SoundEventTrapdoorClose,
+		packet.SoundEventFenceGateOpen,
+		packet.SoundEventFenceGateClose,
+		packet.SoundEventPlace,
+		packet.SoundEventHit,
+		packet.SoundEventItemUseOn,
+	} {
+		t.Run(soundType, func(t *testing.T) {
+			original := &packet.LevelSoundEvent{SoundType: soundType, ExtraData: 1}
+			wantOriginal := *original
+			converted := p.convertGameplayFromLatest(original, nil)
+			if !reflect.DeepEqual(original, &wantOriginal) {
+				t.Fatalf("mapping mutated input: got %#v, want %#v", original, &wantOriginal)
+			}
+			target := converted[0].(*packet.LevelSoundEvent)
+			if got, want := target.ExtraData, int32(targetRuntimeID); got != want {
+				t.Fatalf("mapped sound block runtime ID: got %d, want %d", got, want)
+			}
+			native := p.convertGameplayToLatest(target, nil)
+			if got := native[0].(*packet.LevelSoundEvent).ExtraData; got != 1 {
+				t.Fatalf("round-trip sound block runtime ID: got %d, want 1", got)
+			}
+		})
+	}
+
+	note := &packet.LevelSoundEvent{SoundType: packet.SoundEventNote, ExtraData: 0x1234}
+	if got := p.convertGameplayFromLatest(note, nil)[0].(*packet.LevelSoundEvent).ExtraData; got != note.ExtraData {
+		t.Fatalf("note payload changed to %d, want %d", got, note.ExtraData)
+	}
+}
+
 func TestCraftingDataFiltersUnmappedOutputs(t *testing.T) {
 	p := testMappedProtocol(t)
 	input := &packet.CraftingData{ShapelessRecipes: []protocol.ShapelessRecipe{

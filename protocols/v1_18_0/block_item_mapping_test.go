@@ -5,6 +5,7 @@ import (
 
 	"github.com/df-mc/worldupgrader/blockupgrader"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
+	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 	v475data "github.com/shawtymarco/go-multiversion/data/v475"
 	"github.com/shawtymarco/go-multiversion/mapping"
 )
@@ -41,6 +42,47 @@ func TestLegacyBlockItemUsesBlockVariantForNetworkID(t *testing.T) {
 	roundTrip, ok := mapItemStack(target, items, blocks, toNative)
 	if !ok || roundTrip.NetworkID != native.NetworkID || roundTrip.BlockRuntimeID != native.BlockRuntimeID || roundTrip.Count != native.Count {
 		t.Fatalf("native wool round trip = %#v, %v", roundTrip, ok)
+	}
+}
+
+func TestLegacyBlockSoundUsesTargetRuntimeID(t *testing.T) {
+	blocks, items := legacyWoolTestMappers(t)
+	p := Protocol{runtime: &runtimeData{blocks: blocks, items: items}}
+	targetRuntimeID, valid, exact := blocks.MapNative(1)
+	if !valid || !exact {
+		t.Fatal("lime wool block did not map exactly")
+	}
+	for _, soundType := range []string{
+		packet.SoundEventDoorOpen,
+		packet.SoundEventDoorClose,
+		packet.SoundEventTrapdoorOpen,
+		packet.SoundEventTrapdoorClose,
+		packet.SoundEventFenceGateOpen,
+		packet.SoundEventFenceGateClose,
+		packet.SoundEventPlace,
+		packet.SoundEventHit,
+		packet.SoundEventItemUseOn,
+	} {
+		t.Run(soundType, func(t *testing.T) {
+			original := &packet.LevelSoundEvent{SoundType: soundType, ExtraData: 1}
+			converted := p.convertGameplayFromLatest(original, nil)
+			if original.ExtraData != 1 {
+				t.Fatalf("mapping mutated input extra data to %d", original.ExtraData)
+			}
+			target := converted[0].(*packet.LevelSoundEvent)
+			if got, want := target.ExtraData, int32(targetRuntimeID); got != want {
+				t.Fatalf("mapped sound block runtime ID: got %d, want %d", got, want)
+			}
+			native := p.convertGameplayToLatest(target, nil)
+			if got := native[0].(*packet.LevelSoundEvent).ExtraData; got != 1 {
+				t.Fatalf("round-trip sound block runtime ID: got %d, want 1", got)
+			}
+		})
+	}
+
+	note := &packet.LevelSoundEvent{SoundType: packet.SoundEventNote, ExtraData: 0x1234}
+	if got := p.convertGameplayFromLatest(note, nil)[0].(*packet.LevelSoundEvent).ExtraData; got != note.ExtraData {
+		t.Fatalf("note payload changed to %d, want %d", got, note.ExtraData)
 	}
 }
 

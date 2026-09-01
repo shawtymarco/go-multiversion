@@ -4,6 +4,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetconv"
 	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
@@ -144,6 +145,14 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		cloned.Blocks = mapBlockChangeEntries(current.Blocks, p.runtime.blocks, toTarget)
 		cloned.Extra = mapBlockChangeEntries(current.Extra, p.runtime.blocks, toTarget)
 		return []packet.Packet{&cloned}
+	case *packet.LevelSoundEvent:
+		cloned := *current
+		if !packetconv.MapLevelSoundBlockRuntimeID(&cloned, func(runtimeID uint32) (uint32, bool) {
+			return mapBlockRuntimeID(runtimeID, p.runtime.blocks, toTarget)
+		}) {
+			return nil
+		}
+		return []packet.Packet{&cloned}
 	case *packet.LevelEvent:
 		cloned := *current
 		mapLevelEventData(&cloned, items, p.runtime.blocks, toTarget)
@@ -275,6 +284,14 @@ func (p Protocol) convertGameplayToLatest(pk packet.Packet, conn *minecraft.Conn
 		cloned.Blocks = mapBlockChangeEntries(current.Blocks, p.runtime.blocks, toNative)
 		cloned.Extra = mapBlockChangeEntries(current.Extra, p.runtime.blocks, toNative)
 		if (cloned.Blocks == nil && len(current.Blocks) != 0) || (cloned.Extra == nil && len(current.Extra) != 0) {
+			return nil
+		}
+		return []packet.Packet{&cloned}
+	case *packet.LevelSoundEvent:
+		cloned := *current
+		if !packetconv.MapLevelSoundBlockRuntimeID(&cloned, func(runtimeID uint32) (uint32, bool) {
+			return mapBlockRuntimeID(runtimeID, p.runtime.blocks, toNative)
+		}) {
 			return nil
 		}
 		return []packet.Packet{&cloned}
