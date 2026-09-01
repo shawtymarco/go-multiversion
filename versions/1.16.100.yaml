@@ -94,6 +94,17 @@ decisions:
   enable_in_protocol_catalog: false
   enable_reason: "Keep disabled until packet oracles, registry and chunk gates, automated E2E, and the real-client matrix pass."
 
+mapping_evidence:
+  native_blocks: 17499
+  target_blocks: 6611
+  target_air_runtime_id: 134
+  block_fallbacks: 10986
+  native_items: 1976
+  target_items: 914
+  native_item_fallbacks: 1097
+  target_item_fallbacks: 8
+  fallback_report_sha256: "9e87aa4f9279bde0ea0c77614be71ecd50294eeb49f072dee5cf1a82eae5b484"
+
 validation:
   automated: pending
   real_client: pending

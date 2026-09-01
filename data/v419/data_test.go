@@ -3,7 +3,9 @@ package v419
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/sandertv/gophertunnel/minecraft/nbt"
@@ -43,6 +45,27 @@ func TestSnapshotsDecode(t *testing.T) {
 	}
 	if airRuntimeID != 134 {
 		t.Fatalf("minecraft:air runtime ID: got %d, want 134", airRuntimeID)
+	}
+}
+
+func TestFallbackReport(t *testing.T) {
+	data, err := os.ReadFile("fallbacks.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, want := fmt.Sprintf("%x", sha256.Sum256(data)), "9e87aa4f9279bde0ea0c77614be71ecd50294eeb49f072dee5cf1a82eae5b484"; got != want {
+		t.Fatalf("fallback SHA256: got %s, want %s", got, want)
+	}
+	var report struct {
+		Blocks      []json.RawMessage `json:"block_fallbacks"`
+		Items       []json.RawMessage `json:"item_fallbacks"`
+		TargetItems []json.RawMessage `json:"target_item_fallbacks"`
+	}
+	if err := json.Unmarshal(data, &report); err != nil {
+		t.Fatal(err)
+	}
+	if len(report.Blocks) != 10986 || len(report.Items) != 1097 || len(report.TargetItems) != 8 {
+		t.Fatalf("fallback counts: %d/%d/%d", len(report.Blocks), len(report.Items), len(report.TargetItems))
 	}
 }
 
