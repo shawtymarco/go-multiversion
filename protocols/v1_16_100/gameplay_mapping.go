@@ -76,10 +76,10 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		}
 		return []packet.Packet{p.targetCreativeContent(current, items)}
 	case *packet.CraftingData:
-		if items == nil {
-			return nil
-		}
-		return []packet.Packet{mapCraftingData(current, items, p.runtime.blocks)}
+		// Minecraft 1.16.100 keeps its built-in recipe catalogue. Feeding the
+		// current Dragonfly catalogue into the retail client crashes it while
+		// initialising the recipe book, before it can process world chunks.
+		return nil
 	case *packet.AddPlayer:
 		cloned := *current
 		if mapped, ok := mapItemInstance(current.HeldItem, items, p.runtime.blocks, toTarget); ok {

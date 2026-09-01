@@ -145,6 +145,27 @@ func TestUnsupportedNativeSoundIsDropped(t *testing.T) {
 	}
 }
 
+func TestCraftingDataUsesTargetBuiltInCatalogue(t *testing.T) {
+	items, err := mapping.NewItemMapper(
+		[]protocol.ItemEntry{{Name: "minecraft:stone", RuntimeID: 1}},
+		map[string]mapping.TargetItem{"minecraft:stone": {RuntimeID: 1}},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := Protocol{runtime: &runtimeData{items: items}}
+	input := &packet.CraftingData{
+		ShapelessRecipes: []protocol.ShapelessRecipe{{RecipeID: "current", RecipeNetworkID: 1}},
+		ClearRecipes:     true,
+	}
+	if converted := p.convertGameplayFromLatest(input, nil); len(converted) != 0 {
+		t.Fatalf("CraftingData conversion count: got %d, want 0", len(converted))
+	}
+	if len(input.ShapelessRecipes) != 1 || input.ShapelessRecipes[0].RecipeID != "current" || !input.ClearRecipes {
+		t.Fatalf("CraftingData conversion mutated input: %#v", input)
+	}
+}
+
 func TestStartGameWritesFullTargetBlockPalette(t *testing.T) {
 	runtime, err := newRuntimeData(protocol419IntegrationBlockRegistry(t), []protocol.ItemEntry{{Name: "minecraft:stone", RuntimeID: 1}})
 	if err != nil {
