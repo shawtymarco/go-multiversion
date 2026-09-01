@@ -3,6 +3,7 @@ package v1_16_100
 import (
 	"fmt"
 
+	"github.com/sandertv/gophertunnel/minecraft/nbt"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
@@ -90,7 +91,7 @@ func marshalStartGame(io *wireIO, raw packet.Packet) {
 	marshalPlayerMovementSettings(io, &pk.PlayerMovementSettings)
 	io.Int64(&pk.Time)
 	io.Varint32(&pk.EnchantmentSeed)
-	protocol.Slice(io.directional(), &pk.Blocks)
+	marshalStartGameBlocks(io, &pk.Blocks)
 	marshalStartGameItems(io)
 	io.String(&pk.MultiPlayerCorrelationID)
 	io.Bool(&pk.ServerAuthoritativeInventory)
@@ -111,6 +112,27 @@ func marshalStartGame(io *wireIO, raw packet.Packet) {
 		pk.UseBlockNetworkIDHashes = false
 		pk.ServerAuthoritativeSound = false
 	}
+}
+
+func marshalStartGameBlocks(io *wireIO, blocks *[]protocol.BlockEntry) {
+	entries := *blocks
+	if !io.reading && io.runtime != nil && io.runtime.blocks != nil {
+		states := io.runtime.blocks.TargetStates()
+		entries = make([]protocol.BlockEntry, len(states))
+		for index, state := range states {
+			entries[index] = protocol.BlockEntry{Name: state.Name, Properties: state.Properties}
+		}
+	}
+	count := uint32(len(entries))
+	io.Varuint32(&count)
+	if io.reading {
+		entries = make([]protocol.BlockEntry, count)
+	}
+	for index := range entries {
+		io.String(&entries[index].Name)
+		io.NBT(&entries[index].Properties, nbt.NetworkLittleEndian)
+	}
+	*blocks = entries
 }
 
 func marshalGameRule(raw protocol.IO, rule *protocol.GameRule) {

@@ -145,6 +145,25 @@ func TestUnsupportedNativeSoundIsDropped(t *testing.T) {
 	}
 }
 
+func TestStartGameWritesFullTargetBlockPalette(t *testing.T) {
+	runtime, err := newRuntimeData(protocol419IntegrationBlockRegistry(t), []protocol.ItemEntry{{Name: "minecraft:stone", RuntimeID: 1}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var encoded bytes.Buffer
+	entries := []protocol.BlockEntry{{Name: "custom:ignored", Properties: map[string]any{}}}
+	marshalStartGameBlocks(newWireIO(protocol.NewWriter(&encoded, -1), false, runtime), &entries)
+	if got, want := len(entries), 6611; got != want {
+		t.Fatalf("StartGame block palette count: got %d, want %d", got, want)
+	}
+	if entries[134].Name != "minecraft:air" {
+		t.Fatalf("StartGame air entry: got %q at RID 134", entries[134].Name)
+	}
+	if entries[0].Name == "custom:ignored" {
+		t.Fatal("native custom block leaked into protocol-419 palette")
+	}
+}
+
 func marshalProtocol419Packet(t *testing.T, p *Protocol, pk packet.Packet) []byte {
 	t.Helper()
 	marshal, ok := packetMarshals[pk.ID()]
