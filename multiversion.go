@@ -6,6 +6,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/shawtymarco/go-multiversion/mapping"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_16_100"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_18_0"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_18_10"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_21_100"
@@ -93,6 +94,10 @@ func V1_18_10() minecraft.Protocol {
 // stable Minecraft 1.18.0 through 1.18.2.
 func V1_18_0() minecraft.Protocol { return v1_18_0.New() }
 
+// V1_16_100 returns the wire-only Minecraft protocol 419 adapter. Registry-aware consumers should use
+// ProtocolsWithRegistries before advertising it.
+func V1_16_100() minecraft.Protocol { return v1_16_100.New() }
+
 // V1_21_110WithBlockRegistry returns a configured protocol-844 adapter using
 // a current native block registry. Item mapping is initialised from ItemRegistry.
 func V1_21_110WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
@@ -121,6 +126,10 @@ func V1_21_40WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol
 
 func V1_18_0WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
 	return v1_18_0.NewWithBlockRegistry(native)
+}
+
+func V1_16_100WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protocol, error) {
+	return v1_16_100.NewWithBlockRegistry(native)
 }
 
 // V1_26_30WithBlockRegistry returns a fully configured protocol-1001 adapter

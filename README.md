@@ -23,6 +23,7 @@
 | 748 | 1.21.40, 1.21.41, 1.21.43, 1.21.44 | `v1_21_40` | 🧪 | 🧪 Historical wire oracle and registry integration |
 | 486 | 1.18.10-1.18.12 | `v1_18_10` | ✅ | ✅ 1.18.10 · 🧪 1.18.11/1.18.12 automated |
 | 475 | 1.18.0-1.18.2 | `v1_18_0` | 🧪 | 🧪 Historical wire oracle and registry integration |
+| 419 | 1.16.100 | `v1_16_100` | 🧪 | 🧪 Historical wire, encryption, registry, and chunk-format tests |
 
 > [!NOTE]
 > Version coverage is explicit. Unlisted releases and previews are not implied.
@@ -53,39 +54,40 @@ need native block and item registries.
   historical block and item identifiers before semantic mapping.
 - `go-multiversion` does **not** import Dragonfly directly.
 
-**Minecraft 1.18 transport**
+**Minecraft 1.16/1.18 transport**
 
-Servers that want to accept protocol `486` or `475` clients must use
+Servers that want to accept protocol `486`, `475`, or `419` clients must use
 [`shawtymarco/gophertunnel`](https://github.com/shawtymarco/gophertunnel) at
-`823172d1d90e238566d6bcc16b41978832d90a93` or an equivalent implementation.
+`1524deb2ed1a4c65f595685e30bf38534302e877` or an equivalent implementation.
 The fork keeps the `github.com/sandertv/gophertunnel` module path while adding:
 
 - RakNet v10 acceptance without changing the native v11 advertisement;
 - Login-first protocol selection and legacy flate batches without an algorithm prefix;
 - protocol-owned pre-spawn packets required before `PlayStatus(PlayerSpawn)`.
+- protocol-selected AES-CFB8 encryption for 1.16.100 while native and 1.18 retain AES-CTR.
 
-The standard RakNet v11 and `RequestNetworkSettings` path remains the native
-path for non-1.18 clients.
+The standard RakNet v11 and `RequestNetworkSettings` path remains unchanged for modern clients.
 
 **Dragonfly integration**
 
 Dragonfly consumers require
 [`shawtymarco/dragonfly`](https://github.com/shawtymarco/dragonfly) at
-`dc54cf36e662411a770a9f0e91c1825cc310eb0a` or an implementation with equivalent
+`cef8669ca8e873ee9622a4e5d425921fef1458d1` or an implementation with equivalent
 hooks:
 
 - `AcceptedProtocolsProvider` after block-registry finalisation;
 - `VanillaItemEntries()` for native item mapping;
 - protocol access on each connection;
 - `BlockRuntimeIDMapper` and protocol-aware chunk encoding before cache hashing.
+- protocol-neutral target range, sub-chunk-version, and 2D-biome encoding for 1.16.100.
 
 > [!WARNING]
 > Stock upstream Dragonfly does not currently provide these hooks. It cannot be
 > used as a drop-in replacement for registry-aware protocols `1001`, `975`, `944`, `924`, `898`,
-> `844`, `827`, `766`, `748`, `486`, or `475`. Without pre-hash palette mapping, old clients receive native block
+> `844`, `827`, `766`, `748`, `486`, `475`, or `419`. Without pre-hash palette mapping, old clients receive native block
 > runtime IDs and incompatible cache blobs.
 
-Protocols `486` and `475` additionally require the gophertunnel fork above. The adapter
+Protocols `486`, `475`, and `419` additionally require the gophertunnel fork above. The adapter
 alone cannot make a stock listener accept RakNet v10 or decode Login-first
 legacy batches.
 
@@ -96,5 +98,6 @@ legacy batches.
 - [df-mc/worldupgrader](https://github.com/df-mc/worldupgrader)
 - [Mojang/bedrock-protocol-docs](https://github.com/Mojang/bedrock-protocol-docs)
 - [EndstoneMC/bedrock-server-data](https://github.com/EndstoneMC/bedrock-server-data)
+- [TedacMC/tedac](https://github.com/TedacMC/tedac) for the MIT-licensed protocol-419 registry cross-checks
 - [Go gopher](https://go.dev/blog/gopher) by Renee French, used under
   [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

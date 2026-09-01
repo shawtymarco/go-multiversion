@@ -1,0 +1,100 @@
+schema_version: 1
+
+family:
+  id: r16_u1
+  label: "Minecraft 1.16.100 stable"
+  canonical_game_version: "1.16.100"
+  protocol_id: 419
+  stable_game_versions:
+    - "1.16.100"
+  excluded_versions:
+    - version: "1.16.200-1.16.201"
+      reason: "Protocol 422 changes resource-pack and item-stack behaviour and requires a separate adapter."
+    - version: "1.16.*-preview.*"
+      reason: "Preview builds are outside the stable support scope."
+
+wire_sources:
+  repository: "https://github.com/Sandertv/gophertunnel"
+  introduction:
+    commit: "cc6c432e22be5a7f73024646592f21f8ec678a3d"
+    game_version: "1.16.100"
+    protocol_id: 419
+  final_target_snapshot:
+    commit: "dc9bfb5d500acbdc6ed0d690245fac16780d4b63"
+    tag: "v1.10.0"
+    rationale: "Last protocol-419 revision before the 1.16.200/protocol-422 update, including corrected item-stack response, skin, movement, and pool behaviour."
+  native_snapshot:
+    repository: "https://github.com/shawtymarco/gophertunnel"
+    commit: "1524deb2ed1a4c65f595685e30bf38534302e877"
+    game_version: "1.26.45"
+    protocol_id: 2169
+  comparison_window:
+    baseline: "dc9bfb5d500acbdc6ed0d690245fac16780d4b63"
+    native: "1524deb2ed1a4c65f595685e30bf38534302e877"
+    policy: "Convert protocol 419 directly to and from native protocol 2169; newer adapters may be reused only as wire implementation layers."
+
+transport:
+  target_raknet_protocol: 10
+  raknet_source_module: "github.com/sandertv/go-raknet v1.9.1"
+  raknet_source_sum: "h1:nAtrjdTq4OZT9Mimv2A+RDN4ncZDdn/LhBh1QRrEXN8="
+  native_raknet_protocol: 11
+  target_first_packet: Login
+  native_first_packet: RequestNetworkSettings
+  target_compression: "Immediate flate; no per-batch algorithm prefix."
+  native_compression: "NetworkSettings-selected algorithm with threshold and algorithm prefix."
+  target_encryption: "AES-CFB8 using the first 16 key bytes as IV, with the protocol-419 checksum counter."
+  native_encryption: "AES-CTR using key[0:12] || 0x00000002 as IV."
+  implementation: "Current go-raknet plus gophertunnel's generic RakNet-v10/Login-first legacy compression path and protocol-selected encryption factory."
+
+dragonfly_sources:
+  repository: "https://github.com/df-mc/dragonfly"
+  final_pre_1_16_200_snapshot: "23ff78289abf021a4754ecc33c7c2f63b96a899b"
+  limitation: "Upstream Dragonfly did not publish a protocol-419 data update; its final pre-1.16.200 snapshot still pinned gophertunnel v1.8.2/protocol 408 and is not used as wire evidence."
+  native_data_snapshot: "ba86ce9567d9fe5936201bf6a951a5a133bd8b2a"
+
+target_data_sources:
+  - repository: "https://github.com/TedacMC/tedac"
+    commit: "6e6f33d1062a622851d9d602fc56a21cde8f3f56"
+    path: "tedac/legacymappings/block_states.nbt"
+    git_blob: "b2b11c99752a4ed3b7999c3eab51f89cbf31776d"
+    bytes: 981311
+    entries: 6611
+    air_runtime_id: 134
+    sha256: "23ceac32f48fa15b5a8125a4455c84f1687ca93fd87cdf5b7e3ed1c72cc2c224"
+    use: "Protocol-419 block registry, independently checked against exact gophertunnel wire semantics and the real client before support is declared."
+  - repository: "https://github.com/TedacMC/tedac"
+    commit: "5d16de7f9a4e0270e9c3336299564f937c263f8b"
+    path: "tedac/legacymappings/required_item_list.json"
+    git_blob: "24b07f8bc00020194cf47600ce4290674cc72f07"
+    entries: 914
+    sha256: "5657da3bb9118b3914242d3349537d226b119a8dd2b28ef622d6b94ef59c4d42"
+    use: "Protocol-419 identifier, signed runtime ID, and component flag table."
+  - repository: "https://github.com/Sandertv/gophertunnel"
+    commit: "dc9bfb5d500acbdc6ed0d690245fac16780d4b63"
+    path: "minecraft/conn.go default biome definitions"
+    bytes: 3413
+    entries: 71
+    sha256: "dc7dec09e45b333583120f826c3b4ddd986f707515673c543f442f576601954f"
+
+bds_catalog:
+  repository: "https://github.com/EndstoneMC/bedrock-server-data"
+  inspected_commit: "484a4bc3f5d9ca6ac36509a4c00709ded5bc1244"
+  target_build: "not retained"
+  windows_sha256: "not retained"
+  linux_sha256: "not retained"
+  rationale: "The current public catalog has no 1.16.100 entry. No BDS modding, instrumentation, or reversing is used."
+
+decisions:
+  support_scope: "Minecraft 1.16.100/protocol 419 only."
+  conversion_direction: "Direct semantic conversion between protocol 419 and native protocol 2169."
+  chunk_format: "Sub-chunk version 8, Y=0..255, 2D biome bytes, no SubChunk request packets."
+  block_fallback_policy: "Map native-only states to the verified protocol-419 minecraft:air runtime ID and record every fallback."
+  item_fallback_policy: "Hide native-only items clientbound and reject unknown target items serverbound."
+  modding_required: false
+  enable_in_protocol_catalog: false
+  enable_reason: "Keep disabled until packet oracles, registry and chunk gates, automated E2E, and the real-client matrix pass."
+
+validation:
+  automated: pending
+  real_client: pending
+  support_label: "in development"
