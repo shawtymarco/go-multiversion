@@ -80,6 +80,8 @@ func TestHistoricalPacketOracles(t *testing.T) {
 		"text":                     {packet: &packet.Text{TextType: packet.TextTypeChat, NeedsTranslation: true, SourceName: "Steve", Message: "hello", XUID: "42", PlatformChatID: "pc"}, hex: "01010553746576650568656c6c6f023432027063"},
 		"text_object_announcement": {packet: &packet.Text{TextType: packet.TextTypeObjectAnnouncement, Message: "hotkey", XUID: "42", PlatformChatID: "pc"}, listener: true, hex: "0b0006686f746b6579023432027063"},
 		"container_close":          {packet: &packet.ContainerClose{WindowID: 7, ServerSide: true}, hex: "0701"},
+		"container_open":           {packet: &packet.ContainerOpen{WindowID: 7, ContainerType: protocol.ContainerTypeContainer, ContainerPosition: protocol.BlockPos{1, 64, -2}, ContainerEntityUniqueID: -1}, hex: "070002400301"},
+		"block_actor_data":         {packet: &packet.BlockActorData{Position: protocol.BlockPos{1, 64, -2}, NBTData: map[string]any{}}, hex: "0240030a0000"},
 		"player_action":            {packet: &packet.PlayerAction{EntityRuntimeID: 9, ActionType: protocol.PlayerActionStartBreak, BlockPosition: protocol.BlockPos{3, 70, -4}, ResultPosition: protocol.BlockPos{3, 70, -4}, BlockFace: 2}, listener: true, hex: "090006460704"},
 		"request_chunk_radius":     {packet: &packet.RequestChunkRadius{ChunkRadius: 12, MaxChunkRadius: 12}, listener: true, hex: "18"},
 		"level_chunk":              {packet: &packet.LevelChunk{Position: protocol.ChunkPos{-2, 5}, Dimension: packet.DimensionOverworld, SubChunkCount: 2, CacheEnabled: true, BlobHashes: []uint64{11, 12, 13}, RawPayload: []byte{1, 2, 3}}, hex: "030a0201030b000000000000000c000000000000000d0000000000000003010203"},

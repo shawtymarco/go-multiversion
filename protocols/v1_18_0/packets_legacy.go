@@ -33,6 +33,23 @@ func funcSliceUint16[T any](io *wireIO, values *[]T, marshal func(*T)) {
 	}
 }
 
+func marshalBlockActorData(io *wireIO, raw packet.Packet) {
+	pk := raw.(*packet.BlockActorData)
+	io.UBlockPos(&pk.Position)
+	if io.reading && pk.NBTData == nil {
+		pk.NBTData = make(map[string]any)
+	}
+	io.NBT(&pk.NBTData, nbt.NetworkLittleEndian)
+}
+
+func marshalContainerOpen(io *wireIO, raw packet.Packet) {
+	pk := raw.(*packet.ContainerOpen)
+	io.Uint8(&pk.WindowID)
+	io.Uint8(&pk.ContainerType)
+	io.UBlockPos(&pk.ContainerPosition)
+	io.Varint64(&pk.ContainerEntityUniqueID)
+}
+
 func marshalActorEvent(io *wireIO, raw packet.Packet) {
 	pk := raw.(*packet.ActorEvent)
 	io.Varuint64(&pk.EntityRuntimeID)

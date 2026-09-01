@@ -33,6 +33,16 @@ func asWireIO(io protocol.IO) *wireIO {
 
 func (io *wireIO) LegacyWireReading() bool { return io.reading }
 
+// UBlockPos preserves the unsigned Y coordinate used by protocol 486 before
+// BlockPos switched to a signed Varint32 Y value.
+func (io *wireIO) UBlockPos(x *protocol.BlockPos) {
+	io.Varint32(&x[0])
+	y := uint32(x[1])
+	io.Varuint32(&y)
+	x[1] = int32(y)
+	io.Varint32(&x[2])
+}
+
 func (io *wireIO) directional() protocol.IO {
 	if io.reading {
 		return &wireReader{wireIO: io}
