@@ -26,6 +26,7 @@ var packetMarshals = map[uint32]packetMarshal{
 	packet.IDDisconnect:                        marshalDisconnect,
 	packet.IDEmote:                             marshalEmote,
 	packet.IDEvent:                             marshalEvent419,
+	packet.IDGameRulesChanged:                  marshalGameRulesChanged,
 	packet.IDHurtArmour:                        marshalHurtArmour,
 	packet.IDInteract:                          marshalInteract,
 	packet.IDInventoryContent:                  marshalInventoryContent,

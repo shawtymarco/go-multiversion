@@ -174,6 +174,11 @@ func marshalGameRule(raw protocol.IO, rule *protocol.GameRule) {
 	}
 }
 
+func marshalGameRulesChanged(io *wireIO, raw packet.Packet) {
+	pk := raw.(*packet.GameRulesChanged)
+	protocol.FuncIOSlice(io.directional(), &pk.GameRules, marshalGameRule)
+}
+
 func marshalPlayerMovementSettings(io *wireIO, settings *protocol.PlayerMovementSettings) {
 	legacyMovementType := uint32(1)
 	io.Varuint32(&legacyMovementType)

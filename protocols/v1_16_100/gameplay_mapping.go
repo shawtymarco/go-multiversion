@@ -61,6 +61,10 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		// packet, so downgrade the document at the protocol boundary.
 		cloned.FormData = targetFormData(current.FormData)
 		return []packet.Packet{&cloned}
+	case *packet.GameRulesChanged:
+		cloned := *current
+		cloned.GameRules = targetGameRules(current.GameRules)
+		return []packet.Packet{&cloned}
 	case *packet.UpdateAbilities:
 		flags, actions := legacyAbilityFlags(current.AbilityData.Layers)
 		return []packet.Packet{&packet.AdventureSettings{

@@ -71,6 +71,7 @@ func TestHistoricalPopulatedPacketOracles(t *testing.T) {
 		"item_stack_request":     &packet.ItemStackRequest{Requests: []protocol.ItemStackRequest{{RequestID: 8, Actions: []protocol.StackRequestAction{&protocol.SwapStackRequestAction{Source: protocol.StackRequestSlotInfo{Container: protocol.FullContainerName{ContainerID: 1}, Slot: 2, StackNetworkID: 3}, Destination: protocol.StackRequestSlotInfo{Container: protocol.FullContainerName{ContainerID: 4}, Slot: 5, StackNetworkID: 6}}, &protocol.AutoCraftRecipeStackRequestAction{RecipeNetworkID: 7}, &protocol.CraftCreativeStackRequestAction{CreativeItemNetworkID: 17}}}}},
 		"item_stack_response":    &packet.ItemStackResponse{Responses: []protocol.ItemStackResponse{{Status: protocol.ItemStackResponseStatusOK, RequestID: 8, ContainerInfo: []protocol.StackResponseContainerInfo{{Container: protocol.FullContainerName{ContainerID: 29}, SlotInfo: []protocol.StackResponseSlotInfo{{Slot: 1, HotbarSlot: 1, Count: 2, StackNetworkID: 4}}}}}}},
 		"creative_content":       &packet.CreativeContent{Items: []protocol.CreativeItem{{CreativeItemNetworkID: 17, Item: item}}},
+		"game_rules_changed":     &packet.GameRulesChanged{GameRules: []protocol.GameRule{{Name: "showcoordinates", Value: true}}},
 		"player_auth_input":      &packet.PlayerAuthInput{Pitch: 1, Yaw: 2, Position: mgl32.Vec3{3, 4, 5}, MoveVector: mgl32.Vec2{0.25, -0.5}, HeadYaw: 6, InputData: inputFlags, InputMode: packet.InputModeMouse, PlayMode: packet.PlayModeNormal, Tick: 99, Delta: mgl32.Vec3{0.1, 0.2, 0.3}},
 		"available_commands":     &packet.AvailableCommands{EnumValues: []string{"t"}, Enums: []protocol.CommandEnum{{Type: "testAliases", ValueIndices: []uint32{0}}}, Commands: []protocol.Command{{Name: "test", Description: "desc", Flags: 1, PermissionLevel: 1, AliasesOffset: 0, Overloads: []protocol.CommandOverload{{Parameters: []protocol.CommandParameter{{Name: "value", Type: protocol.CommandArgValid | protocol.CommandArgTypeString, Optional: true, Options: 1}}}}}}},
 		"player_skin":            &packet.PlayerSkin{UUID: id, Skin: protocol.Skin{SkinID: "skin", SkinResourcePatch: []byte("{}"), SkinImageWidth: 1, SkinImageHeight: 1, SkinData: []byte{1, 2, 3, 4}, CapeImageWidth: 1, CapeImageHeight: 1, CapeData: []byte{5, 6, 7, 8}, SkinGeometry: []byte("{}"), AnimationData: []byte("{}"), PremiumSkin: true, CapeID: "cape", FullID: "full", SkinColour: color.RGBA{R: 0x11, G: 0x22, B: 0x33, A: 0xff}, ArmSize: protocol.ArmSizeSlim, PersonaPieces: []protocol.PersonaPiece{{PieceID: "piece", PieceType: protocol.PieceTypeBody, PackID: id, Default: true, ProductID: "product"}}, PieceTintColours: []protocol.PersonaPieceTintColour{{PieceType: "persona_body", Colours: [4]color.RGBA{{R: 0x11, G: 0x22, B: 0x33, A: 0xff}, {}, {}, {}}}}, Trusted: true}, NewSkinName: "new", OldSkinName: "old"},
@@ -163,6 +164,25 @@ func TestCraftingDataUsesTargetBuiltInCatalogue(t *testing.T) {
 	}
 	if len(input.ShapelessRecipes) != 1 || input.ShapelessRecipes[0].RecipeID != "current" || !input.ClearRecipes {
 		t.Fatalf("CraftingData conversion mutated input: %#v", input)
+	}
+}
+
+func TestGameRulesChangedUsesHistoricalRuleLayout(t *testing.T) {
+	p := Protocol{runtime: &runtimeData{}}
+	input := &packet.GameRulesChanged{GameRules: []protocol.GameRule{
+		{Name: "showcoordinates", CanBeModifiedByPlayer: true, Value: true},
+		{Name: "locatorBar", CanBeModifiedByPlayer: true, Value: true},
+	}}
+	converted := p.convertGameplayFromLatest(input, nil)
+	if len(converted) != 1 {
+		t.Fatalf("GameRulesChanged conversion count: got %d, want 1", len(converted))
+	}
+	target := converted[0].(*packet.GameRulesChanged)
+	if len(target.GameRules) != 1 || target.GameRules[0].Name != "showcoordinates" {
+		t.Fatalf("target game rules: %#v", target.GameRules)
+	}
+	if len(input.GameRules) != 2 || !input.GameRules[0].CanBeModifiedByPlayer || input.GameRules[1].Name != "locatorBar" {
+		t.Fatalf("GameRulesChanged conversion mutated input: %#v", input)
 	}
 }
 
