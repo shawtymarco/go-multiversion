@@ -40,7 +40,7 @@ conf.AcceptedProtocolsProvider = func(blocks world.BlockRegistry) ([]minecraft.P
 ```
 
 `ProtocolsWithRegistries` returns `2168`, `1001`, `975`, `944`, `924`, `898`,
-`844`, `827`, `766`, `748`, `486`, and `475` in
+`844`, `827`, `766`, `748`, `486`, `475`, and `419` in
 that order. The parameterless `Protocols()` intentionally omits adapters that
 need native block and item registries.
 

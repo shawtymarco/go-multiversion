@@ -54,7 +54,7 @@ func TestProtocols(t *testing.T) {
 		t.Fatalf("unexpected protocol: got %d/%q, want 419/%q", got.ID(), got.Ver(), "1.16.100")
 	}
 	for _, supported := range protocols {
-		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 944 || supported.ID() == 924 || supported.ID() == 898 || supported.ID() == 844 || supported.ID() == 827 || supported.ID() == 766 || supported.ID() == 748 || supported.ID() == 486 || supported.ID() == 475 {
+		if supported.ID() == 1001 || supported.ID() == 975 || supported.ID() == 944 || supported.ID() == 924 || supported.ID() == 898 || supported.ID() == 844 || supported.ID() == 827 || supported.ID() == 766 || supported.ID() == 748 || supported.ID() == 486 || supported.ID() == 475 || supported.ID() == 419 {
 			t.Fatalf("registry-aware protocol %d must not be enabled by Protocols", supported.ID())
 		}
 	}
