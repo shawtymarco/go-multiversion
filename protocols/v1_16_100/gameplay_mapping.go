@@ -1,8 +1,6 @@
 package v1_16_100
 
 import (
-	"strings"
-
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
@@ -86,14 +84,6 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		// current Dragonfly catalogue into the retail client crashes it while
 		// initialising the recipe book, before it can process world chunks.
 		return nil
-	case *packet.PlayerList:
-		return []packet.Packet{targetPlayerList(current)}
-	case *packet.PlayerSkin:
-		identity := ""
-		if conn != nil {
-			identity = conn.IdentityData().Identity
-		}
-		return targetPlayerSkin(current, identity)
 	case *packet.AddPlayer:
 		cloned := *current
 		if mapped, ok := mapItemInstance(current.HeldItem, items, p.runtime.blocks, toTarget); ok {
@@ -186,89 +176,6 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 	default:
 		return []packet.Packet{pk}
 	}
-}
-
-func targetPlayerList(current *packet.PlayerList) *packet.PlayerList {
-	persona := false
-	for _, entry := range current.Entries {
-		if entry.Skin.PersonaSkin {
-			persona = true
-			break
-		}
-	}
-	if !persona {
-		return current
-	}
-	cloned := *current
-	cloned.Entries = append([]protocol.PlayerListEntry(nil), current.Entries...)
-	for index := range cloned.Entries {
-		if cloned.Entries[index].Skin.PersonaSkin {
-			cloned.Entries[index].Skin = legacyClassicSkin(cloned.Entries[index].Skin)
-		}
-	}
-	return &cloned
-}
-
-func targetPlayerSkin(current *packet.PlayerSkin, recipientIdentity string) []packet.Packet {
-	if current.Skin.PersonaSkin && recipientIdentity != "" && strings.EqualFold(current.UUID.String(), recipientIdentity) {
-		// Retail 1.16.100 crashes when it applies a post-login persona skin
-		// update to its own player. The identical login skin is already present
-		// in PlayerList, so omit only this redundant self update. Other viewers
-		// still receive the server-side appearance change.
-		return nil
-	}
-	if current.Skin.PersonaSkin {
-		// Dragonfly does not retain the target-era persona piece catalogue. Send
-		// a rendered classic fallback to other 1.16.100 viewers instead of the
-		// incomplete persona geometry that crashes their skin handler.
-		cloned := *current
-		cloned.Skin = legacyClassicSkin(current.Skin)
-		return []packet.Packet{&cloned}
-	}
-	return []packet.Packet{current}
-}
-
-func legacyClassicSkin(current protocol.Skin) protocol.Skin {
-	height := uint32(64)
-	if current.SkinImageHeight != 0 && current.SkinImageWidth == current.SkinImageHeight*2 {
-		height = 32
-	}
-	data := make([]byte, 64*height*4)
-	valid := current.SkinImageWidth != 0 && current.SkinImageHeight != 0 &&
-		uint64(current.SkinImageWidth)*uint64(current.SkinImageHeight)*4 == uint64(len(current.SkinData))
-	if valid {
-		for y := uint32(0); y < height; y++ {
-			for x := uint32(0); x < 64; x++ {
-				sourceX := x * current.SkinImageWidth / 64
-				sourceY := y * current.SkinImageHeight / height
-				source := (sourceY*current.SkinImageWidth + sourceX) * 4
-				target := (y*64 + x) * 4
-				copy(data[target:target+4], current.SkinData[source:source+4])
-			}
-		}
-	} else {
-		for index := 3; index < len(data); index += 4 {
-			data[index] = 0xff
-		}
-	}
-	current.SkinResourcePatch = []byte(`{"geometry":{"default":"geometry.humanoid.custom"}}`)
-	current.SkinImageWidth = 64
-	current.SkinImageHeight = height
-	current.SkinData = data
-	current.Animations = nil
-	current.CapeImageWidth = 0
-	current.CapeImageHeight = 0
-	current.CapeData = nil
-	current.SkinGeometry = nil
-	current.AnimationData = nil
-	current.PremiumSkin = false
-	current.PersonaSkin = false
-	current.PersonaCapeOnClassicSkin = false
-	current.CapeID = ""
-	current.FullID = ""
-	current.PersonaPieces = nil
-	current.PieceTintColours = nil
-	return current
 }
 
 func targetGameRules(rules []protocol.GameRule) []protocol.GameRule {

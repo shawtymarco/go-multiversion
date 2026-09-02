@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"image/color"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -34,6 +33,9 @@ func TestProtocolIdentityAndCapabilities(t *testing.T) {
 	}
 	if p.NetworkSubChunkVersion() != 8 || !p.NetworkBiomes2D() || p.ReuseBiomePalettes() {
 		t.Fatal("protocol 419 chunk capabilities are inconsistent")
+	}
+	if p.NetworkChunkRadiusLimit() != 9 {
+		t.Fatalf("legacy chunk radius limit: got %d, want 9", p.NetworkChunkRadiusLimit())
 	}
 	first, second := p.Encryption([32]byte{1}), p.Encryption([32]byte{1})
 	if first == second {
@@ -165,75 +167,6 @@ func TestCraftingDataUsesTargetBuiltInCatalogue(t *testing.T) {
 	}
 	if len(input.ShapelessRecipes) != 1 || input.ShapelessRecipes[0].RecipeID != "current" || !input.ClearRecipes {
 		t.Fatalf("CraftingData conversion mutated input: %#v", input)
-	}
-}
-
-func TestPersonaPlayerSkinOmitsIncompatibleClassicCape(t *testing.T) {
-	p := Protocol{runtime: &runtimeData{}}
-	playerID := uuid.MustParse("123e4567-e89b-12d3-a456-426614174000")
-	input := &packet.PlayerSkin{UUID: playerID, Skin: protocol.Skin{
-		SkinID: "persona", PersonaSkin: true,
-		CapeImageWidth: 64, CapeImageHeight: 32,
-		CapeData: []byte{1, 2, 3, 4}, CapeID: "server-cape",
-	}}
-	converted := p.convertGameplayFromLatest(input, nil)
-	if len(converted) != 1 {
-		t.Fatalf("PlayerSkin conversion count: got %d, want 1", len(converted))
-	}
-	target := converted[0].(*packet.PlayerSkin)
-	if target == input {
-		t.Fatal("PlayerSkin conversion reused mutable input")
-	}
-	if target.Skin.CapeImageWidth != 0 || target.Skin.CapeImageHeight != 0 || len(target.Skin.CapeData) != 0 || target.Skin.CapeID != "" || target.Skin.PersonaSkin {
-		t.Fatalf("target persona skin was not converted to classic: %#v", target.Skin)
-	}
-	if target.Skin.SkinID != "persona" || target.Skin.SkinImageWidth != 64 || target.Skin.SkinImageHeight != 64 || len(target.Skin.SkinData) != 64*64*4 {
-		t.Fatalf("target classic fallback is invalid: %#v", target.Skin)
-	}
-	if input.Skin.CapeImageWidth != 64 || input.Skin.CapeImageHeight != 32 || len(input.Skin.CapeData) != 4 || input.Skin.CapeID != "server-cape" {
-		t.Fatalf("PlayerSkin conversion mutated input: %#v", input.Skin)
-	}
-	if self := targetPlayerSkin(input, strings.ToUpper(playerID.String())); len(self) != 0 {
-		t.Fatalf("persona self update was not omitted: %#v", self)
-	}
-	if input.Skin.CapeImageWidth != 64 || len(input.Skin.CapeData) != 4 {
-		t.Fatalf("self-update conversion mutated input: %#v", input.Skin)
-	}
-
-	classic := &packet.PlayerSkin{Skin: protocol.Skin{SkinID: "classic", CapeImageWidth: 64, CapeImageHeight: 32, CapeData: []byte{1}, CapeID: "classic-cape"}}
-	classicConverted := p.convertGameplayFromLatest(classic, nil)
-	if len(classicConverted) != 1 || classicConverted[0] != classic {
-		t.Fatalf("classic cape was modified: %#v", classicConverted)
-	}
-}
-
-func TestPlayerListPresentsRenderedPersonaAsClassic(t *testing.T) {
-	skinData := make([]byte, 256*128*4)
-	for index := 3; index < len(skinData); index += 4 {
-		skinData[index] = 0xff
-	}
-	persona := &packet.PlayerList{Entries: []protocol.PlayerListEntry{{
-		Username: "persona",
-		Skin: protocol.Skin{
-			SkinID: "skin", SkinImageWidth: 256, SkinImageHeight: 128, SkinData: skinData,
-			SkinGeometry: []byte("persona"), Animations: []protocol.SkinAnimation{{ImageData: []byte{1}}},
-			PersonaSkin: true, PersonaCapeOnClassicSkin: true,
-		},
-	}}}
-	target := targetPlayerList(persona)
-	if target == persona || len(target.Entries) != 1 {
-		t.Fatalf("persona PlayerList was not cloned: %#v", target)
-	}
-	if target.Entries[0].Skin.PersonaSkin || target.Entries[0].Skin.PersonaCapeOnClassicSkin || target.Entries[0].Skin.SkinID != "skin" || target.Entries[0].Skin.SkinImageWidth != 64 || target.Entries[0].Skin.SkinImageHeight != 32 || len(target.Entries[0].Skin.SkinData) != 64*32*4 || len(target.Entries[0].Skin.SkinGeometry) != 0 || len(target.Entries[0].Skin.Animations) != 0 {
-		t.Fatalf("target persona entry was not presented as classic: %#v", target.Entries[0].Skin)
-	}
-	if !persona.Entries[0].Skin.PersonaSkin || !persona.Entries[0].Skin.PersonaCapeOnClassicSkin {
-		t.Fatalf("PlayerList conversion mutated input: %#v", persona.Entries[0].Skin)
-	}
-
-	classic := &packet.PlayerList{Entries: []protocol.PlayerListEntry{{Username: "classic", Skin: protocol.Skin{SkinID: "classic"}}}}
-	if targetPlayerList(classic) != classic {
-		t.Fatal("classic PlayerList was unnecessarily cloned")
 	}
 }
 
