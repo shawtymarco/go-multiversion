@@ -84,6 +84,20 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		// current Dragonfly catalogue into the retail client crashes it while
 		// initialising the recipe book, before it can process world chunks.
 		return nil
+	case *packet.PlayerSkin:
+		if current.Skin.PersonaSkin && len(current.Skin.CapeData) != 0 {
+			// Retail 1.16.100 crashes while applying a server-supplied classic
+			// cape to a persona skin. Keep the persona skin update, but omit the
+			// incompatible cape fields for this target only.
+			cloned := *current
+			cloned.Skin = current.Skin
+			cloned.Skin.CapeImageWidth = 0
+			cloned.Skin.CapeImageHeight = 0
+			cloned.Skin.CapeData = nil
+			cloned.Skin.CapeID = ""
+			return []packet.Packet{&cloned}
+		}
+		return []packet.Packet{current}
 	case *packet.AddPlayer:
 		cloned := *current
 		if mapped, ok := mapItemInstance(current.HeldItem, items, p.runtime.blocks, toTarget); ok {

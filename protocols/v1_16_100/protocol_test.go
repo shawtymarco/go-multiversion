@@ -167,6 +167,38 @@ func TestCraftingDataUsesTargetBuiltInCatalogue(t *testing.T) {
 	}
 }
 
+func TestPersonaPlayerSkinOmitsIncompatibleClassicCape(t *testing.T) {
+	p := Protocol{runtime: &runtimeData{}}
+	input := &packet.PlayerSkin{Skin: protocol.Skin{
+		SkinID: "persona", PersonaSkin: true,
+		CapeImageWidth: 64, CapeImageHeight: 32,
+		CapeData: []byte{1, 2, 3, 4}, CapeID: "server-cape",
+	}}
+	converted := p.convertGameplayFromLatest(input, nil)
+	if len(converted) != 1 {
+		t.Fatalf("PlayerSkin conversion count: got %d, want 1", len(converted))
+	}
+	target := converted[0].(*packet.PlayerSkin)
+	if target == input {
+		t.Fatal("PlayerSkin conversion reused mutable input")
+	}
+	if target.Skin.CapeImageWidth != 0 || target.Skin.CapeImageHeight != 0 || len(target.Skin.CapeData) != 0 || target.Skin.CapeID != "" {
+		t.Fatalf("target persona cape was not omitted: %#v", target.Skin)
+	}
+	if !target.Skin.PersonaSkin || target.Skin.SkinID != "persona" {
+		t.Fatalf("target persona skin was not preserved: %#v", target.Skin)
+	}
+	if input.Skin.CapeImageWidth != 64 || input.Skin.CapeImageHeight != 32 || len(input.Skin.CapeData) != 4 || input.Skin.CapeID != "server-cape" {
+		t.Fatalf("PlayerSkin conversion mutated input: %#v", input.Skin)
+	}
+
+	classic := &packet.PlayerSkin{Skin: protocol.Skin{SkinID: "classic", CapeImageWidth: 64, CapeImageHeight: 32, CapeData: []byte{1}, CapeID: "classic-cape"}}
+	classicConverted := p.convertGameplayFromLatest(classic, nil)
+	if len(classicConverted) != 1 || classicConverted[0] != classic {
+		t.Fatalf("classic cape was modified: %#v", classicConverted)
+	}
+}
+
 func TestGameRulesChangedUsesHistoricalRuleLayout(t *testing.T) {
 	p := Protocol{runtime: &runtimeData{}}
 	input := &packet.GameRulesChanged{GameRules: []protocol.GameRule{
