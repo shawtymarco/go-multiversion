@@ -237,6 +237,26 @@ func TestPlayerListPresentsRenderedPersonaAsClassic(t *testing.T) {
 	}
 }
 
+func TestFlowerPotDropsCurrentPlantBlockDocument(t *testing.T) {
+	p := Protocol{}
+	plant := map[string]any{"name": "minecraft:torchflower", "states": map[string]any{}}
+	input := map[string]any{"id": "FlowerPot", "x": int32(1), "PlantBlock": plant}
+	converted := p.ConvertBlockActorNBT(input)
+	if converted == nil || converted["id"] != "FlowerPot" || converted["x"] != int32(1) {
+		t.Fatalf("converted flower pot = %#v", converted)
+	}
+	if _, ok := converted["PlantBlock"]; ok {
+		t.Fatalf("current PlantBlock leaked into protocol 419: %#v", converted)
+	}
+	if inputPlant, ok := input["PlantBlock"].(map[string]any); !ok || inputPlant["name"] != "minecraft:torchflower" {
+		t.Fatalf("flower pot conversion mutated input: %#v", input)
+	}
+	other := map[string]any{"id": "Sign", "PlantBlock": plant}
+	if convertedOther := p.ConvertBlockActorNBT(other); convertedOther["id"] != "Sign" || convertedOther["PlantBlock"] == nil {
+		t.Fatalf("unrelated block actor changed: %#v", convertedOther)
+	}
+}
+
 func TestGameRulesChangedUsesHistoricalRuleLayout(t *testing.T) {
 	p := Protocol{runtime: &runtimeData{}}
 	input := &packet.GameRulesChanged{GameRules: []protocol.GameRule{
