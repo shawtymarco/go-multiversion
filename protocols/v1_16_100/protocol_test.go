@@ -207,6 +207,28 @@ func TestPersonaPlayerSkinOmitsIncompatibleClassicCape(t *testing.T) {
 	}
 }
 
+func TestPlayerListPresentsRenderedPersonaAsClassic(t *testing.T) {
+	persona := &packet.PlayerList{Entries: []protocol.PlayerListEntry{{
+		Username: "persona",
+		Skin:     protocol.Skin{SkinID: "skin", PersonaSkin: true, PersonaCapeOnClassicSkin: true},
+	}}}
+	target := targetPlayerList(persona)
+	if target == persona || len(target.Entries) != 1 {
+		t.Fatalf("persona PlayerList was not cloned: %#v", target)
+	}
+	if target.Entries[0].Skin.PersonaSkin || target.Entries[0].Skin.PersonaCapeOnClassicSkin || target.Entries[0].Skin.SkinID != "skin" {
+		t.Fatalf("target persona entry was not presented as classic: %#v", target.Entries[0].Skin)
+	}
+	if !persona.Entries[0].Skin.PersonaSkin || !persona.Entries[0].Skin.PersonaCapeOnClassicSkin {
+		t.Fatalf("PlayerList conversion mutated input: %#v", persona.Entries[0].Skin)
+	}
+
+	classic := &packet.PlayerList{Entries: []protocol.PlayerListEntry{{Username: "classic", Skin: protocol.Skin{SkinID: "classic"}}}}
+	if targetPlayerList(classic) != classic {
+		t.Fatal("classic PlayerList was unnecessarily cloned")
+	}
+}
+
 func TestGameRulesChangedUsesHistoricalRuleLayout(t *testing.T) {
 	p := Protocol{runtime: &runtimeData{}}
 	input := &packet.GameRulesChanged{GameRules: []protocol.GameRule{

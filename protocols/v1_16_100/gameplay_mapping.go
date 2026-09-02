@@ -86,6 +86,8 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		// current Dragonfly catalogue into the retail client crashes it while
 		// initialising the recipe book, before it can process world chunks.
 		return nil
+	case *packet.PlayerList:
+		return []packet.Packet{targetPlayerList(current)}
 	case *packet.PlayerSkin:
 		identity := ""
 		if conn != nil {
@@ -184,6 +186,32 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 	default:
 		return []packet.Packet{pk}
 	}
+}
+
+func targetPlayerList(current *packet.PlayerList) *packet.PlayerList {
+	persona := false
+	for _, entry := range current.Entries {
+		if entry.Skin.PersonaSkin {
+			persona = true
+			break
+		}
+	}
+	if !persona {
+		return current
+	}
+	cloned := *current
+	cloned.Entries = append([]protocol.PlayerListEntry(nil), current.Entries...)
+	for index := range cloned.Entries {
+		if cloned.Entries[index].Skin.PersonaSkin {
+			// Dragonfly retains the rendered persona geometry but not its persona
+			// piece list. Retail 1.16.100 dereferences that absent list when the
+			// entry is marked as persona, so present the same rendered skin as a
+			// classic custom-geometry skin instead.
+			cloned.Entries[index].Skin.PersonaSkin = false
+			cloned.Entries[index].Skin.PersonaCapeOnClassicSkin = false
+		}
+	}
+	return &cloned
 }
 
 func targetPlayerSkin(current *packet.PlayerSkin, recipientIdentity string) []packet.Packet {
