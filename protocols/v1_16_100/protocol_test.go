@@ -184,11 +184,11 @@ func TestPersonaPlayerSkinOmitsIncompatibleClassicCape(t *testing.T) {
 	if target == input {
 		t.Fatal("PlayerSkin conversion reused mutable input")
 	}
-	if target.Skin.CapeImageWidth != 0 || target.Skin.CapeImageHeight != 0 || len(target.Skin.CapeData) != 0 || target.Skin.CapeID != "" {
-		t.Fatalf("target persona cape was not omitted: %#v", target.Skin)
+	if target.Skin.CapeImageWidth != 0 || target.Skin.CapeImageHeight != 0 || len(target.Skin.CapeData) != 0 || target.Skin.CapeID != "" || target.Skin.PersonaSkin {
+		t.Fatalf("target persona skin was not converted to classic: %#v", target.Skin)
 	}
-	if !target.Skin.PersonaSkin || target.Skin.SkinID != "persona" {
-		t.Fatalf("target persona skin was not preserved: %#v", target.Skin)
+	if target.Skin.SkinID != "persona" || target.Skin.SkinImageWidth != 64 || target.Skin.SkinImageHeight != 64 || len(target.Skin.SkinData) != 64*64*4 {
+		t.Fatalf("target classic fallback is invalid: %#v", target.Skin)
 	}
 	if input.Skin.CapeImageWidth != 64 || input.Skin.CapeImageHeight != 32 || len(input.Skin.CapeData) != 4 || input.Skin.CapeID != "server-cape" {
 		t.Fatalf("PlayerSkin conversion mutated input: %#v", input.Skin)
@@ -208,15 +208,23 @@ func TestPersonaPlayerSkinOmitsIncompatibleClassicCape(t *testing.T) {
 }
 
 func TestPlayerListPresentsRenderedPersonaAsClassic(t *testing.T) {
+	skinData := make([]byte, 256*128*4)
+	for index := 3; index < len(skinData); index += 4 {
+		skinData[index] = 0xff
+	}
 	persona := &packet.PlayerList{Entries: []protocol.PlayerListEntry{{
 		Username: "persona",
-		Skin:     protocol.Skin{SkinID: "skin", PersonaSkin: true, PersonaCapeOnClassicSkin: true},
+		Skin: protocol.Skin{
+			SkinID: "skin", SkinImageWidth: 256, SkinImageHeight: 128, SkinData: skinData,
+			SkinGeometry: []byte("persona"), Animations: []protocol.SkinAnimation{{ImageData: []byte{1}}},
+			PersonaSkin: true, PersonaCapeOnClassicSkin: true,
+		},
 	}}}
 	target := targetPlayerList(persona)
 	if target == persona || len(target.Entries) != 1 {
 		t.Fatalf("persona PlayerList was not cloned: %#v", target)
 	}
-	if target.Entries[0].Skin.PersonaSkin || target.Entries[0].Skin.PersonaCapeOnClassicSkin || target.Entries[0].Skin.SkinID != "skin" {
+	if target.Entries[0].Skin.PersonaSkin || target.Entries[0].Skin.PersonaCapeOnClassicSkin || target.Entries[0].Skin.SkinID != "skin" || target.Entries[0].Skin.SkinImageWidth != 64 || target.Entries[0].Skin.SkinImageHeight != 32 || len(target.Entries[0].Skin.SkinData) != 64*32*4 || len(target.Entries[0].Skin.SkinGeometry) != 0 || len(target.Entries[0].Skin.Animations) != 0 {
 		t.Fatalf("target persona entry was not presented as classic: %#v", target.Entries[0].Skin)
 	}
 	if !persona.Entries[0].Skin.PersonaSkin || !persona.Entries[0].Skin.PersonaCapeOnClassicSkin {
