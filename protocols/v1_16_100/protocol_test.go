@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"image/color"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -169,7 +170,8 @@ func TestCraftingDataUsesTargetBuiltInCatalogue(t *testing.T) {
 
 func TestPersonaPlayerSkinOmitsIncompatibleClassicCape(t *testing.T) {
 	p := Protocol{runtime: &runtimeData{}}
-	input := &packet.PlayerSkin{Skin: protocol.Skin{
+	playerID := uuid.MustParse("123e4567-e89b-12d3-a456-426614174000")
+	input := &packet.PlayerSkin{UUID: playerID, Skin: protocol.Skin{
 		SkinID: "persona", PersonaSkin: true,
 		CapeImageWidth: 64, CapeImageHeight: 32,
 		CapeData: []byte{1, 2, 3, 4}, CapeID: "server-cape",
@@ -190,6 +192,12 @@ func TestPersonaPlayerSkinOmitsIncompatibleClassicCape(t *testing.T) {
 	}
 	if input.Skin.CapeImageWidth != 64 || input.Skin.CapeImageHeight != 32 || len(input.Skin.CapeData) != 4 || input.Skin.CapeID != "server-cape" {
 		t.Fatalf("PlayerSkin conversion mutated input: %#v", input.Skin)
+	}
+	if self := targetPlayerSkin(input, strings.ToUpper(playerID.String())); len(self) != 0 {
+		t.Fatalf("persona self update was not omitted: %#v", self)
+	}
+	if input.Skin.CapeImageWidth != 64 || len(input.Skin.CapeData) != 4 {
+		t.Fatalf("self-update conversion mutated input: %#v", input.Skin)
 	}
 
 	classic := &packet.PlayerSkin{Skin: protocol.Skin{SkinID: "classic", CapeImageWidth: 64, CapeImageHeight: 32, CapeData: []byte{1}, CapeID: "classic-cape"}}

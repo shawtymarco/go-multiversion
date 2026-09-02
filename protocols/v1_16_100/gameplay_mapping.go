@@ -1,6 +1,8 @@
 package v1_16_100
 
 import (
+	"strings"
+
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
@@ -85,19 +87,11 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 		// initialising the recipe book, before it can process world chunks.
 		return nil
 	case *packet.PlayerSkin:
-		if current.Skin.PersonaSkin && len(current.Skin.CapeData) != 0 {
-			// Retail 1.16.100 crashes while applying a server-supplied classic
-			// cape to a persona skin. Keep the persona skin update, but omit the
-			// incompatible cape fields for this target only.
-			cloned := *current
-			cloned.Skin = current.Skin
-			cloned.Skin.CapeImageWidth = 0
-			cloned.Skin.CapeImageHeight = 0
-			cloned.Skin.CapeData = nil
-			cloned.Skin.CapeID = ""
-			return []packet.Packet{&cloned}
+		identity := ""
+		if conn != nil {
+			identity = conn.IdentityData().Identity
 		}
-		return []packet.Packet{current}
+		return targetPlayerSkin(current, identity)
 	case *packet.AddPlayer:
 		cloned := *current
 		if mapped, ok := mapItemInstance(current.HeldItem, items, p.runtime.blocks, toTarget); ok {
@@ -190,6 +184,28 @@ func (p Protocol) convertGameplayFromLatest(pk packet.Packet, conn *minecraft.Co
 	default:
 		return []packet.Packet{pk}
 	}
+}
+
+func targetPlayerSkin(current *packet.PlayerSkin, recipientIdentity string) []packet.Packet {
+	if current.Skin.PersonaSkin && recipientIdentity != "" && strings.EqualFold(current.UUID.String(), recipientIdentity) {
+		// Retail 1.16.100 crashes when it applies a post-login persona skin
+		// update to its own player. The identical login skin is already present
+		// in PlayerList, so omit only this redundant self update. Other viewers
+		// still receive the server-side appearance change.
+		return nil
+	}
+	if current.Skin.PersonaSkin && len(current.Skin.CapeData) != 0 {
+		// The same client cannot safely apply a server-supplied classic cape to
+		// another persona skin. Keep the skin update, but omit its cape fields.
+		cloned := *current
+		cloned.Skin = current.Skin
+		cloned.Skin.CapeImageWidth = 0
+		cloned.Skin.CapeImageHeight = 0
+		cloned.Skin.CapeData = nil
+		cloned.Skin.CapeID = ""
+		return []packet.Packet{&cloned}
+	}
+	return []packet.Packet{current}
 }
 
 func targetGameRules(rules []protocol.GameRule) []protocol.GameRule {
