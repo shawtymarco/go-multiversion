@@ -226,6 +226,9 @@ func legacyARGB(value color.RGBA) string {
 
 func parseLegacyColour(io *wireIO, value string) color.RGBA {
 	hex := strings.TrimPrefix(value, "#")
+	if hex == "0" {
+		return color.RGBA{}
+	}
 	parsed, err := strconv.ParseUint(hex, 16, 32)
 	if err != nil {
 		io.InvalidValue(value, "skin colour", err.Error())
