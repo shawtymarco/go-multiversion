@@ -62,6 +62,13 @@ behaviour. See [gameplay regression evidence](versions/gameplay-effects-audit.md
 - Keep the consumer's immutable Dragonfly and gophertunnel fork revisions
   compatible with the native protocol pinned in [go.mod](go.mod).
 
+## Standalone desktop proxies
+
+`NewProxyAdapter` / `proxy.NewAdapter` provide opt-in, session-local 1.18 to
+native translation for consumers without a live Dragonfly world. These paths
+are experimental until the real-client matrix passes. See the
+[proxy audit](versions/desktop-proxy.md) for source locks, ownership and limits.
+
 ## Credits
 
 - [Sandertv/gophertunnel](https://github.com/Sandertv/gophertunnel)

@@ -9,10 +9,19 @@ func marshalLevelChunk(io *wireIO, raw packet.Packet) {
 	pk := raw.(*packet.LevelChunk)
 	io.ChunkPos(&pk.Position)
 	count := pk.SubChunkCount
+	if !io.reading {
+		if _, ok := pk.SubChunkLimit.Value(); ok {
+			count = ^uint32(0)
+		}
+	}
 	io.Varuint32(&count)
-	pk.SubChunkCount = count
 	if io.reading {
+		pk.SubChunkCount = count
 		pk.SubChunkLimit = protocol.Optional[int32]{}
+		if count == ^uint32(0) {
+			pk.SubChunkCount = 0
+			pk.SubChunkLimit = protocol.Option(int32(-1))
+		}
 	}
 	io.Bool(&pk.CacheEnabled)
 	if pk.CacheEnabled {

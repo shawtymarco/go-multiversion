@@ -1,0 +1,10 @@
+protocol: 2193
+game_version: 1.26.50
+repository: https://github.com/df-mc/dragonfly
+commit: 4c7b5074be94fa83a1cd98e9c752083ad04a6e21
+path: server/world/block_states.nbt
+git_blob: ee29e5e039086c10bdfb964621a8e146b4f7af19
+sha256: f0784a6284d6ca7d98cc3472f4ce84241a11e11b18ed16f6591dfd5e6da6fbd6
+encoding: concatenated NetworkLittleEndian root compounds
+purpose: standalone proxy native palette; servers may continue supplying their own registry
+ordering: stable name-only FNV-1 uint64 ordering, preserving state order within a name

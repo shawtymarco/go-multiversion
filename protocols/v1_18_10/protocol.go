@@ -21,8 +21,9 @@ const (
 )
 
 type Protocol struct {
-	base    minecraft.Protocol
-	runtime *runtimeData
+	wireOnly bool
+	base     minecraft.Protocol
+	runtime  *runtimeData
 }
 
 type MappingReport struct {
@@ -184,6 +185,15 @@ func (p Protocol) NewWriter(w minecraft.ByteWriter, shieldID int32) protocol.IO 
 }
 
 func (p Protocol) ConvertToLatest(pk packet.Packet, conn *minecraft.Conn) []packet.Packet {
+	if p.wireOnly {
+		if translated, ok := pk.(*translatedPacket); ok {
+			return []packet.Packet{translated.inner}
+		}
+		if _, ok := pk.(legacyOnlyPacket); ok {
+			return []packet.Packet{pk}
+		}
+		return p.base.ConvertToLatest(pk, conn)
+	}
 	if _, legacyOnly := pk.(legacyOnlyPacket); legacyOnly {
 		return nil
 	}
@@ -205,11 +215,19 @@ func (p Protocol) ConvertToLatest(pk packet.Packet, conn *minecraft.Conn) []pack
 }
 
 func (p Protocol) ConvertFromLatest(pk packet.Packet, conn *minecraft.Conn) []packet.Packet {
+	if p.wireOnly {
+		if _, ok := pk.(legacyOnlyPacket); ok {
+			return []packet.Packet{pk}
+		}
+	}
 	pk = packetconv.LegacyStartGame(pk)
 	if packetconv.UnsupportedNativePacket(pk) {
 		return nil
 	}
-	mapped := p.convertGameplayFromLatest(pk, conn)
+	mapped := []packet.Packet{pk}
+	if !p.wireOnly {
+		mapped = p.convertGameplayFromLatest(pk, conn)
+	}
 	converted := make([]packet.Packet, 0, len(mapped))
 	for _, candidate := range mapped {
 		for _, current := range splitLegacyPacket(candidate) {
