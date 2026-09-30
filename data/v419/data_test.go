@@ -77,7 +77,7 @@ func TestSnapshotHashes(t *testing.T) {
 	want := map[string]string{
 		"block_states.nbt":      "23ceac32f48fa15b5a8125a4455c84f1687ca93fd87cdf5b7e3ed1c72cc2c224",
 		"block_item_meta.json":  "d57297e043392bea53518c92144bdcf57b11257d8680853777c2d4abfdaa8816",
-		"item_runtime_ids.json": "5657da3bb9118b3914242d3349537d226b119a8dd2b28ef622d6b94ef59c4d42",
+		"item_runtime_ids.json": "e5db3ade3caa5e93297737ca847be94e6b2ae646af3a9a4bd83c897fec8bdd6e",
 		"biome_definitions.nbt": "dc7dec09e45b333583120f826c3b4ddd986f707515673c543f442f576601954f",
 	}
 	for name, expected := range want {

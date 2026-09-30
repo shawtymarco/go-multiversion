@@ -1,0 +1,2 @@
+# Preserve the bytes of the historical Tedac snapshot on Windows and in Go module archives.
+/data/v419/item_runtime_ids.json text eol=lf

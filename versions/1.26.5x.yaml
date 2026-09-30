@@ -13,7 +13,9 @@ preparation:
 wire_sources:
   repository: "https://github.com/Sandertv/gophertunnel"
   native_introduction_commit: "7a556a07335b663744b50d38062636ad8283f314"
-  native_final_commit: "7a556a07335b663744b50d38062636ad8283f314"
+  native_final_commit: "80c811b6186016b3860c358368cfa47e507f26e9"
+  native_deployed_fork: "9e7f28092180fd2cae6c2a0ebc32f1c8882d26f1"
+  debug_renderer_correction: "98c3d1f3438820b478eb5495c6ff9fb99fa758c5"
   native_tag: "v1.62.0"
   outgoing_introduction: "7f058e5ddc393eaa0480dae338c5eee2feb323e6"
   outgoing_inventory_correction: "283a5a97dfe65da94bcc0b401807f6aefa9e72ee"
@@ -25,6 +27,7 @@ dragonfly_sources:
   native_introduction_commit: "4c7b5074be94fa83a1cd98e9c752083ad04a6e21"
   native_final_commit: "4c7b5074be94fa83a1cd98e9c752083ad04a6e21"
   native_tag: "v0.11.5"
+  native_deployed_fork: "92ccc8ebb41e46c83114ac1c8d31dd0d6249f0cf"
   outgoing_deployed_fork: "cc555383f85aab5b0b1fa70731dfcf5cbee4c3fb"
 protocol_documentation:
   repository: "https://github.com/Mojang/bedrock-protocol-docs"

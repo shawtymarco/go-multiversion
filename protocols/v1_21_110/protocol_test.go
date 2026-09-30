@@ -249,7 +249,7 @@ func wireFixtures() []packetFixture {
 			return &packet.ShowStoreOffer{OfferID: uuid.MustParse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"), Type: packet.StoreOfferTypeMarketplace}
 		}},
 		{name: "v844/client_bound_debug_renderer", new: func() packet.Packet {
-			return &packet.ClientBoundDebugRenderer{Type: packet.ClientBoundDebugRendererAddCube, Text: "cube", Position: mgl32.Vec3{1, 2, 3}, Red: 1, Green: 0.5, Blue: 0.25, Alpha: 1, Duration: 20}
+			return &packet.ClientBoundDebugRenderer{Type: packet.ClientBoundDebugRendererAddCube, Data: protocol.Option(packet.DebugMarkerData{Text: "cube", Position: mgl32.Vec3{1, 2, 3}, Colour: color.RGBA{R: 255, G: 128, B: 64, A: 255}, Duration: 20})}
 		}},
 		{name: "v844/update_client_input_locks", new: func() packet.Packet {
 			return &packet.UpdateClientInputLocks{Locks: packet.ClientInputLockCamera | packet.ClientInputLockMovement}

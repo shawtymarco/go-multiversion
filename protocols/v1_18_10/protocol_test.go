@@ -38,7 +38,9 @@ func TestHistoricalZeroValuePacketPools(t *testing.T) {
 	p := New().(*Protocol)
 	server, client := p.Packets(false), p.Packets(true)
 	for id, encoded := range oracle.Packets {
-		if id == packet.IDStartGame || id == packet.IDBiomeDefinitionList || id == packet.IDResourcePackClientResponse {
+		// Native debug action zero means Clear (legacy action one); the raw
+		// historical zero value is invalid. Semantic wire oracles cover it.
+		if id == packet.IDStartGame || id == packet.IDBiomeDefinitionList || id == packet.IDResourcePackClientResponse || id == packet.IDClientBoundDebugRenderer {
 			continue
 		}
 		constructor, ok := server[id]

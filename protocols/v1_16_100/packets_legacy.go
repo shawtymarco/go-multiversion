@@ -6,6 +6,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/nbt"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetconv"
 )
 
 func marshalResourcePackClientResponse(io *wireIO, raw packet.Packet) {
@@ -314,21 +315,7 @@ func marshalCorrectPlayerMovePrediction(io *wireIO, raw packet.Packet) {
 }
 
 func marshalClientBoundDebugRenderer(io *wireIO, raw packet.Packet) {
-	pk := raw.(*packet.ClientBoundDebugRenderer)
-	typeID := int32(pk.Type)
-	io.Int32(&typeID)
-	pk.Type = uint32(typeID)
-	if typeID == 2 {
-		io.String(&pk.Text)
-		io.Vec3(&pk.Position)
-		io.Float32(&pk.Red)
-		io.Float32(&pk.Green)
-		io.Float32(&pk.Blue)
-		io.Float32(&pk.Alpha)
-		duration := int64(pk.Duration)
-		io.Int64(&duration)
-		pk.Duration = uint64(duration)
-	}
+	packetconv.LegacyDebugRenderer(io, raw.(*packet.ClientBoundDebugRenderer), io.reading, true)
 }
 
 func marshalAddVolumeEntity(io *wireIO, raw packet.Packet) {

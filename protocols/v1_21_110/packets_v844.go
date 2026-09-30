@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetconv"
 )
 
 func marshalResourcePackStack(io *wireIO, raw packet.Packet) {
@@ -272,25 +273,7 @@ func marshalText(io *wireIO, raw packet.Packet) {
 }
 
 func marshalClientBoundDebugRenderer(io *wireIO, raw packet.Packet) {
-	pk := raw.(*packet.ClientBoundDebugRenderer)
-	legacyType := pk.Type + 1
-	io.Uint32(&legacyType)
-	if io.reading {
-		if legacyType == 0 || legacyType > 2 {
-			io.UnknownEnumOption(legacyType, "client bound debug renderer type")
-			return
-		}
-		pk.Type = legacyType - 1
-	}
-	if legacyType == 2 {
-		io.String(&pk.Text)
-		io.Vec3(&pk.Position)
-		io.Float32(&pk.Red)
-		io.Float32(&pk.Green)
-		io.Float32(&pk.Blue)
-		io.Float32(&pk.Alpha)
-		io.Uint64(&pk.Duration)
-	}
+	packetconv.LegacyDebugRenderer(io, raw.(*packet.ClientBoundDebugRenderer), io.reading, false)
 }
 
 func marshalUpdateClientInputLocks(io *wireIO, raw packet.Packet) {
