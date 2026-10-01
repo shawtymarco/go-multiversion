@@ -1,0 +1,1155 @@
+[
+    {
+        "group_icon": "minecraft:leather_helmet",
+        "group_name": "itemGroup.name.helmet",
+        "items": [
+            "minecraft:leather_helmet",
+            "minecraft:copper_helmet",
+            "minecraft:chainmail_helmet",
+            "minecraft:iron_helmet",
+            "minecraft:golden_helmet",
+            "minecraft:diamond_helmet",
+            "minecraft:netherite_helmet"
+        ]
+    },
+    {
+        "group_icon": "minecraft:leather_chestplate",
+        "group_name": "itemGroup.name.chestplate",
+        "items": [
+            "minecraft:leather_chestplate",
+            "minecraft:copper_chestplate",
+            "minecraft:chainmail_chestplate",
+            "minecraft:iron_chestplate",
+            "minecraft:golden_chestplate",
+            "minecraft:diamond_chestplate",
+            "minecraft:netherite_chestplate"
+        ]
+    },
+    {
+        "group_icon": "minecraft:leather_leggings",
+        "group_name": "itemGroup.name.leggings",
+        "items": [
+            "minecraft:leather_leggings",
+            "minecraft:copper_leggings",
+            "minecraft:chainmail_leggings",
+            "minecraft:iron_leggings",
+            "minecraft:golden_leggings",
+            "minecraft:diamond_leggings",
+            "minecraft:netherite_leggings"
+        ]
+    },
+    {
+        "group_icon": "minecraft:leather_boots",
+        "group_name": "itemGroup.name.boots",
+        "items": [
+            "minecraft:leather_boots",
+            "minecraft:copper_boots",
+            "minecraft:chainmail_boots",
+            "minecraft:iron_boots",
+            "minecraft:golden_boots",
+            "minecraft:diamond_boots",
+            "minecraft:netherite_boots"
+        ]
+    },
+    {
+        "group_icon": "minecraft:wooden_sword",
+        "group_name": "itemGroup.name.sword",
+        "items": [
+            "minecraft:wooden_sword",
+            "minecraft:stone_sword",
+            "minecraft:copper_sword",
+            "minecraft:iron_sword",
+            "minecraft:golden_sword",
+            "minecraft:diamond_sword",
+            "minecraft:netherite_sword"
+        ]
+    },
+    {
+        "group_icon": "minecraft:wooden_spear",
+        "group_name": "itemGroup.name.spear",
+        "items": [
+            "minecraft:wooden_spear",
+            "minecraft:stone_spear",
+            "minecraft:copper_spear",
+            "minecraft:iron_spear",
+            "minecraft:golden_spear",
+            "minecraft:diamond_spear",
+            "minecraft:netherite_spear"
+        ]
+    },
+    {
+        "group_icon": "minecraft:wooden_axe",
+        "group_name": "itemGroup.name.axe",
+        "items": [
+            "minecraft:wooden_axe",
+            "minecraft:stone_axe",
+            "minecraft:copper_axe",
+            "minecraft:iron_axe",
+            "minecraft:golden_axe",
+            "minecraft:diamond_axe",
+            "minecraft:netherite_axe"
+        ]
+    },
+    {
+        "group_icon": "minecraft:wooden_pickaxe",
+        "group_name": "itemGroup.name.pickaxe",
+        "items": [
+            "minecraft:wooden_pickaxe",
+            "minecraft:stone_pickaxe",
+            "minecraft:copper_pickaxe",
+            "minecraft:iron_pickaxe",
+            "minecraft:golden_pickaxe",
+            "minecraft:diamond_pickaxe",
+            "minecraft:netherite_pickaxe"
+        ]
+    },
+    {
+        "group_icon": "minecraft:wooden_shovel",
+        "group_name": "itemGroup.name.shovel",
+        "items": [
+            "minecraft:wooden_shovel",
+            "minecraft:stone_shovel",
+            "minecraft:copper_shovel",
+            "minecraft:iron_shovel",
+            "minecraft:golden_shovel",
+            "minecraft:diamond_shovel",
+            "minecraft:netherite_shovel"
+        ]
+    },
+    {
+        "group_icon": "minecraft:wooden_hoe",
+        "group_name": "itemGroup.name.hoe",
+        "items": [
+            "minecraft:wooden_hoe",
+            "minecraft:stone_hoe",
+            "minecraft:copper_hoe",
+            "minecraft:iron_hoe",
+            "minecraft:golden_hoe",
+            "minecraft:diamond_hoe",
+            "minecraft:netherite_hoe"
+        ]
+    },
+    {
+        "group_icon": null,
+        "group_name": "",
+        "items": [
+            "minecraft:bow",
+            "minecraft:crossbow",
+            "minecraft:mace",
+            "minecraft:trident"
+        ]
+    },
+    {
+        "group_icon": "minecraft:arrow",
+        "group_name": "itemGroup.name.arrow",
+        "items": [
+            "minecraft:arrow",
+            {
+                "meta": 6,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 7,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 8,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 9,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 10,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 11,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 12,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 13,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 14,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 15,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 16,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 17,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 18,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 19,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 20,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 21,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 22,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 23,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 24,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 25,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 26,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 27,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 28,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 29,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 30,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 31,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 32,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 33,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 34,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 35,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 36,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 37,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 38,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 39,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 40,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 41,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 42,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 43,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 44,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 45,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 46,
+                "name": "minecraft:arrow"
+            },
+            {
+                "meta": 47,
+                "name": "minecraft:arrow"
+            }
+        ]
+    },
+    {
+        "group_icon": null,
+        "group_name": "",
+        "items": [
+            "minecraft:shield"
+        ]
+    },
+    {
+        "group_icon": "minecraft:cooked_chicken",
+        "group_name": "itemGroup.name.cookedFood",
+        "items": [
+            "minecraft:cooked_chicken",
+            "minecraft:cooked_porkchop",
+            "minecraft:cooked_beef",
+            "minecraft:cooked_mutton",
+            "minecraft:cooked_rabbit",
+            "minecraft:cooked_cod",
+            "minecraft:cooked_salmon"
+        ]
+    },
+    {
+        "group_icon": "minecraft:bread",
+        "group_name": "itemGroup.name.miscFood",
+        "items": [
+            "minecraft:bread",
+            "minecraft:mushroom_stew",
+            "minecraft:beetroot_soup",
+            "minecraft:rabbit_stew",
+            "minecraft:suspicious_stew",
+            {
+                "meta": 1,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 2,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 3,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 4,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 5,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 6,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 7,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 8,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 9,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 10,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 11,
+                "name": "minecraft:suspicious_stew"
+            },
+            {
+                "meta": 12,
+                "name": "minecraft:suspicious_stew"
+            },
+            "minecraft:baked_potato",
+            "minecraft:cookie",
+            "minecraft:pumpkin_pie",
+            "minecraft:cake",
+            "minecraft:dried_kelp"
+        ]
+    },
+    {
+        "group_icon": null,
+        "group_name": "",
+        "items": [
+            "minecraft:fishing_rod",
+            "minecraft:carrot_on_a_stick",
+            "minecraft:warped_fungus_on_a_stick",
+            "minecraft:snowball",
+            "minecraft:wind_charge",
+            "minecraft:shears",
+            "minecraft:flint_and_steel",
+            "minecraft:lead",
+            "minecraft:clock",
+            "minecraft:compass",
+            "minecraft:recovery_compass"
+        ]
+    },
+    {
+        "group_icon": "minecraft:goat_horn",
+        "group_name": "itemGroup.name.goatHorn",
+        "items": [
+            "minecraft:goat_horn",
+            {
+                "meta": 1,
+                "name": "minecraft:goat_horn"
+            },
+            {
+                "meta": 2,
+                "name": "minecraft:goat_horn"
+            },
+            {
+                "meta": 3,
+                "name": "minecraft:goat_horn"
+            },
+            {
+                "meta": 4,
+                "name": "minecraft:goat_horn"
+            },
+            {
+                "meta": 5,
+                "name": "minecraft:goat_horn"
+            },
+            {
+                "meta": 6,
+                "name": "minecraft:goat_horn"
+            },
+            {
+                "meta": 7,
+                "name": "minecraft:goat_horn"
+            }
+        ]
+    },
+    {
+        "group_icon": null,
+        "group_name": "",
+        "items": [
+            "minecraft:empty_map",
+            {
+                "meta": 2,
+                "name": "minecraft:empty_map"
+            },
+            "minecraft:saddle"
+        ]
+    },
+    {
+        "group_icon": "minecraft:white_harness",
+        "group_name": "itemGroup.name.harnesses",
+        "items": [
+            "minecraft:white_harness",
+            "minecraft:light_gray_harness",
+            "minecraft:gray_harness",
+            "minecraft:black_harness",
+            "minecraft:brown_harness",
+            "minecraft:red_harness",
+            "minecraft:orange_harness",
+            "minecraft:yellow_harness",
+            "minecraft:lime_harness",
+            "minecraft:green_harness",
+            "minecraft:cyan_harness",
+            "minecraft:light_blue_harness",
+            "minecraft:blue_harness",
+            "minecraft:purple_harness",
+            "minecraft:magenta_harness",
+            "minecraft:pink_harness"
+        ]
+    },
+    {
+        "group_icon": "minecraft:bundle",
+        "group_name": "itemGroup.name.bundles",
+        "items": [
+            "minecraft:bundle",
+            "minecraft:white_bundle",
+            "minecraft:light_gray_bundle",
+            "minecraft:gray_bundle",
+            "minecraft:black_bundle",
+            "minecraft:brown_bundle",
+            "minecraft:red_bundle",
+            "minecraft:orange_bundle",
+            "minecraft:yellow_bundle",
+            "minecraft:lime_bundle",
+            "minecraft:green_bundle",
+            "minecraft:cyan_bundle",
+            "minecraft:light_blue_bundle",
+            "minecraft:blue_bundle",
+            "minecraft:purple_bundle",
+            "minecraft:magenta_bundle",
+            "minecraft:pink_bundle"
+        ]
+    },
+    {
+        "group_icon": "minecraft:leather_horse_armor",
+        "group_name": "itemGroup.name.horseArmor",
+        "items": [
+            "minecraft:leather_horse_armor",
+            "minecraft:copper_horse_armor",
+            "minecraft:iron_horse_armor",
+            "minecraft:golden_horse_armor",
+            "minecraft:diamond_horse_armor",
+            "minecraft:netherite_horse_armor"
+        ]
+    },
+    {
+        "group_icon": null,
+        "group_name": "",
+        "items": [
+            "minecraft:wolf_armor"
+        ]
+    },
+    {
+        "group_icon": "minecraft:copper_nautilus_armor",
+        "group_name": "itemGroup.name.nautilus_armor",
+        "items": [
+            "minecraft:copper_nautilus_armor",
+            "minecraft:iron_nautilus_armor",
+            "minecraft:golden_nautilus_armor",
+            "minecraft:diamond_nautilus_armor",
+            "minecraft:netherite_nautilus_armor"
+        ]
+    },
+    {
+        "group_icon": null,
+        "group_name": "",
+        "items": [
+            "minecraft:turtle_helmet",
+            "minecraft:elytra",
+            "minecraft:totem_of_undying",
+            "minecraft:glass_bottle",
+            "minecraft:experience_bottle"
+        ]
+    },
+    {
+        "group_icon": "minecraft:potion",
+        "group_name": "itemGroup.name.potion",
+        "items": [
+            "minecraft:potion",
+            {
+                "meta": 1,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 2,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 3,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 4,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 5,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 6,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 7,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 8,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 9,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 10,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 11,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 12,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 13,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 14,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 15,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 16,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 17,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 18,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 42,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 19,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 20,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 21,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 22,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 23,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 24,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 25,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 26,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 27,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 28,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 29,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 30,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 31,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 32,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 33,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 34,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 35,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 36,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 37,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 38,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 39,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 40,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 41,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 43,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 44,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 45,
+                "name": "minecraft:potion"
+            },
+            {
+                "meta": 46,
+                "name": "minecraft:potion"
+            }
+        ]
+    },
+    {
+        "group_icon": "minecraft:splash_potion",
+        "group_name": "itemGroup.name.splashPotion",
+        "items": [
+            "minecraft:splash_potion",
+            {
+                "meta": 1,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 2,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 3,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 4,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 5,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 6,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 7,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 8,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 9,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 10,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 11,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 12,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 13,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 14,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 15,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 16,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 17,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 18,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 42,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 19,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 20,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 21,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 22,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 23,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 24,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 25,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 26,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 27,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 28,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 29,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 30,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 31,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 32,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 33,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 34,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 35,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 36,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 37,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 38,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 39,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 40,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 41,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 43,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 44,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 45,
+                "name": "minecraft:splash_potion"
+            },
+            {
+                "meta": 46,
+                "name": "minecraft:splash_potion"
+            }
+        ]
+    },
+    {
+        "group_icon": "minecraft:lingering_potion",
+        "group_name": "itemGroup.name.lingeringPotion",
+        "items": [
+            "minecraft:lingering_potion",
+            {
+                "meta": 1,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 2,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 3,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 4,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 5,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 6,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 7,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 8,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 9,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 10,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 11,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 12,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 13,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 14,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 15,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 16,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 17,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 18,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 42,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 19,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 20,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 21,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 22,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 23,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 24,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 25,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 26,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 27,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 28,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 29,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 30,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 31,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 32,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 33,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 34,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 35,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 36,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 37,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 38,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 39,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 40,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 41,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 43,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 44,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 45,
+                "name": "minecraft:lingering_potion"
+            },
+            {
+                "meta": 46,
+                "name": "minecraft:lingering_potion"
+            }
+        ]
+    },
+    {
+        "group_icon": "minecraft:ominous_bottle",
+        "group_name": "itemGroup.name.ominousBottle",
+        "items": [
+            "minecraft:ominous_bottle",
+            {
+                "meta": 1,
+                "name": "minecraft:ominous_bottle"
+            },
+            {
+                "meta": 2,
+                "name": "minecraft:ominous_bottle"
+            },
+            {
+                "meta": 3,
+                "name": "minecraft:ominous_bottle"
+            },
+            {
+                "meta": 4,
+                "name": "minecraft:ominous_bottle"
+            }
+        ]
+    },
+    {
+        "group_icon": null,
+        "group_name": "",
+        "items": [
+            "minecraft:spyglass",
+            "minecraft:brush"
+        ]
+    }
+]

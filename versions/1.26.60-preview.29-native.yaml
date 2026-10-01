@@ -21,8 +21,15 @@ validation:
   outgoing_wire_fixture_count: 17
   historical_adapter_count: 14
   scope: "Wire regression and semantic mapper unit tests with existing synthetic/frozen inputs."
+published_data:
+  bundle: "data/native2223"
+  source_repository: "https://github.com/axolotl-pm/BedrockData"
+  source_commit: "5f3cd976c61e171876c93419478fbcd9e46894dc"
+  status: "Raw source imported; Git blob/SHA256 integrity and typed offline structure checks passed."
+  publisher_bds_binary_hash_attested: false
+  runtime_normalized: false
 deferred:
-  preview_data_extraction: true
+  preview_native_schema_conversion: true
   preview_native_registry_validation: true
   outgoing_registry_mapper_enablement: true
   dragonfly_native_upgrade: true

@@ -1,2 +1,5 @@
 # Preserve the bytes of the historical Tedac snapshot on Windows and in Go module archives.
 /data/v419/item_runtime_ids.json text eol=lf
+# Published native preview sources retain exact bytes for provenance hashes.
+/data/native2223/raw/** -text
+/data/native2223/bds-metadata.json -text

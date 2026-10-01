@@ -1,0 +1,84 @@
+{
+  "block_states": {
+    "all_roots_round_tripped": true,
+    "anchors": {
+      "minecraft:air": {
+        "palette_index": 18894,
+        "properties": {},
+        "version": 18168865
+      },
+      "minecraft:poplar_log": {
+        "palette_index": 22790,
+        "properties": {
+          "pillar_axis": "y"
+        },
+        "version": 18168865
+      },
+      "minecraft:stone": {
+        "palette_index": 3317,
+        "properties": {},
+        "version": 18168865
+      }
+    },
+    "entries": 23960,
+    "identifiers": 1480,
+    "property_types": {
+      "int32": 19789,
+      "string": 33972,
+      "uint8": 33202
+    }
+  },
+  "decoder": "github.com/shawtymarco/gophertunnel@34adb6db991480b8a7665959d10226078cf279fa/minecraft/nbt",
+  "embedded_little_endian_nbt_values": 2538,
+  "items": {
+    "anchors": {
+      "minecraft:air": {
+        "runtime_id": -158,
+        "component_based": false,
+        "version": 2
+      },
+      "minecraft:poplar_log": {
+        "runtime_id": -1132,
+        "component_based": false,
+        "version": 2
+      },
+      "minecraft:stone": {
+        "runtime_id": 1,
+        "component_based": false,
+        "version": 2
+      }
+    },
+    "component_based": 75,
+    "entries": 2080,
+    "unique_runtime_ids": true
+  },
+  "nbt_encoding": "NetworkLittleEndian for standalone NBT; LittleEndian for JSON embedded NBT",
+  "other_nbt": {
+    "data_driven_blocks.nbt": {
+      "all_roots_round_tripped": true,
+      "first_root_keys": [
+        "blockPalette"
+      ],
+      "root_compounds": 1
+    },
+    "entity_identifiers.nbt": {
+      "all_roots_round_tripped": true,
+      "first_root_keys": [
+        "idlist"
+      ],
+      "root_compounds": 1
+    },
+    "jigsaw_structures_data.nbt": {
+      "all_roots_round_tripped": true,
+      "first_root_keys": [
+        "jigsaws",
+        "processors",
+        "structure_sets",
+        "template_pools"
+      ],
+      "root_compounds": 1
+    }
+  },
+  "runtime_normalization": "pending",
+  "source_order": "preserved; palette indexes are not asserted to be native runtime IDs"
+}

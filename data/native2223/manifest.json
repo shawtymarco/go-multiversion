@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "target": {
+    "game_version": "1.26.60.29",
+    "channel": "preview",
+    "protocol_id": 2223
+  },
+  "acquisition": "published source import; no BDS executed or instrumented",
+  "source": {
+    "repository": "https://github.com/axolotl-pm/BedrockData",
+    "commit": "5f3cd976c61e171876c93419478fbcd9e46894dc",
+    "branch_at_acquisition": "bedrock-1.26.60",
+    "license": "CC0-1.0",
+    "declared_version": {
+      "major": 1,
+      "minor": 26,
+      "patch": 60,
+      "revision": 29,
+      "beta": false,
+      "protocol_version": 2223
+    }
+  },
+  "bds_catalog": {
+    "repository": "https://github.com/EndstoneMC/bedrock-server-data",
+    "commit": "b107f380e8b1807430d09c1e82714e905469e6f3",
+    "path": "preview/1.26.60-preview.29/metadata.json",
+    "sha256": "55902ee68926298b325354a21d53e7878237dd22269b1c03b659945aaf42a907",
+    "binary_downloaded": false,
+    "publisher_dump_binary_hash_attested": false
+  },
+  "limitations": [
+    "Publisher metadata beta=false is preserved; channel comes from the exact preview release and BDS catalog.",
+    "The latest source commit restores education data; exact experiment/world settings are not attested.",
+    "Catalog binary hashes identify available BDS archives, not the unattested binary used by the dump publisher.",
+    "This raw source bundle is not wired into runtime registries; native loader conversion and real-client validation remain pending."
+  ],
+  "files": [
+    {
+      "path": "raw/LICENSE",
+      "source_path": "LICENSE",
+      "git_blob_sha1": "0e259d42c996742e9e3cba14c677129b2c1b6311",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "bytes": 7048
+    },
+    {
+      "path": "raw/README.md",
+      "source_path": "README.md",
+      "git_blob_sha1": "cce4631f6fb1a58eb4b85a38609b5e329525f2e4",
+      "sha256": "4b97063e146899e25966147fc04bc9ac0f1336fa3986259c6459433692f0ecbb",
+      "bytes": 5676
+    },
+    {
+      "path": "raw/banner_patterns.json",
+      "source_path": "banner_patterns.json",
+      "git_blob_sha1": "754238ef4fb54ddd077df21cdad4e8389c683b22",
+      "sha256": "4d14ecbc80ae3b29d5936d73e6c8ebd65236b815363a0cba10ea8233226e6662",
+      "bytes": 6154
+    },
+    {
+      "path": "raw/biome_definitions.json",
+      "source_path": "biome_definitions.json",
+      "git_blob_sha1": "17f50e61913bb041e4e01c0ca02128ce8c7bb458",
+      "sha256": "1e0e9e0ae95992fb90269a48590eb9b16c262512960e985d793bcd63de511aa2",
+      "bytes": 48614
+    },
+    {
+      "path": "raw/biome_id_map.json",
+      "source_path": "biome_id_map.json",
+      "git_blob_sha1": "d80bf2783585bb089e385466bd75e4dc30bcca8b",
+      "sha256": "f04995f64eaa65289a2ba7af63091c4694b96df7d68f5ae3eab6396f54eb7b71",
+      "bytes": 2306
+    },
+    {
+      "path": "raw/block_id_to_item_id_map.json",
+      "source_path": "block_id_to_item_id_map.json",
+      "git_blob_sha1": "2f87d4c0d07bf997dcebbf6cf5728c50c2626e92",
+      "sha256": "aadb9429a64ece3f59cb44224a67f0d690bb4cf328b1540b1a087aee3bcea4dc",
+      "bytes": 93059
+    },
+    {
+      "path": "raw/block_properties_table.json",
+      "source_path": "block_properties_table.json",
+      "git_blob_sha1": "eab430abf9d2be3ee898eae4ecc23002c230bcad",
+      "sha256": "2aa9dda68a261ad0bfdd5d51a6ba63254a4383d082264973aff879bb0f638b30",
+      "bytes": 387234
+    },
+    {
+      "path": "raw/block_state_meta_map.json",
+      "source_path": "block_state_meta_map.json",
+      "git_blob_sha1": "3adc277661124adfae7bda743424f576e8430d3e",
+      "sha256": "9d6b47591afa704f30ed31cdcb631e2775e0d3e9b4b409837e196f1d16b0c5ec",
+      "bytes": 196017
+    },
+    {
+      "path": "raw/canonical_block_states.nbt",
+      "source_path": "canonical_block_states.nbt",
+      "git_blob_sha1": "e70a7fbdf4c2e7a10ddf6d3bca8bc6c7a8a05ae0",
+      "sha256": "88b8c903ac75d46247bed5ff785c0c050068d28440190f7412d697b045d2d51f",
+      "bytes": 3413601
+    },
+    {
+      "path": "raw/command_arg_types.json",
+      "source_path": "command_arg_types.json",
+      "git_blob_sha1": "c6eee61ea6ea65f7eed1d66d626846dbf475de54",
+      "sha256": "5c8fbf4e2c751438b0adea64eaaeb601c42c29e66e65e6cd874b472a8f05985a",
+      "bytes": 7511
+    },
+    {
+      "path": "raw/creative/construction.json",
+      "source_path": "creative/construction.json",
+      "git_blob_sha1": "885b086854dbe421d0663a62921bae172f72fb0f",
+      "sha256": "e3650efcb03586d3d27600611cbb805d62af2c7afed4e31a337d1c6348517e92",
+      "bytes": 91364
+    },
+    {
+      "path": "raw/creative/equipment.json",
+      "source_path": "creative/equipment.json",
+      "git_blob_sha1": "220a98059fa5babb96f4452827f4424cf0b05a4a",
+      "sha256": "4556161e1f762f8b2d19ea6f94d894d22c48839995be6a6f1d24baba1e60a861",
+      "bytes": 31274
+    },
+    {
+      "path": "raw/creative/items.json",
+      "source_path": "creative/items.json",
+      "git_blob_sha1": "3be001320951178cf9626b0b1039d90b9b8c0048",
+      "sha256": "429f45bab784e0064b41803c53f70d1fc46c04c8b032024e2a63c47af1c1c436",
+      "bytes": 91802
+    },
+    {
+      "path": "raw/creative/nature.json",
+      "source_path": "creative/nature.json",
+      "git_blob_sha1": "ff475d298b97972cf13b3b4832b8d671b7c39d8c",
+      "sha256": "511c4c4bcacafcf4bea6fe3f9416aeb79017bdf6f21e28fc74b087f0d822d906",
+      "bytes": 38113
+    },
+    {
+      "path": "raw/data_driven_blocks.nbt",
+      "source_path": "data_driven_blocks.nbt",
+      "git_blob_sha1": "25b000c5fa9a7b49f8200401a9a6cc6115993eda",
+      "sha256": "bf1d3737a1981728ee7a22ce8c9ae11a15f6829d33ccdbbaf983b825f88ef8e4",
+      "bytes": 74153
+    },
+    {
+      "path": "raw/entity_id_map.json",
+      "source_path": "entity_id_map.json",
+      "git_blob_sha1": "70e443045ca234acdd89588a2c138685b687914c",
+      "sha256": "d48454f4fa9a48bd4ac65a95a0042fe423aeb7df639ac90878f661bbeea0f280",
+      "bytes": 4303
+    },
+    {
+      "path": "raw/entity_identifiers.nbt",
+      "source_path": "entity_identifiers.nbt",
+      "git_blob_sha1": "60502a289adf3c684faf17321ee969aada523005",
+      "sha256": "7a970f508d742210efe7355b609dae4302d3cbca9ad2283ccf46a144de5a0e65",
+      "bytes": 8844
+    },
+    {
+      "path": "raw/enums/ParticleType.json",
+      "source_path": "enums/ParticleType.json",
+      "git_blob_sha1": "3f9e612adc449eb12b659c3b63627d5de6625670",
+      "sha256": "27b750b44740ea560c49666d9785bd5681dd73dffce56c09a95ee78ba7fee7b7",
+      "bytes": 2838
+    },
+    {
+      "path": "raw/item_tags.json",
+      "source_path": "item_tags.json",
+      "git_blob_sha1": "e999d50e6aa405820817c1ac3031600cf049e657",
+      "sha256": "4af255938ccb9617cb7d33f9d531e38e5f2cbfeda28dbaca80bcb6076350227d",
+      "bytes": 47306
+    },
+    {
+      "path": "raw/jigsaw_structures_data.nbt",
+      "source_path": "jigsaw_structures_data.nbt",
+      "git_blob_sha1": "67df4a90c645539253872a1ad5178ac1943d5314",
+      "sha256": "f9d9254d8400aeaac153bf2c0561c51fce473ee6dd860ecb16a6f23292e743ad",
+      "bytes": 209535
+    },
+    {
+      "path": "raw/level_sound_id_map.json",
+      "source_path": "level_sound_id_map.json",
+      "git_blob_sha1": "379b8aae6652a2e35a86e19365e224bd0db08d7b",
+      "sha256": "a813fd8ab53dbabf02d5566126fd4abd28ff618b89bb5dbec7d0229cb96c04dd",
+      "bytes": 16184
+    },
+    {
+      "path": "raw/protocol_info.json",
+      "source_path": "protocol_info.json",
+      "git_blob_sha1": "8df6b1b9381d628260f334a724b3a0be25af31dc",
+      "sha256": "9b255b911081ff43e5a2a3d18c8c7e133ac3b727c4c05b3439edb12bf7591667",
+      "bytes": 9603
+    },
+    {
+      "path": "raw/r12_to_current_block_map.bin",
+      "source_path": "r12_to_current_block_map.bin",
+      "git_blob_sha1": "ecda6794e9a8cf35fcc6b253ccf7a813a1e5d2af",
+      "sha256": "db8d2c15d01e70c32b6676c9729781fbbe3979ba1fa82b4a8f2dd4f96a66d853",
+      "bytes": 370947
+    },
+    {
+      "path": "raw/r16_to_current_item_map.json",
+      "source_path": "r16_to_current_item_map.json",
+      "git_blob_sha1": "2b38165f0ef01bb44dee6c2e7c7cae4f0f2f4921",
+      "sha256": "e565765bc64dd7b437506b13b0e46b3a68aff575553b89aa9328ce61198a5d62",
+      "bytes": 36740
+    },
+    {
+      "path": "raw/recipes/potion_container_change.json",
+      "source_path": "recipes/potion_container_change.json",
+      "git_blob_sha1": "c5697ee957c3de29526c834b5edf964a5199d09d",
+      "sha256": "c12c23387f6a0ba83a5572ed70660b015432f41e49ee6271c0d2ff6c8e2bf602",
+      "bytes": 399
+    },
+    {
+      "path": "raw/recipes/potion_type.json",
+      "source_path": "recipes/potion_type.json",
+      "git_blob_sha1": "c18b443fa4f9319f2440f4e9be03c40f2eb435a2",
+      "sha256": "0b448ed10c2eebedb0c1a928bca30c94eabfff71056ac55340b575eff98ef798",
+      "bytes": 59944
+    },
+    {
+      "path": "raw/recipes/shaped_crafting.json",
+      "source_path": "recipes/shaped_crafting.json",
+      "git_blob_sha1": "fec07d3dbef480041be20c120ce29e4faaa1a0e4",
+      "sha256": "e762ff944df3fa4c5d9ac13dc81aac1c4de6a9e765b41ae2c04a9e4c26dddc1f",
+      "bytes": 1000543
+    },
+    {
+      "path": "raw/recipes/shaped_crafting_asymmetric.json",
+      "source_path": "recipes/shaped_crafting_asymmetric.json",
+      "git_blob_sha1": "419a4711a915c1278683204c4f6571642e61e609",
+      "sha256": "21f6ed0ae9a7890a386a346f7062175c451af0b6319944818bd01c3ed8de44f0",
+      "bytes": 86836
+    },
+    {
+      "path": "raw/recipes/shapeless_chemistry.json",
+      "source_path": "recipes/shapeless_chemistry.json",
+      "git_blob_sha1": "873aeef9f8301d870c455826048dd3b507eb4b57",
+      "sha256": "a219defb8d07d5f112f1ad1ad40b243572be24d8b8e8bf47e5c5d0ce390ff84b",
+      "bytes": 22334
+    },
+    {
+      "path": "raw/recipes/shapeless_crafting.json",
+      "source_path": "recipes/shapeless_crafting.json",
+      "git_blob_sha1": "069a5ee0b3da3ea2a20537d2728dc99ac3406ae0",
+      "sha256": "10e7079a652bfdc590da7cc60dc8e007f6a318e3c409824f0c0b362effca2406",
+      "bytes": 1178346
+    },
+    {
+      "path": "raw/recipes/shapeless_shulker_box.json",
+      "source_path": "recipes/shapeless_shulker_box.json",
+      "git_blob_sha1": "5d2a87016ceb169f59c778fdc8441434c8f4e996",
+      "sha256": "fb4685037ebb96875e6a4fd2ad68c5e3ba6a3407445fa64ac1bb29ffd5cda909",
+      "bytes": 756214
+    },
+    {
+      "path": "raw/recipes/smithing.json",
+      "source_path": "recipes/smithing.json",
+      "git_blob_sha1": "324e6d066d40a316d90f68e8ec2965048270e7de",
+      "sha256": "b7608164fa1864938448c0622441a6897c54bfcd2050d3b095772efe40f6ae7e",
+      "bytes": 5245
+    },
+    {
+      "path": "raw/recipes/smithing_trim.json",
+      "source_path": "recipes/smithing_trim.json",
+      "git_blob_sha1": "b31e5a9b83cef6e923f854ead7c19461717d6439",
+      "sha256": "01576235bb3d7f2e44a2b97f4c3af6b44824eb2892fa9ec66b803103d5bcde35",
+      "bytes": 286
+    },
+    {
+      "path": "raw/recipes/special_hardcoded.json",
+      "source_path": "recipes/special_hardcoded.json",
+      "git_blob_sha1": "51d6a3b15b8ce90a045105c8c76ae95eb712ac9c",
+      "sha256": "f2b7d5232b9d6556b30e0f445eecf4547e402be4098c088df6e20a79752dadd9",
+      "bytes": 619
+    },
+    {
+      "path": "raw/required_item_list.json",
+      "source_path": "required_item_list.json",
+      "git_blob_sha1": "979faf5fdaadb35e327f8e0601cc1f5c9c6f01f0",
+      "sha256": "612efdf4ce9a9bd91a529a1ae8184c9db8719a81e8edfcaab43cd2277afadce0",
+      "bytes": 327619
+    },
+    {
+      "path": "raw/voxel_shapes.json",
+      "source_path": "voxel_shapes.json",
+      "git_blob_sha1": "85a93fd8c68cb82ff8602190a27d1216277c2537",
+      "sha256": "cab3c3d1258a5920ad3572fddf7c4925198bd82bdc2380de504f2c38f47d3191",
+      "bytes": 118188
+    }
+  ]
+}
