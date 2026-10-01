@@ -18,7 +18,7 @@ func TestNativeUpgradeSharedWireOracles(t *testing.T) {
 			"boss_event":       &packet.BossEvent{BossEntityUniqueID: 12, EventType: packet.BossEventShow, BossBarTitle: "boss", FilteredBossBarTitle: "clear", HealthPercentage: .5, Colour: 2},
 			"camera_presets":   &packet.CameraPresets{Presets: []protocol.CameraPreset{{Name: "test", Parent: "minecraft:first_person", PosX: protocol.Option(float32(2))}}},
 			"primitive_text":   &packet.PrimitiveShapes{Shapes: []protocol.PrimitiveShape{{NetworkID: 1, ExtraShapeData: &protocol.TextShape{Text: "text", DepthTest: true}}}},
-			"attribute_layers": &packet.ClientBoundAttributeLayerSync{PayloadType: protocol.AttributeLayerPayloadTypeUpdateEnvironment, LayerName: "layer", EnvironmentAttributes: []protocol.EnvironmentAttributeData{{AttributeName: "fog", Attribute: protocol.AttributeData{Type: protocol.AttributeDataTypeBool, BoolValue: true}, EaseType: 0}}},
+			"attribute_layers": &packet.ClientBoundAttributeLayerSync{PayloadType: protocol.AttributeLayerPayloadTypeUpdateEnvironment, LayerName: "layer", EnvironmentAttributes: []protocol.EnvironmentAttributeData{{AttributeName: "fog", Attribute: protocol.AttributeData{Type: protocol.AttributeDataTypeBool, BoolValue: true}}}},
 			"diagnostics":      &packet.ServerBoundDiagnostics{AverageFramesPerSecond: 60, MemoryCategoryValues: []protocol.MemoryCategoryCounter{{Category: protocol.MemoryCategoryRendering, Bytes: 99}}, EntityDiagnostics: []protocol.EntityDiagnosticTimingInfo{{DisplayName: "pig", Entity: "minecraft:pig", DurationNanos: 7, PercentOfTotal: 11}}},
 		}
 	}

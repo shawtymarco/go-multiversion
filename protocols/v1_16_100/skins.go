@@ -104,7 +104,7 @@ func marshalSkin(io *wireIO, skin *protocol.Skin) {
 	funcIOSliceUint32Length(io, &skin.PersonaPieces, marshalPersonaPiece)
 	funcIOSliceUint32Length(io, &skin.PieceTintColours, marshalPieceTint)
 	if io.reading {
-		skin.PlayFabID = ""
+
 		skin.GeometryDataEngineVersion = nil
 		skin.PrimaryUser = false
 		skin.OverrideAppearance = true
@@ -113,7 +113,7 @@ func marshalSkin(io *wireIO, skin *protocol.Skin) {
 }
 
 func emptyLegacySkin(skin protocol.Skin) bool {
-	return skin.SkinID == "" && skin.PlayFabID == "" && len(skin.SkinData) == 0 && len(skin.CapeData) == 0 &&
+	return skin.SkinID == "" && len(skin.SkinData) == 0 && len(skin.CapeData) == 0 &&
 		len(skin.SkinGeometry) == 0 && len(skin.PersonaPieces) == 0 && len(skin.PieceTintColours) == 0
 }
 

@@ -24,7 +24,7 @@ func marshalInventoryTransactionData(io *wireIO, value protocol.InventoryTransac
 	case *protocol.UseItemTransactionData:
 		marshalUseItemTransactionData(io, data)
 	case *protocol.UseItemOnEntityTransactionData, *protocol.ReleaseItemTransactionData:
-		data.Marshal(io)
+		packetio.TransactionBody2193(io, data, io.reading)
 	default:
 		io.UnknownEnumOption(fmt.Sprintf("%T", value), "inventory transaction data type")
 	}
@@ -170,12 +170,16 @@ func marshalDimensionDefinition(io *wireIO, definition *protocol.DimensionDefini
 
 func marshalAttributeLayer(io *wireIO, layer *protocol.AttributeLayerData) {
 	io.String(&layer.Name)
-	protocol.OptionalFunc(io, &layer.NoiseName, io.String)
+	noiseName := packetio.LayerNoiseFromNative(layer)
+	protocol.OptionalFunc(io, &noiseName, io.String)
 	io.Varint32(&layer.DimensionID)
 	protocol.Single(io.directional(), &layer.Settings)
 	protocol.FuncIOSlice(io.directional(), &layer.EnvironmentAttributes, func(raw protocol.IO, value *protocol.EnvironmentAttributeData) {
 		marshalEnvironmentAttribute(asWireIO(raw), value)
 	})
+	if io.reading {
+		packetio.LayerNoiseToNative(layer, noiseName)
+	}
 }
 
 var easingNames = [...]string{
@@ -187,37 +191,41 @@ var easingNames = [...]string{
 }
 
 func marshalEnvironmentAttribute(io *wireIO, value *protocol.EnvironmentAttributeData) {
-	io.String(&value.AttributeName)
-	protocol.OptionalMarshaler(io.directional(), &value.FromAttribute)
-	protocol.Single(io.directional(), &value.Attribute)
-	protocol.OptionalMarshaler(io.directional(), &value.ToAttribute)
-	io.Uint32(&value.CurrentTransitionTicks)
-	io.Uint32(&value.TotalTransitionTicks)
+	legacy := packetio.EnvironmentFromNative(value)
+	io.String(&legacy.AttributeName)
+	protocol.OptionalMarshaler(io.directional(), &legacy.FromAttribute)
+	protocol.Single(io.directional(), &legacy.Attribute)
+	protocol.OptionalMarshaler(io.directional(), &legacy.ToAttribute)
+	io.Uint32(&legacy.CurrentTransitionTicks)
+	io.Uint32(&legacy.TotalTransitionTicks)
 	easing := "linear"
 	if !io.reading {
-		if value.EaseType < 0 || int(value.EaseType) >= len(easingNames) {
-			io.InvalidValue(value.EaseType, "attribute easing type", "unknown easing type")
+		if legacy.EaseType < 0 || int(legacy.EaseType) >= len(easingNames) {
+			io.InvalidValue(legacy.EaseType, "attribute easing type", "unknown easing type")
 			return
 		}
-		easing = easingNames[value.EaseType]
+		easing = easingNames[legacy.EaseType]
 	}
 	io.String(&easing)
 	if io.reading {
-		value.EaseType = -1
+		legacy.EaseType = -1
 		for index, name := range easingNames {
 			if name == easing {
-				value.EaseType = int32(index)
+				legacy.EaseType = int32(index)
 				break
 			}
 		}
-		if value.EaseType == -1 {
+		if legacy.EaseType == -1 {
 			io.InvalidValue(easing, "attribute easing type", "unknown easing type")
 		}
 	}
-	io.Uint32(&value.LocalTransitionTicks)
-	io.Bool(&value.NoiseTransition)
+	io.Uint32(&legacy.LocalTransitionTicks)
+	io.Bool(&legacy.NoiseTransition)
 	if io.reading {
-		value.NoiseAlignment = protocol.NoiseAlignment{}
+		legacy.NoiseAlignment = protocol.NoiseAlignment{}
+	}
+	if io.reading {
+		packetio.EnvironmentToNative(legacy, value)
 	}
 }
 
@@ -239,8 +247,8 @@ func marshalEntityDiagnostic(io *wireIO, value *protocol.EntityDiagnosticTimingI
 	io.Uint64(&value.DurationNanos)
 	io.Uint8(&value.PercentOfTotal)
 	if io.reading {
-		value.Position = mgl32.Vec3{}
-		value.Dimension = ""
+		value.Position = protocol.Optional[mgl32.Vec3]{}
+		value.Dimension = protocol.Optional[string]{}
 	}
 }
 

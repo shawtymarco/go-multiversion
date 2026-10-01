@@ -79,7 +79,7 @@ func marshalEducationSettings419(io *wireIO, raw packet.Packet) {
 		pk.DisableLegacyTitleBar = false
 		pk.PostProcessFilter = ""
 		pk.ScreenshotBorderPath = ""
-		pk.CanModifyBlocks = protocol.Optional[bool]{}
+		pk.AgentCapabilities = protocol.Optional[protocol.EducationAgentCapabilities]{}
 		pk.ExternalLinkSettings = protocol.Optional[protocol.EducationExternalLinkSettings]{}
 	}
 }

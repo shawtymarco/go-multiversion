@@ -3,6 +3,7 @@ package v1_26_45
 import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_26_50"
 )
 
 type packetMarshal func(*wireIO, packet.Packet)
@@ -35,7 +36,7 @@ func WrapWirePacket(pk packet.Packet) packet.Packet {
 	if marshal, ok := packetMarshals[pk.ID()]; ok {
 		return translated(pk, marshal)
 	}
-	return pk
+	return v1_26_50.WrapWirePacket(pk)
 }
 
 // UnwrapWirePacket returns the native-shaped packet decoded by WrapWirePacket.
@@ -43,7 +44,7 @@ func UnwrapWirePacket(pk packet.Packet) packet.Packet {
 	if translated, ok := pk.(*translatedPacket); ok {
 		return translated.inner
 	}
-	return pk
+	return v1_26_50.UnwrapWirePacket(pk)
 }
 
 func translatedConstructor(constructor func() packet.Packet, marshal packetMarshal) func() packet.Packet {

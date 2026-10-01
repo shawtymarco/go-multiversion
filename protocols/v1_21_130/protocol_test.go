@@ -279,7 +279,7 @@ func wireFixtures() []packetFixture {
 			return &packet.PlayerEnchantOptions{Options: []protocol.EnchantmentOption{{Cost: 30, Name: "option", RecipeNetworkID: 7}}}
 		}},
 		{name: "full/player_skin", new: func() packet.Packet {
-			return &packet.PlayerSkin{UUID: uuid.MustParse("11111111-1111-1111-1111-111111111111"), Skin: protocol.Skin{SkinID: "skin", PlayFabID: "pf", CapeID: "cape", FullID: "full", ArmSize: protocol.ArmSizeWide, SkinColour: color.RGBA{R: 1, G: 2, B: 3, A: 255}}, NewSkinName: "new", OldSkinName: "old"}
+			return &packet.PlayerSkin{UUID: uuid.MustParse("11111111-1111-1111-1111-111111111111"), Skin: protocol.Skin{SkinID: "skin", CapeID: "cape", FullID: "full", ArmSize: protocol.ArmSizeWide, SkinColour: color.RGBA{R: 1, G: 2, B: 3, A: 255}}, NewSkinName: "new", OldSkinName: "old"}
 		}},
 		{name: "full/resource_pack_client_response", new: func() packet.Packet {
 			return &packet.ResourcePackClientResponse{Response: packet.PackResponseSendPacks, PacksToDownload: []string{"pack_1.0.0"}}
@@ -530,7 +530,7 @@ func TestUnsupportedPacketsAreDropped(t *testing.T) {
 		t.Fatalf("ServerPlayerPostMovePosition conversion count: got %d, want 0", len(got))
 	}
 	update := &packet.ClientboundUpdateSoundData{
-		Resume: protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateSetVolume, Volume: 0.5},
+		Update: protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateSetVolume, Volume: 0.5},
 	}
 	if got := (Protocol{}).ConvertFromLatest(update, nil); len(got) != 0 {
 		t.Fatalf("sound update conversion count: got %d, want 0", len(got))

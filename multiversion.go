@@ -20,14 +20,19 @@ import (
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_30"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_44"
 	"github.com/shawtymarco/go-multiversion/protocols/v1_26_45"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_26_50"
 )
 
 // Protocols returns adapters that need no native registry configuration.
-// Every historical release now needs mapping against the 1.26.50 registries,
+// Historical releases need mapping against the caller's 1.26.60 registries,
 // so consumers must use ProtocolsWithRegistries to enable older clients.
 func Protocols() []minecraft.Protocol {
 	return nil
 }
+
+// V1_26_50 returns the outgoing native protocol-2193 wire adapter. It is not
+// included in the registry-aware catalogue until its data mapping is configured.
+func V1_26_50() minecraft.Protocol { return v1_26_50.New() }
 
 // V1_26_45 returns the wire-only adapter for the outgoing native release.
 func V1_26_45() minecraft.Protocol { return v1_26_45.New() }

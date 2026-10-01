@@ -60,8 +60,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sandertv/go-raknet v1.15.2-0.20260705184311-0d1fd09e2cf6 h1:Oj7QsiwWTOLmCpOjjmW0Qwde4BE8F5+Kjz817qzICyk=
 github.com/sandertv/go-raknet v1.15.2-0.20260705184311-0d1fd09e2cf6/go.mod h1:/yysjwfCXm2+2OY8mBazLzcxJ3irnylKCyG3FLgUPVU=
-github.com/shawtymarco/gophertunnel v1.57.1-0.20260930051051-9e7f28092180 h1:cJj0WbRhRruz6fWUpsD9mnR6pRebgm0UK+Eh7Kndt7g=
-github.com/shawtymarco/gophertunnel v1.57.1-0.20260930051051-9e7f28092180/go.mod h1:JMKsf8DmVmn+qEVJ1IA9m7zEo9qHJ3ZN6IEvySEk9bs=
+github.com/shawtymarco/gophertunnel v1.57.1-0.20261001021118-34adb6db9914 h1:5y7sNuiVhM321yr/iL8g6JLIi6ApqdaWpQ66iC5Gh1Y=
+github.com/shawtymarco/gophertunnel v1.57.1-0.20261001021118-34adb6db9914/go.mod h1:JMKsf8DmVmn+qEVJ1IA9m7zEo9qHJ3ZN6IEvySEk9bs=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/wlynxg/anet v0.0.5 h1:J3VJGi1gvo0JwZ/P1/Yc/8p63SoW98B5dHkYDmpgvvU=

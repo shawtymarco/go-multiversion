@@ -33,7 +33,7 @@ func TestHistoricalOraclePayloads(t *testing.T) {
 		{name: "camera_presets", pk: &packet.CameraPresets{Presets: []protocol.CameraPreset{{Name: "test", Parent: "minecraft:first_person", PosX: protocol.Option(float32(2))}}}, len: 53, hash: "3eaa41998f37685859cf32b938ccfe0d3555520992c0b84ac61d74c9a5cd821c"},
 		{name: "sub_chunk", pk: &packet.SubChunk{Position: protocol.SubChunkPos{1, 2, 3}, SubChunkEntries: []protocol.SubChunkEntry{{Result: protocol.SubChunkResultSuccess, HeightMapType: protocol.HeightMapDataHasData, HeightMapData: protocol.Option(heightMap)}}}, len: 281, hash: "08517333c1fe4a0b6a0902270acf746b2a1eb63255002e351119ab71116a6799"},
 		{name: "primitive_shapes", pk: &packet.PrimitiveShapes{Shapes: []protocol.PrimitiveShape{{NetworkID: 1, ExtraShapeData: &protocol.TextShape{Text: "text", DepthTest: true}}}}, len: 22, hash: "dd2c2200f742c450b0c94a67c4a7ccf553fa14354e4f22ebd4392994ad2499c6"},
-		{name: "attribute_layers", pk: &packet.ClientBoundAttributeLayerSync{PayloadType: protocol.AttributeLayerPayloadTypeUpdateEnvironment, LayerName: "layer", EnvironmentAttributes: []protocol.EnvironmentAttributeData{{AttributeName: "fog", Attribute: protocol.AttributeData{Type: protocol.AttributeDataTypeBool, BoolValue: true}, EaseType: 0}}}, len: 38, hash: "7f4d377df1109dc1a5bcf5e79baa570994a3d4041f899e1b41bcb6fd2dbdf437"},
+		{name: "attribute_layers", pk: &packet.ClientBoundAttributeLayerSync{PayloadType: protocol.AttributeLayerPayloadTypeUpdateEnvironment, LayerName: "layer", EnvironmentAttributes: []protocol.EnvironmentAttributeData{{AttributeName: "fog", Attribute: protocol.AttributeData{Type: protocol.AttributeDataTypeBool, BoolValue: true}}}}, len: 38, hash: "7f4d377df1109dc1a5bcf5e79baa570994a3d4041f899e1b41bcb6fd2dbdf437"},
 		{name: "diagnostics", pk: &packet.ServerBoundDiagnostics{AverageFramesPerSecond: 60, MemoryCategoryValues: []protocol.MemoryCategoryCounter{{Category: protocol.MemoryCategoryPersonaCharacters, Bytes: 9}}, EntityDiagnostics: []protocol.EntityDiagnosticTimingInfo{{DisplayName: "zombie", Entity: "minecraft:zombie", DurationNanos: 10, PercentOfTotal: 11}}}, len: 83, hash: "91fc5118da955ec34cca7f60f247468ba64bc67a28fe880e2be9cd2dd94ca60b"},
 	}
 
@@ -224,7 +224,7 @@ func TestDropsUnrepresentableNativePacketsWithoutMutation(t *testing.T) {
 	}
 
 	start := &packet.StartGame{GameVersion: "1.26.50", BaseGameVersion: "1.26.50"}
-	converted := p.ConvertFromLatest(start, nil)[0].(*packet.StartGame)
+	converted := UnwrapWirePacket(p.ConvertFromLatest(start, nil)[0]).(*packet.StartGame)
 	if converted.GameVersion != Version || converted.BaseGameVersion != Version {
 		t.Fatalf("downgraded versions: got %q/%q", converted.GameVersion, converted.BaseGameVersion)
 	}

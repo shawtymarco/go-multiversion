@@ -235,7 +235,8 @@ func marshalSkin(io *wireIO, skin *protocol.Skin) {
 		skin = &copySkin
 	}
 	io.String(&skin.SkinID)
-	io.String(&skin.PlayFabID)
+	legacyPlayFabID := ""
+	io.String(&legacyPlayFabID)
 	io.ByteSlice(&skin.SkinResourcePatch)
 	io.Uint32(&skin.SkinImageWidth)
 	io.Uint32(&skin.SkinImageHeight)

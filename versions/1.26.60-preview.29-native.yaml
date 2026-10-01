@@ -1,0 +1,31 @@
+schema_version: 1
+native_game_version: "1.26.60.29"
+native_protocol_id: 2223
+stability: preview
+work_branch: "feat/26.60"
+native_gophertunnel_commit: "34adb6db991480b8a7665959d10226078cf279fa"
+native_gophertunnel_module: "github.com/shawtymarco/gophertunnel@v1.57.1-0.20261001021118-34adb6db9914"
+native_upstream_commit: "28c02f07a0c081b08ef2ab77b2b517abde28da0a"
+outgoing_game_version: "1.26.50"
+outgoing_protocol_id: 2193
+outgoing_gophertunnel_commit: "9e7f28092180fd2cae6c2a0ebc32f1c8882d26f1"
+outgoing_dragonfly_commit: "92ccc8ebb41e46c83114ac1c8d31dd0d6249f0cf"
+outgoing_registry_lock: "1.26.5x.yaml"
+comparison: "Each historical target directly converts to/from native 2223. Compatible wire masks are shared, without semantic adapter chaining."
+preparation:
+  abandoned_experiment: "f7574ffce575407e11ec8a70c1584338e1446759"
+  recovery_tag: "archive/preview2223-to2193-20261001"
+  stable_main: "b58fcf5ccfdf25ad623130f543365b215007cc3c"
+validation:
+  outgoing_wire_oracle: "tools/oracle_native2193"
+  outgoing_wire_fixture_count: 17
+  historical_adapter_count: 14
+  scope: "Wire regression and semantic mapper unit tests with existing synthetic/frozen inputs."
+deferred:
+  preview_data_extraction: true
+  preview_native_registry_validation: true
+  outgoing_registry_mapper_enablement: true
+  dragonfly_native_upgrade: true
+  nethernet_consumer_integration: true
+  real_client_validation: true
+  production_enablement: true

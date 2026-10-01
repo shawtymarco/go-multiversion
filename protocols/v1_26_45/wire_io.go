@@ -1,6 +1,9 @@
 package v1_26_45
 
-import "github.com/sandertv/gophertunnel/minecraft/protocol"
+import (
+	"github.com/sandertv/gophertunnel/minecraft/protocol"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
+)
 
 type wireIO struct {
 	protocol.IO
@@ -156,4 +159,8 @@ func doubleOptionalFunc[T any](io *wireIO, value *protocol.Optional[T], marshal 
 		return
 	}
 	protocol.OptionalFunc(io, value, marshal)
+}
+
+func (io *wireIO) StackRequestAction(value *protocol.StackRequestAction) {
+	packetio.StackRequestAction2193(io.directional(), value, io.reading)
 }

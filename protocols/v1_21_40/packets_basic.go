@@ -124,7 +124,7 @@ func marshalClientboundUpdateSoundData(io *wireIO, raw packet.Packet) {
 	event := "Stop"
 	io.String(&event)
 	if io.reading {
-		pk.Stop = protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateStop}
+		pk.Update = protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateStop}
 	}
 }
 

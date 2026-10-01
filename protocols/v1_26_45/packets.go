@@ -4,6 +4,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 	"github.com/shawtymarco/go-multiversion/internal/packetconv"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
 )
 
 func marshalBossEvent(io *wireIO, raw packet.Packet) {
@@ -178,7 +179,7 @@ func marshalServerBoundDiagnostics(io *wireIO, raw packet.Packet) {
 		marshalEntityDiagnostic(asWireIO(raw), value)
 	})
 	protocol.Slice(io.directional(), &pk.SystemDiagnostics)
-	protocol.Slice(io.directional(), &pk.SystemCategories)
+	packetio.RequiredSystemCategories(io.directional(), &pk.SystemCategories, io.reading)
 	protocol.Slice(io.directional(), &pk.WhiskerScopes)
 }
 

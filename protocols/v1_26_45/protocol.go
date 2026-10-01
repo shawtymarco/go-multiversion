@@ -8,6 +8,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 	"github.com/shawtymarco/go-multiversion/internal/packetconv"
 	"github.com/shawtymarco/go-multiversion/mapping"
+	"github.com/shawtymarco/go-multiversion/protocols/v1_26_50"
 )
 
 const (
@@ -89,6 +90,13 @@ func (Protocol) Packets(listener bool) packet.Pool {
 			pool[id] = translatedConstructor(constructor, marshal)
 		}
 	}
+	for id, constructor := range pool {
+		if id > packet.IDRecordStarted {
+			delete(pool, id)
+			continue
+		}
+		pool[id] = func() packet.Packet { return v1_26_50.WrapWirePacket(constructor()) }
+	}
 	return pool
 }
 
@@ -105,6 +113,7 @@ func (p Protocol) ConvertToLatest(pk packet.Packet, conn *minecraft.Conn) []pack
 }
 
 func (p Protocol) convertToLatest(pk packet.Packet, conn *minecraft.Conn) []packet.Packet {
+	pk = v1_26_50.UnwrapWirePacket(pk)
 	if translated, ok := pk.(*translatedPacket); ok {
 		pk = translated.inner
 	}
@@ -122,6 +131,9 @@ func (p Protocol) ConvertFromLatest(pk packet.Packet, conn *minecraft.Conn) []pa
 }
 
 func convertWireFromLatest(pk packet.Packet) []packet.Packet {
+	if pk.ID() > packet.IDPartyDestinationCookieResponse {
+		return nil
+	}
 	switch current := pk.(type) {
 	case *packet.SetPlayerFurnaceOptions, *packet.RecordStarted:
 		return nil
@@ -145,7 +157,7 @@ func convertWireFromLatest(pk packet.Packet) []packet.Packet {
 	}
 	marshal, ok := packetMarshals[pk.ID()]
 	if !ok {
-		return []packet.Packet{pk}
+		return []packet.Packet{v1_26_50.WrapWirePacket(pk)}
 	}
 	return []packet.Packet{translated(pk, marshal)}
 }

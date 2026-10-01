@@ -27,7 +27,15 @@ gophertunnel-based servers.
 
 The current compatibility family is:
 
-- Minecraft 1.26.50 / protocol 2193: native gophertunnel fork at `9e7f280` (upstream `80c811b`), with
+- This `feat/26.60` branch uses native Minecraft 1.26.60.29 Preview / protocol 2223
+  at gophertunnel fork `34adb6d` (upstream `28c02f0`). See
+  `versions/1.26.60-preview.29-native.yaml`. Preview registries and real-client
+  validation are deferred; do not infer production support from wire tests.
+- The outgoing 1.26.50 / 2193 wire codec lives in `protocols/v1_26_50` and is not
+  yet included in the registry-aware catalogue. Its stable data/source freeze is
+  retained below for the later registry mapping stage.
+
+- Outgoing stable baseline, Minecraft 1.26.50 / protocol 2193: gophertunnel fork at `9e7f280` (upstream `80c811b`), with
   Dragonfly data at `4c7b5074`. See `versions/1.26.5x.yaml` for the stable lock
   and [debug renderer compatibility](docs/debug-renderer.md) for the native API correction and historical wire oracles.
 - Minecraft 1.26.45 / protocol 2169: historical `v1_26_45` adapter with the

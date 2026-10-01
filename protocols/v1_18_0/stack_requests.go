@@ -2,6 +2,7 @@ package v1_18_0
 
 import (
 	"fmt"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
 
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
@@ -98,9 +99,9 @@ func newStackRequestAction(id uint8, value *protocol.StackRequestAction) bool {
 		*value = &protocol.CraftGrindstoneRecipeStackRequestAction{}
 	case protocol.StackRequestActionCraftLoom:
 		*value = &protocol.CraftLoomRecipeStackRequestAction{}
-	case protocol.StackRequestActionCraftNonImplementedDeprecated:
+	case packetio.StackRequestActionCraftNonImplemented2193:
 		*value = &protocol.CraftNonImplementedStackRequestAction{}
-	case protocol.StackRequestActionCraftResultsDeprecated:
+	case packetio.StackRequestActionCraftResults2193:
 		*value = &protocol.CraftResultsDeprecatedStackRequestAction{}
 	default:
 		return false
@@ -143,9 +144,9 @@ func stackRequestActionID(value protocol.StackRequestAction, id *uint8) bool {
 	case *protocol.CraftLoomRecipeStackRequestAction:
 		*id = protocol.StackRequestActionCraftLoom
 	case *protocol.CraftNonImplementedStackRequestAction:
-		*id = protocol.StackRequestActionCraftNonImplementedDeprecated
+		*id = packetio.StackRequestActionCraftNonImplemented2193
 	case *protocol.CraftResultsDeprecatedStackRequestAction:
-		*id = protocol.StackRequestActionCraftResultsDeprecated
+		*id = packetio.StackRequestActionCraftResults2193
 	default:
 		return false
 	}

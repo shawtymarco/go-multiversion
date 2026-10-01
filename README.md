@@ -8,9 +8,14 @@
 
 ## Protocols
 
-| Protocol ID | Minecraft version | Adapter | Support | Tested |
+This branch prepares the [1.26.60.29 native wire model](versions/1.26.60-preview.29-native.md).
+Runtime registry and real-client validation are pending. The checks below describe
+existing historical snapshots and automated wire regressions, not .29 gameplay support.
+
+| Protocol ID | Minecraft version | Adapter | Snapshot coverage | Wire tests |
 |------------:|-------------------|---------|:-------:|:------:|
-| 2193 | 1.26.50 | Native gophertunnel | ✅ | ✅ |
+| 2223 | 1.26.60.29 Preview | Native gophertunnel | Pending | ✅ |
+| 2193 | 1.26.50 | `v1_26_50` (wire only) | Mapping pending | ✅ |
 | 2169 | 1.26.45 | `v1_26_45` | ✅ | ✅ |
 | 2168 | 1.26.40-1.26.44 | `v1_26_44` | ✅ | ✅ |
 | 1001 | 1.26.30-1.26.34, 1.26.36 | `v1_26_30` | ✅ | ✅ |
@@ -44,7 +49,8 @@ conf.AcceptedProtocolsProvider = func(blocks world.BlockRegistry) ([]minecraft.P
 
 `Config.MinimumProtocol` is an inclusive protocol-ID floor: `748` permits the
 supported 1.21.40+ families, `0` (the default) keeps the full catalogue, and
-`2193` permits only native 1.26.50. This does not enable unlisted versions.
+`2223` permits only native 1.26.60.29 Preview. This does not enable unlisted versions.
+The new 2193 wire adapter is excluded from this catalogue until its registry mapping is ready.
 Negative floors and floors newer than native are rejected. Pass the returned
 adapters to the public listener; gophertunnel always accepts native itself.
 The package-level `ProtocolsWithRegistries` keeps its existing unrestricted

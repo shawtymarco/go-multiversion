@@ -3,6 +3,7 @@ package v1_26_0
 import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
 )
 
 func marshalBossEvent(io *wireIO, raw packet.Packet) {
@@ -227,9 +228,6 @@ func marshalAttributeLayer924(io *wireIO, layer *protocol.AttributeLayerData) {
 	protocol.FuncIOSlice(io.directional(), &layer.EnvironmentAttributes, func(raw protocol.IO, value *protocol.EnvironmentAttributeData) {
 		marshalEnvironmentAttribute924(asWireIO(raw), value)
 	})
-	if io.reading {
-		layer.NoiseName = protocol.Optional[string]{}
-	}
 }
 
 func marshalAttributeLayerSettings924(io *wireIO, settings *protocol.AttributeLayerSettings) {
@@ -253,33 +251,37 @@ func marshalAttributeLayerSettings924(io *wireIO, settings *protocol.AttributeLa
 }
 
 func marshalEnvironmentAttribute924(io *wireIO, value *protocol.EnvironmentAttributeData) {
-	io.String(&value.AttributeName)
-	protocol.OptionalMarshaler(io.directional(), &value.FromAttribute)
-	protocol.Single(io.directional(), &value.Attribute)
-	protocol.OptionalMarshaler(io.directional(), &value.ToAttribute)
-	io.Uint32(&value.CurrentTransitionTicks)
-	io.Uint32(&value.TotalTransitionTicks)
+	legacy := packetio.EnvironmentFromNative(value)
+	io.String(&legacy.AttributeName)
+	protocol.OptionalMarshaler(io.directional(), &legacy.FromAttribute)
+	protocol.Single(io.directional(), &legacy.Attribute)
+	protocol.OptionalMarshaler(io.directional(), &legacy.ToAttribute)
+	io.Uint32(&legacy.CurrentTransitionTicks)
+	io.Uint32(&legacy.TotalTransitionTicks)
 	easing := "linear"
 	if !io.reading {
-		if value.EaseType < 0 || int(value.EaseType) >= len(legacyEasingNames) {
-			io.InvalidValue(value.EaseType, "attribute easing type", "unknown easing type")
+		if legacy.EaseType < 0 || int(legacy.EaseType) >= len(legacyEasingNames) {
+			io.InvalidValue(legacy.EaseType, "attribute easing type", "unknown easing type")
 			return
 		}
-		easing = legacyEasingNames[value.EaseType]
+		easing = legacyEasingNames[legacy.EaseType]
 	}
 	io.String(&easing)
 	if io.reading {
-		value.EaseType = -1
+		legacy.EaseType = -1
 		for index, name := range legacyEasingNames {
 			if name == easing {
-				value.EaseType = int32(index)
+				legacy.EaseType = int32(index)
 				break
 			}
 		}
-		if value.EaseType == -1 {
+		if legacy.EaseType == -1 {
 			io.InvalidValue(easing, "attribute easing type", "unknown easing type")
 		}
-		value.LocalTransitionTicks = 0
-		value.NoiseTransition = false
+		legacy.LocalTransitionTicks = 0
+		legacy.NoiseTransition = false
+	}
+	if io.reading {
+		packetio.EnvironmentToNative(legacy, value)
 	}
 }

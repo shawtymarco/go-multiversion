@@ -39,10 +39,9 @@ func LegacyStartGame(pk packet.Packet) packet.Packet {
 }
 
 // StopOnlySoundUpdate reports whether the effective native update is Stop.
-// Gophertunnel b8bd735 records the client contract: the variant is repeated seven
-// times, but only the final (Resume-named) value is applied by the client.
+// The preview native model carries one sound update discriminator.
 func StopOnlySoundUpdate(pk *packet.ClientboundUpdateSoundData) bool {
-	return pk.Resume.Type == protocol.SoundDataUpdateStop
+	return pk.Update.Type == protocol.SoundDataUpdateStop
 }
 
 // UnsupportedNativePacket excludes additions and boss membership messages that

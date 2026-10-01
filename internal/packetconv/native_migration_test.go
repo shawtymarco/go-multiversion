@@ -7,13 +7,13 @@ import (
 )
 
 func TestLegacySoundUsesEffectiveNativeOperation(t *testing.T) {
-	pk := &packet.ClientboundUpdateSoundData{SetVolume: protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateSetVolume, Volume: .5}}
-	if !StopOnlySoundUpdate(pk) {
-		t.Fatal("ignored earlier fields changed the final Stop operation")
-	}
-	pk.Resume = protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateSetVolume, Volume: .5}
+	pk := &packet.ClientboundUpdateSoundData{Update: protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateSetVolume, Volume: .5}}
 	if StopOnlySoundUpdate(pk) {
-		t.Fatal("effective volume change was misrepresented as Stop")
+		t.Fatal("native volume update was treated as Stop")
+	}
+	pk.Update = protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateStop}
+	if !StopOnlySoundUpdate(pk) {
+		t.Fatal("native Stop update was not recognized")
 	}
 }
 

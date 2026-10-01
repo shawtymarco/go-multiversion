@@ -70,7 +70,8 @@ func marshalPlayerSkin(io *wireIO, raw packet.Packet) {
 
 func marshalSkin(io *wireIO, skin *protocol.Skin) {
 	io.String(&skin.SkinID)
-	io.String(&skin.PlayFabID)
+	legacyPlayFabID := ""
+	io.String(&legacyPlayFabID)
 	io.ByteSlice(&skin.SkinResourcePatch)
 	io.Uint32(&skin.SkinImageWidth)
 	io.Uint32(&skin.SkinImageHeight)
@@ -113,7 +114,7 @@ func marshalSkin(io *wireIO, skin *protocol.Skin) {
 }
 
 func emptyLegacySkin(skin protocol.Skin) bool {
-	return skin.SkinID == "" && skin.PlayFabID == "" && len(skin.SkinData) == 0 && len(skin.CapeData) == 0 &&
+	return skin.SkinID == "" && len(skin.SkinData) == 0 && len(skin.CapeData) == 0 &&
 		len(skin.SkinGeometry) == 0 && len(skin.PersonaPieces) == 0 && len(skin.PieceTintColours) == 0
 }
 

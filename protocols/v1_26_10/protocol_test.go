@@ -49,10 +49,12 @@ func wireFixtures() []packetFixture {
 		}},
 		{name: "client_bound_attribute_layer_sync", new: func() packet.Packet {
 			return &packet.ClientBoundAttributeLayerSync{PayloadType: protocol.AttributeLayerPayloadTypeUpdateLayers, Layers: []protocol.AttributeLayerData{{
-				Name: "layer", NoiseName: protocol.Option("noise"), DimensionID: 0, Settings: protocol.AttributeLayerSettings{Enabled: true},
+				Name: "layer", DimensionID: 0, Settings: protocol.AttributeLayerSettings{Enabled: true},
 				EnvironmentAttributes: []protocol.EnvironmentAttributeData{{
 					AttributeName: "temperature", Attribute: protocol.AttributeData{Type: protocol.AttributeDataTypeFloat, FloatValue: 0.5},
-					CurrentTransitionTicks: 1, TotalTransitionTicks: 2, EaseType: protocol.EasingTypeInQuad, LocalTransitionTicks: 3, NoiseTransition: true,
+					PayloadType:   protocol.EnvironmentAttributePayloadTypeNoiseTransition,
+					FromAttribute: protocol.AttributeData{Type: protocol.AttributeDataTypeFloat, FloatValue: 0.5}, ToAttribute: protocol.AttributeData{Type: protocol.AttributeDataTypeFloat, FloatValue: 0.5},
+					NoiseTransitionSettings: protocol.AttributeNoiseTransitionSettings{NoiseName: "noise", CurrentTransitionTicks: 1, TotalTransitionTicks: 2, EaseType: protocol.EasingTypeInQuad, LocalTransitionTicks: 3},
 				}},
 			}}}
 		}},
@@ -266,7 +268,7 @@ func wireFixtures() []packetFixture {
 			return &packet.PlayerEnchantOptions{Options: []protocol.EnchantmentOption{{Cost: 30, Name: "option", RecipeNetworkID: 7}}}
 		}},
 		{name: "full/player_skin", new: func() packet.Packet {
-			return &packet.PlayerSkin{UUID: uuid.MustParse("11111111-1111-1111-1111-111111111111"), Skin: protocol.Skin{SkinID: "skin", PlayFabID: "pf", CapeID: "cape", FullID: "full", ArmSize: protocol.ArmSizeWide, SkinColour: color.RGBA{R: 1, G: 2, B: 3, A: 255}}, NewSkinName: "new", OldSkinName: "old"}
+			return &packet.PlayerSkin{UUID: uuid.MustParse("11111111-1111-1111-1111-111111111111"), Skin: protocol.Skin{SkinID: "skin", CapeID: "cape", FullID: "full", ArmSize: protocol.ArmSizeWide, SkinColour: color.RGBA{R: 1, G: 2, B: 3, A: 255}}, NewSkinName: "new", OldSkinName: "old"}
 		}},
 		{name: "full/resource_pack_client_response", new: func() packet.Packet {
 			return &packet.ResourcePackClientResponse{Response: packet.PackResponseSendPacks, PacksToDownload: []string{"pack_1.0.0"}}
@@ -497,7 +499,7 @@ func TestUnsupportedPacketsAreDropped(t *testing.T) {
 		t.Fatalf("ServerPlayerPostMovePosition conversion count: got %d, want 0", len(got))
 	}
 	update := &packet.ClientboundUpdateSoundData{
-		Resume: protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateSetVolume, Volume: 0.5},
+		Update: protocol.SoundDataUpdate{Type: protocol.SoundDataUpdateSetVolume, Volume: 0.5},
 	}
 	if got := (Protocol{}).ConvertFromLatest(update, nil); len(got) != 0 {
 		t.Fatalf("sound update conversion count: got %d, want 0", len(got))
