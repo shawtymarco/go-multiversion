@@ -4,6 +4,11 @@ CI runs on pushes, pull requests and manual dispatch, on every branch. Jobs are
 bounded by timeouts and stale runs on the same ref are cancelled. Actions are
 pinned to immutable commits and checkout credentials are not persisted.
 
+Snapshot JSON and wire fixtures use LF checkout bytes on every platform so their
+locked hashes match Git and Go module archives. Published raw source bundles keep
+their own byte-preservation attributes. The vulnerability job pins govulncheck
+v1.8.0 to support the current stable Go 1.27 syntax and standard library.
+
 The primary workflow validates:
 
 - Linux, Windows and macOS with the minimum Go 1.25 patch line and current stable Go;

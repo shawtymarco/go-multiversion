@@ -1,3 +1,6 @@
+# Snapshot hashes and wire fixtures must match Git/module-archive bytes on Windows.
+/data/**/*.json text eol=lf
+/protocols/**/testdata/*.json text eol=lf
 # Preserve the bytes of the historical Tedac snapshot on Windows and in Go module archives.
 /data/v419/item_runtime_ids.json text eol=lf
 # Published native preview sources retain exact bytes for provenance hashes.
