@@ -143,8 +143,8 @@ func TestChangedPacketRoundTrips(t *testing.T) {
 			}}},
 			check: func(t *testing.T, raw packet.Packet) {
 				values, ok := raw.(*packet.SubChunk).SubChunkEntries[0].HeightMapData.Value()
-				if !ok || len(values) != 16 {
-					t.Fatalf("height map: present=%t len=%d", ok, len(values))
+				if !ok || values[0][0] != 0 || values[15][15] != 0 {
+					t.Fatalf("height map: present=%t first=%d last=%d", ok, values[0][0], values[15][15])
 				}
 			},
 		},

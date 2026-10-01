@@ -33,6 +33,10 @@ existing historical snapshots and automated wire regressions, not .29 gameplay s
 
 Unlisted releases and preview builds are not implied.
 
+[CI coverage and local commands](docs/ci.md) describe the automated checks.
+[Dual public transport admission](docs/dual-transport.md) specifies the proposed
+shared RakNet/NetherNet session owner and its integration gates.
+
 ## Usage
 
 Registry-aware adapters must be created after Dragonfly finalises its native

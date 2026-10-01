@@ -33,9 +33,10 @@ type fixture struct {
 
 func main() {
 	path := flag.String("out", "", "output JSON path")
+	inspect := flag.Bool("inspect", false, "decode a packet to JSON for unordered-field comparison")
 	flag.Parse()
 	if *path == "" && flag.NArg() == 3 {
-		roundTrip(flag.Arg(0), flag.Arg(1), flag.Arg(2))
+		roundTrip(flag.Arg(0), flag.Arg(1), flag.Arg(2), *inspect)
 		return
 	}
 	if *path == "" {
@@ -108,7 +109,7 @@ func populatedFixtures() map[string]fixture {
 	return result
 }
 
-func roundTrip(direction, rawID, encoded string) {
+func roundTrip(direction, rawID, encoded string, inspect bool) {
 	id, err := strconv.ParseUint(rawID, 10, 32)
 	if err != nil {
 		panic(err)
@@ -126,7 +127,17 @@ func roundTrip(direction, rawID, encoded string) {
 		panic(fmt.Sprintf("packet %d is missing", id))
 	}
 	pk := constructor
-	pk.Unmarshal(protocol.NewReader(zeroSafeReader{Reader: bytes.NewReader(data)}, -1))
+	reader := bytes.NewReader(data)
+	pk.Unmarshal(protocol.NewReader(zeroSafeReader{Reader: reader}, -1))
+	if reader.Len() != 0 {
+		panic(fmt.Sprintf("packet %d has %d unread bytes", id, reader.Len()))
+	}
+	if inspect {
+		if err := json.NewEncoder(os.Stdout).Encode(pk); err != nil {
+			panic(err)
+		}
+		return
+	}
 	var buffer bytes.Buffer
 	pk.Marshal(protocol.NewWriter(&buffer, -1))
 	_, _ = fmt.Fprint(os.Stdout, hex.EncodeToString(buffer.Bytes()))

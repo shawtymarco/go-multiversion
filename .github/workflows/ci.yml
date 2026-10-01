@@ -1,0 +1,172 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GOWORK: 'off'
+  GOTOOLCHAIN: auto
+
+jobs:
+  quality:
+    name: Format, modules, workflows and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache-dependency-path: '**/go.sum'
+      - name: Check formatting
+        run: python3 tools/ci/check.py format
+      - name: Verify every module and tidy state
+        run: python3 tools/ci/check.py modules
+      - name: Validate workflow syntax
+        run: |
+          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+          actionlint -color
+      - name: Static analysis
+        run: |
+          go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.14.0
+          python3 tools/ci/check.py lint
+      - name: Verify checks left tracked files unchanged
+        run: git diff --exit-code
+
+  test:
+    name: Test (${{ matrix.os }}, Go ${{ matrix.go }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        go: ['1.25.x', stable]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: ${{ matrix.go }}
+          cache-dependency-path: '**/go.sum'
+      - name: Test, vet and build every module
+        run: python tools/ci/check.py test
+      - name: Verify no tracked files changed
+        run: git diff --exit-code
+
+  race:
+    name: Race, coverage and dependency transport regressions
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache-dependency-path: '**/go.sum'
+      - name: Race test every module and collect root coverage
+        run: python3 tools/ci/check.py race
+      - name: Test the exact pinned gophertunnel transport and sessions
+        run: python3 tools/ci/check.py transport
+      - name: Coverage summary
+        run: |
+          go tool cover -func=coverage.out | tee coverage.txt
+          {
+            echo '### Root-module coverage'
+            echo '```text'
+            tail -n 1 coverage.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage
+          path: |
+            coverage.out
+            coverage.txt
+          retention-days: 14
+          if-no-files-found: error
+
+  oracles:
+    name: Independent historical oracle reproducibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache-dependency-path: '**/go.sum'
+      - name: Regenerate oracles in temporary directories and compare fixtures
+        run: python3 tools/ci/check.py oracles
+      - name: Verify snapshot and mapping regressions
+        run: go test -count=1 -mod=readonly ./data/... ./mapping/... ./protocols/...
+      - name: Verify no tracked files changed
+        run: git diff --exit-code
+
+  portability:
+    name: Compile Linux, Windows and Darwin arm64
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache-dependency-path: '**/go.sum'
+      - name: Cross-compile every module
+        run: python3 tools/ci/check.py portability
+
+  vulnerabilities:
+    name: Reachable Go vulnerability scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache-dependency-path: '**/go.sum'
+      - name: Scan the maintained root module
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
+          govulncheck -test ./...
+
+  required:
+    name: CI required
+    if: always()
+    needs: [quality, test, race, oracles, portability, vulnerabilities]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every validation job to succeed
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          results = json.loads(os.environ['RESULTS'])
+          failures = {name: job['result'] for name, job in results.items() if job['result'] != 'success'}
+          if failures:
+              print(failures)
+              sys.exit(1)
+          PY

@@ -555,7 +555,7 @@ func encodeTargetPacket(t *testing.T, pk packet.Packet) []byte {
 func encodeTargetPacketForDirection(t *testing.T, pk packet.Packet, listener bool) []byte {
 	t.Helper()
 	if listener {
-		var target packet.Packet = pk
+		target := pk
 		if marshal, ok := packetMarshals[pk.ID()]; ok {
 			target = translated(pk, marshal)
 		}

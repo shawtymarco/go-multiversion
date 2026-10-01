@@ -1,0 +1,25 @@
+version: '2'
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+linters:
+  default: none
+  enable:
+    - govet
+    - staticcheck
+    - ineffassign
+    - unused
+  exclusions:
+    rules:
+      # Frozen historical codec scaffolding is retained as release evidence.
+      # Dead-code cleanup is separate from enabling repository-wide CI gates.
+      - path: '^protocols/'
+        linters: [unused]
+      # These exact deprecated packet types are required by historical wire pools.
+      - path: '^protocols/'
+        linters: [staticcheck]
+        text: 'SA1019: .*ClientCheatAbility'
+      # Explicit base-IO calls avoid routing back through the adapter capability.
+      - path: '^protocols/v1_(16_100|18_0|18_10)/inventory\.go$'
+        linters: [staticcheck]
+        text: 'QF1008: could remove embedded field "IO"'

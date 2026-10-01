@@ -1,0 +1,7 @@
+[
+  {"module":"tools/oracle_native2193","fixture":"protocols/v1_26_50/testdata/native2193.json","mode":"stdout"},
+  {"module":"tools/oracle_v419","fixture":"protocols/v1_16_100/testdata/zero_pool_v419.json","mode":"file","unordered_fixtures":["add_actor"]},
+  {"module":"tools/oracle_v475","fixture":"protocols/v1_18_0/testdata/zero_pool_v475.json","mode":"file"},
+  {"module":"tools/oracle_v748","fixture":"protocols/v1_21_40/testdata/zero_pool.json","mode":"file"},
+  {"module":"tools/oracle_v766","fixture":"protocols/v1_21_50/testdata/zero_pool.json","mode":"file"}
+]
