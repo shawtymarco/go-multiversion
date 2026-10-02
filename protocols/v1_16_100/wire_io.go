@@ -43,6 +43,16 @@ func (io *wireIO) UBlockPos(x *protocol.BlockPos) {
 	io.Varint32(&x[2])
 }
 
+func (io *wireIO) SoundPos(x *mgl32.Vec3) {
+	pos := protocol.BlockPos{
+		int32((*x)[0] * 8),
+		int32((*x)[1] * 8),
+		int32((*x)[2] * 8),
+	}
+	io.UBlockPos(&pos)
+	*x = mgl32.Vec3{float32(pos[0]) / 8, float32(pos[1]) / 8, float32(pos[2]) / 8}
+}
+
 func (io *wireIO) directional() protocol.IO {
 	if io.reading {
 		return &wireReader{wireIO: io}
