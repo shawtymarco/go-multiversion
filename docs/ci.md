@@ -12,7 +12,8 @@ v1.8.0 to support the current stable Go 1.27 syntax and standard library.
 The primary workflow validates:
 
 - Linux, Windows and macOS with the minimum Go 1.25 patch line and current stable Go;
-- test, vet and build for every tracked Go module, including the historical oracle modules;
+- test, vet and build for the core and historical oracle modules;
+- a separate pending Dragonfly integration check against the exact upstream PR source;
 - Linux race tests, root coverage and pinned gophertunnel transport/session regressions;
 - gofmt, module checksum integrity and a clean `go mod tidy -diff` result;
 - golangci-lint govet, staticcheck, ineffassign and unused checks;
@@ -57,12 +58,18 @@ python tools/ci/check.py modules
 python tools/ci/check.py test
 python tools/ci/check.py oracles
 python tools/ci/check.py portability
+python tools/ci/upstream_dragonfly.py
 ```
 
 `lint` also needs the pinned golangci-lint executable. `race` and `transport`
 require a working race/cgo toolchain. Module discovery uses tracked go.mod files;
 new oracle modules must also join `tools/ci/oracles.json`, otherwise reproducibility
 validation fails.
+
+The `dragonfly` module is excluded from ordinary module discovery while upstream
+PR 1481 is pending. Its dedicated runner uses a temporary modfile for the locked
+PR source and executes tests, vet and build in each OS test job. This is explicit
+PR validation, not evidence that official Dragonfly master currently builds.
 
 For dual public transports, see [the proposed RakNet/NetherNet admission design](dual-transport.md).
 Automated library checks do not establish actual-client or deployment support.

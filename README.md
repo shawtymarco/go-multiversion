@@ -29,9 +29,9 @@ gameplay compatibility.
 | 827 | 1.21.100-1.21.102 | `v1_21_100` | ✅ | ✅ |
 | 766 | 1.21.50-1.21.51 | `v1_21_50` | ✅ | ✅ |
 | 748 | 1.21.40, 1.21.41, 1.21.43, 1.21.44 | `v1_21_40` | ✅ | ✅ |
-| 486 | 1.18.10-1.18.12 | `v1_18_10` | ✅ | ✅ |
-| 475 | 1.18.0-1.18.2 | `v1_18_0` | ✅ | ✅ |
-| 419 | 1.16.100 | `v1_16_100` | ✅ | ✅ |
+| 486 (opt-in) | 1.18.10-1.18.12 | `v1_18_10` | ✅ | ✅ |
+| 475 (opt-in) | 1.18.0-1.18.2 | `v1_18_0` | ✅ | ✅ |
+| 419 (opt-in) | 1.16.100 | `v1_16_100` | ✅ | ✅ |
 
 Unlisted releases and preview builds are not implied.
 
@@ -41,39 +41,67 @@ RakNet/NetherNet session owner, implementation history and integration gates.
 
 ## Usage
 
-Registry-aware adapters must be created after Dragonfly finalises its native
-block registry:
+The core module uses **upstream gophertunnel v1.63.0**, without a fork replacement.
+The default registry-aware catalogue includes the supported **1.21.40+** families
+(protocol 748 and newer). Native remains stable 1.26.60 / protocol 2225.
 
 ```go
-conf.AcceptedProtocolsProvider = func(blocks world.BlockRegistry) ([]minecraft.Protocol, error) {
-	return (multiversion.Config{MinimumProtocol: 748}).ProtocolsWithRegistries(blocks, dragonfly.VanillaItemEntries())
-}
+adapters, err := (multiversion.Config{MinimumProtocol: 748}).ProtocolsWithRegistries(blocks, items)
+// Supply adapters to minecraft.ListenConfig.AcceptedProtocols after handling err.
 ```
 
-`ProtocolsWithRegistries` enables the registry-aware adapters. The parameterless
-`Protocols()` intentionally omits adapters that need native block and item registries.
+`blocks` and `items` must describe the server's actual finalized registries.
+The parameterless `Protocols()` intentionally returns no unconfigured historical
+adapters. `MinimumProtocol` is an inclusive floor: zero selects the default modern
+catalogue, and 2225 selects no historical adapters. Unlisted families are not added.
+The core codecs do not translate opaque chunk payloads on their own: consumers
+must integrate palette conversion or use the Dragonfly adapter below.
 
-`Config.MinimumProtocol` is an inclusive protocol-ID floor: `748` permits the
-supported 1.21.40+ families, `0` (the default) keeps the full catalogue, and
-`2225` permits only native 1.26.60.30 Preview. This does not enable unlisted versions.
-The registry-aware catalogue includes the direct 2193 adapter and its frozen data.
-Negative floors and floors newer than native are rejected. Pass the returned
-adapters to the public listener. Matching Dragonfly installs its native hash bridge;
-standalone proxies must append `dragonfly.NativeProtocol(blocks)` explicitly.
-The package-level `ProtocolsWithRegistries` keeps its existing unrestricted
-behaviour. See [gameplay regression evidence](versions/gameplay-effects-audit.md).
+### Upstream Dragonfly integration (pending upstream release)
 
-### Required integration
+The optional [Dragonfly module](dragonfly/README.md) supplies a listener and
+connection wrapper, actual-registry mapping, a native hash bridge, and external
+chunk translation. Its intended startup API is:
 
-- Consumers need the matching [`shawtymarco/dragonfly`](https://github.com/shawtymarco/dragonfly)
-  revision. Stock upstream Dragonfly does not provide the registry, protocol,
-  or pre-hash palette hooks required by the historical adapters.
-- Protocols `486`, `475`, and `419` also require the matching
-  [`shawtymarco/gophertunnel`](https://github.com/shawtymarco/gophertunnel)
-  revision for RakNet v10, Login-first negotiation, legacy flate batches, and
-  protocol-specific encryption where required.
-- Keep the consumer's immutable Dragonfly and gophertunnel fork revisions
-  compatible with the native protocol pinned in [go.mod](go.mod).
+```go
+import mvdragonfly "github.com/shawtymarco/go-multiversion/dragonfly"
+
+// After uc.Config(...), before conf.New():
+if err := mvdragonfly.Enable(&conf, uc.Network.Address); err != nil {
+    return err
+}
+srv := conf.New()
+```
+
+**This module is not ready for a fork-free release yet.** Dragonfly master
+`1bf4e242` still refers to Skin.PlayFabID, removed in the required gophertunnel
+v1.63.0. [Upstream PR 1481](https://github.com/df-mc/dragonfly/pull/1481), exact
+commit `d86aefd9`, provides the compatible native update but is not merged or
+resolvable as a normal df-mc Go module revision. CI validates against that PR in a
+temporary modfile only. The core module has no Dragonfly dependency and is usable
+independently. Existing fork integrations can continue using their generic hooks.
+
+The new adapter uses RakNet and disables client chunk caching before Dragonfly
+encodes chunks. `Enable` replaces existing listeners; explicit listener composition
+is available. NetherNet integration and real-client gameplay checks remain separate
+work. See [source locks and release gates](docs/upstream-integration.md).
+
+### Optional legacy transport
+
+Protocols 486, 475 and 419 retain their historical codecs, snapshots and wire tests,
+but are **not advertised by the default catalogue**. Direct constructors are codec
+APIs, not a promise that upstream gophertunnel accepts their Login-first sessions.
+Existing consumers that need these families must explicitly choose both the
+`legacytransport` build tag and the compatible transport fork:
+
+```text
+go mod edit -replace=github.com/sandertv/gophertunnel=github.com/shawtymarco/gophertunnel@v1.57.1-0.20261028052605-1fa0b31e78a8
+go test -tags=legacytransport ./...
+```
+
+The tag restores their catalogue entries and the 1.16 CFB8 capability. It does not
+add legacy chunk support to the new upstream Dragonfly module. Keep existing
+legacy server integration hooks when opting into this mode.
 
 ## Credits
 

@@ -54,8 +54,8 @@ github.com/pion/webrtc/v4 v4.2.21-0.20260920133716-91bfc6c2039f h1:0XfJb4bIZJ+8V
 github.com/pion/webrtc/v4 v4.2.21-0.20260920133716-91bfc6c2039f/go.mod h1:NwZ4eel6nNSRuCuhqZYewBUqKCiw2v4BXDobw71KxF4=
 github.com/sandertv/go-raknet v1.15.2-0.20260705184311-0d1fd09e2cf6 h1:Oj7QsiwWTOLmCpOjjmW0Qwde4BE8F5+Kjz817qzICyk=
 github.com/sandertv/go-raknet v1.15.2-0.20260705184311-0d1fd09e2cf6/go.mod h1:/yysjwfCXm2+2OY8mBazLzcxJ3irnylKCyG3FLgUPVU=
-github.com/shawtymarco/gophertunnel v1.57.1-0.20261028052605-1fa0b31e78a8 h1:oaPNr54jKXAI08K0BknRCjB/NtbFN5bCFiHRn2yUhBU=
-github.com/shawtymarco/gophertunnel v1.57.1-0.20261028052605-1fa0b31e78a8/go.mod h1:hOjJWwzgmTw/Di+cYKVyoDxVtQINwqHVAYtgmTLo15A=
+github.com/sandertv/gophertunnel v1.63.0 h1:18s5x1fKqt8JHh1hz+xuNAsQwJWPIKkOv6sN4wXyUTs=
+github.com/sandertv/gophertunnel v1.63.0/go.mod h1:hOjJWwzgmTw/Di+cYKVyoDxVtQINwqHVAYtgmTLo15A=
 github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWDWE=
 github.com/stretchr/testify v1.12.1/go.mod h1:MDEgiDPPsNp5cuIrHPPCyornHKgEVbtFUmoNlxoYthg=
 github.com/wlynxg/anet v0.0.5 h1:J3VJGi1gvo0JwZ/P1/Yc/8p63SoW98B5dHkYDmpgvvU=

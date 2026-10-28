@@ -67,9 +67,6 @@ func (Protocol) Ver() string { return Version }
 // active flate batches for RakNet v10 clients.
 func (Protocol) LegacyNetworkSettings() packet.Compression { return packet.FlateCompression }
 
-// Encryption selects the CFB8 cipher used before Minecraft 1.16.220.
-func (Protocol) Encryption(key [32]byte) packet.Encryption { return packet.NewCFB8Encryption(key) }
-
 // PreSpawnPackets restores the protocol-419 spawn order. The 1.16.100 client
 // requires biome definitions before PlayStatusPlayerSpawn and may crash while
 // initialising achievements if they have not arrived yet.

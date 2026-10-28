@@ -16,6 +16,13 @@ gophertunnel-based servers.
 
 ## Protocol work
 
+The default build uses upstream gophertunnel v1.63.0 and advertises only the
+configured 1.21.40+ families. Protocols 419/475/486 are opt-in through
+`legacytransport` and still require the transport fork. Their wire/data tests
+remain in the default suite. The optional `dragonfly/` module is pending upstream
+PR 1481; validate it with `python tools/ci/upstream_dragonfly.py`, not a production
+fork replacement. See `docs/upstream-integration.md` for release gates.
+
 - Compare the exact historical gophertunnel commit directly with the current
   native commit before editing an adapter.
 - Check Mojang's protocol changelog and release-specific protocol reference
