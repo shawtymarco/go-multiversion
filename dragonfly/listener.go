@@ -15,7 +15,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 	multiversion "github.com/shawtymarco/go-multiversion"
-	"github.com/shawtymarco/go-multiversion/internal/chunkconv"
+	"github.com/shawtymarco/go-multiversion/chunkconv"
 )
 
 // Enable replaces the configured listeners with one multiversion RakNet listener.

@@ -1,5 +1,6 @@
 // Package chunkconv translates network chunk palettes without accessing a server's
-// live world. Its input is Dragonfly's version-9 numeric network encoding.
+// live world. Its input is Dragonfly's version-9 numeric network encoding. Proxies
+// that keep their backends native use Packet on the way to a historical client.
 package chunkconv
 
 import (

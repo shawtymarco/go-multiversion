@@ -55,7 +55,9 @@ The parameterless `Protocols()` intentionally returns no unconfigured historical
 adapters. `MinimumProtocol` is an inclusive floor: zero selects the default modern
 catalogue, and 2225 selects no historical adapters. Unlisted families are not added.
 The core codecs do not translate opaque chunk payloads on their own: consumers
-must integrate palette conversion or use the Dragonfly adapter below.
+must integrate palette conversion or use the Dragonfly adapter below. A proxy that keeps its
+backends native converts each LevelChunk and SubChunk on the way to the client with
+`chunkconv.Packet(pk, conn.Proto())`.
 
 ### Upstream Dragonfly integration (pending upstream release)
 
