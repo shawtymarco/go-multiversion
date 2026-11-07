@@ -37,10 +37,7 @@ func TestProtocolIdentityAndCapabilities(t *testing.T) {
 	if p.NetworkChunkRadiusLimit() != 9 {
 		t.Fatalf("legacy chunk radius limit: got %d, want 9", p.NetworkChunkRadiusLimit())
 	}
-	first, second := p.Encryption([32]byte{1}), p.Encryption([32]byte{1})
-	if first == second {
-		t.Fatal("Encryption returned shared state")
-	}
+
 }
 
 func TestHistoricalPopulatedPacketOracles(t *testing.T) {

@@ -29,6 +29,9 @@ def tracked(pattern: str) -> list[str]:
 def modules() -> list[Path]:
     paths = {ROOT}
     paths.update((ROOT / name).parent for name in tracked("**/go.mod"))
+    # The optional adapter awaits upstream PR 1481. Its dedicated CI runner tests
+    # that exact PR in a disposable modfile, without adding a production fork pin.
+    paths.discard(ROOT / "dragonfly")
     return sorted(paths, key=lambda path: path.as_posix())
 
 

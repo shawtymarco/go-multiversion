@@ -6,7 +6,7 @@ require (
 	github.com/df-mc/worldupgrader v1.0.22
 	github.com/go-gl/mathgl v1.1.0
 	github.com/google/uuid v1.6.0
-	github.com/sandertv/gophertunnel v1.62.0
+	github.com/sandertv/gophertunnel v1.63.1-0.20261030102901-0e179fc4bb08
 )
 
 require (
@@ -45,5 +45,3 @@ require (
 	golang.org/x/text v0.38.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
 )
-
-replace github.com/sandertv/gophertunnel => github.com/shawtymarco/gophertunnel v1.57.1-0.20261029134723-e731813db0ed

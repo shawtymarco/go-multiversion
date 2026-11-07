@@ -12,7 +12,8 @@ import (
 // The native protocol remains accepted by gophertunnel itself.
 type Config struct {
 	// MinimumProtocol is an inclusive protocol ID floor. Zero enables the full
-	// supported catalogue. A floor never adds support for an unlisted protocol.
+	// modern catalogue (or the legacytransport opt-in catalogue). A floor never
+	// adds support for an unlisted protocol.
 	MinimumProtocol int32
 }
 
@@ -25,8 +26,8 @@ func (c Config) Validate() error {
 }
 
 // ProtocolsWithRegistries builds the supported catalogue and applies the
-// configured floor before a listener accepts either modern or Login-first
-// clients. The existing package function retains its unrestricted behaviour.
+// configured floor. Login-first clients are included only in legacytransport
+// builds, which require the separately documented transport fork.
 func (c Config) ProtocolsWithRegistries(native mapping.BlockRegistry, items []protocol.ItemEntry) ([]minecraft.Protocol, error) {
 	if err := c.Validate(); err != nil {
 		return nil, err

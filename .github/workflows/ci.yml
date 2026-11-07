@@ -63,6 +63,8 @@ jobs:
           cache-dependency-path: '**/go.sum'
       - name: Test, vet and build every module
         run: python tools/ci/check.py test
+      - name: Validate pending Dragonfly integration against locked upstream PR
+        run: python tools/ci/upstream_dragonfly.py
       - name: Verify no tracked files changed
         run: git diff --exit-code
 

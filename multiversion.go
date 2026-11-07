@@ -183,8 +183,9 @@ func V1_21_130WithBlockRegistry(native mapping.BlockRegistry) (minecraft.Protoco
 	return v1_21_130.NewWithBlockRegistry(native)
 }
 
-// ProtocolsWithBlockRegistry returns all verified non-native protocols,
-// including protocol 1001 configured against the current block registry.
+// ProtocolsWithBlockRegistry returns the modern non-native catalogue configured
+// against the current block registry. The legacytransport build adds 419/475/486
+// and requires the separately documented transport fork.
 func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Protocol, error) {
 	u50, err := v1_26_50.NewWithBlockRegistry(native)
 	if err != nil {
@@ -234,23 +235,13 @@ func ProtocolsWithBlockRegistry(native mapping.BlockRegistry) ([]minecraft.Proto
 	if err != nil {
 		return nil, err
 	}
-	v486, err := V1_18_10WithBlockRegistry(native)
-	if err != nil {
-		return nil, err
-	}
-	v475, err := V1_18_0WithBlockRegistry(native)
-	if err != nil {
-		return nil, err
-	}
-	v419, err := V1_16_100WithBlockRegistry(native)
-	if err != nil {
-		return nil, err
-	}
-	return []minecraft.Protocol{u44, legacy, u2, u1, u0, r21u13, older, oldest, r21u5, r21u4, v486, v475, v419, u45, u50}, nil
+	modern := []minecraft.Protocol{u44, legacy, u2, u1, u0, r21u13, older, oldest, r21u5, r21u4, u45, u50}
+	return appendLegacyProtocols(modern, native, nil)
 }
 
-// ProtocolsWithRegistries returns all verified adapters after eagerly
-// validating the current block and item registries.
+// ProtocolsWithRegistries returns the configured catalogue after eagerly
+// validating the current block and item registries. By default it includes
+// protocol 748 and newer; legacytransport adds the Login-first families.
 func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protocol.ItemEntry) ([]minecraft.Protocol, error) {
 	u50, err := v1_26_50.NewWithRegistries(native, nativeItems)
 	if err != nil {
@@ -300,19 +291,8 @@ func ProtocolsWithRegistries(native mapping.BlockRegistry, nativeItems []protoco
 	if err != nil {
 		return nil, err
 	}
-	v486, err := v1_18_10.NewWithRegistries(native, nativeItems)
-	if err != nil {
-		return nil, err
-	}
-	v475, err := v1_18_0.NewWithRegistries(native, nativeItems)
-	if err != nil {
-		return nil, err
-	}
-	v419, err := v1_16_100.NewWithRegistries(native, nativeItems)
-	if err != nil {
-		return nil, err
-	}
-	return []minecraft.Protocol{u44, legacy, u2, u1, u0, r21u13, older, oldest, r21u5, r21u4, v486, v475, v419, u45, u50}, nil
+	modern := []minecraft.Protocol{u44, legacy, u2, u1, u0, r21u13, older, oldest, r21u5, r21u4, u45, u50}
+	return appendLegacyProtocols(modern, native, nativeItems)
 }
 
 // V1_26_44 returns the Minecraft protocol 2168 family adapter. The adapter

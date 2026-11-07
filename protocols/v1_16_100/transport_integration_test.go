@@ -1,3 +1,5 @@
+//go:build legacytransport
+
 package v1_16_100
 
 import (
@@ -5,15 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/df-mc/worldupgrader/blockupgrader"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/login"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	v419data "github.com/shawtymarco/go-multiversion/data/v419"
-	"github.com/shawtymarco/go-multiversion/mapping"
 )
 
 func TestProtocol419LoginFirstEncryptedSpawn(t *testing.T) {
@@ -89,35 +88,4 @@ func TestProtocol419LoginFirstEncryptedSpawn(t *testing.T) {
 	case <-ctx.Done():
 		t.Fatal(ctx.Err())
 	}
-}
-
-func protocol419IntegrationBlockRegistry(t *testing.T) blockItemTestRegistry {
-	t.Helper()
-	target, err := v419data.BlockStates()
-	if err != nil {
-		t.Fatal(err)
-	}
-	states := make([]mapping.BlockState, 1, len(target))
-	seen := make(map[string]struct{}, len(target))
-	for _, state := range target {
-		upgraded := blockupgrader.Upgrade(blockupgrader.BlockState{Name: state.Name, Properties: state.Properties, Version: state.Version})
-		key, err := mapping.StateKey(upgraded.Name, upgraded.Properties)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if _, exists := seen[key]; exists {
-			continue
-		}
-		seen[key] = struct{}{}
-		native := mapping.BlockState{Name: upgraded.Name, Properties: upgraded.Properties, Version: upgraded.Version}
-		if upgraded.Name == "minecraft:air" {
-			states[0] = native
-			continue
-		}
-		states = append(states, native)
-	}
-	if states[0].Name != "minecraft:air" {
-		t.Fatal("upgraded protocol-419 registry has no air state")
-	}
-	return blockItemTestRegistry{states: states}
 }
