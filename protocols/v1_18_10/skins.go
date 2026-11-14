@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
 )
 
 func marshalPlayerList(io *wireIO, raw packet.Packet) {
@@ -38,7 +39,7 @@ func marshalPlayerList(io *wireIO, raw packet.Packet) {
 	}
 	if action == protocol.PlayerListActionAdd {
 		for index := range pk.Entries {
-			io.Bool(&pk.Entries[index].Skin.Trusted)
+			packetio.TrustedSkinBool(io, &pk.Entries[index].Skin.Trusted)
 		}
 	}
 }
@@ -65,7 +66,7 @@ func marshalPlayerSkin(io *wireIO, raw packet.Packet) {
 	marshalSkin(io, &pk.Skin)
 	io.String(&pk.NewSkinName)
 	io.String(&pk.OldSkinName)
-	io.Bool(&pk.Skin.Trusted)
+	packetio.TrustedSkinBool(io, &pk.Skin.Trusted)
 }
 
 func marshalSkin(io *wireIO, skin *protocol.Skin) {

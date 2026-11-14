@@ -247,7 +247,7 @@ func marshalPlayerSkin(io *wireIO, raw packet.Packet) {
 	marshalSkin(io, &pk.Skin)
 	io.String(&pk.NewSkinName)
 	io.String(&pk.OldSkinName)
-	io.Bool(&pk.Skin.Trusted)
+	packetio.TrustedSkinBool(io, &pk.Skin.Trusted)
 }
 
 func marshalResourcePackClientResponse(io *wireIO, raw packet.Packet) {

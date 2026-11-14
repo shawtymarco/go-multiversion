@@ -6,6 +6,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
+	"github.com/shawtymarco/go-multiversion/internal/packetio"
 )
 
 const (
@@ -119,7 +120,7 @@ func marshalPlayerList(io *wireIO, raw packet.Packet) {
 	}
 	if action == protocol.PlayerListActionAdd {
 		for i := range pk.Entries {
-			io.Bool(&pk.Entries[i].Skin.Trusted)
+			packetio.TrustedSkinBool(io, &pk.Entries[i].Skin.Trusted)
 		}
 	}
 }

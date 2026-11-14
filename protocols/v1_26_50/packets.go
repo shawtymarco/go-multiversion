@@ -386,12 +386,17 @@ func marshalSkin(r protocol.IO, x *protocol.Skin) {
 	r.Bool(&x.PersonaCapeOnClassicSkin)
 	r.Bool(&x.PrimaryUser)
 	r.Bool(&x.OverrideAppearance)
+	// The frozen wire keeps writing "true"/"false"; an unset native flag is untrusted. Writes work on a copy.
 	trusted := "false"
-	if x.Trusted {
+	if value, _ := x.Trusted.Value(); value {
 		trusted = "true"
 	}
 	r.String(&trusted)
-	x.Trusted = strings.EqualFold(trusted, "true")
+	if strings.EqualFold(trusted, "unset") {
+		x.Trusted = protocol.Optional[bool]{}
+	} else {
+		x.Trusted = protocol.Option(strings.EqualFold(trusted, "true"))
+	}
 	r.String(&x.ProfileHash)
 
 }
